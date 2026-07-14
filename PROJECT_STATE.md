@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-006 — Create route skeleton
-**Next task:** TASK-007 — Create theme and UI primitives
+**Last completed task:** TASK-007 — Create theme and UI primitives
+**Next task:** TASK-008 — Add environment validation
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -20,6 +20,7 @@
 - TASK-005 verified Expo Go as the initial physical-device path for the Windows beginner workflow; EAS development builds are deferred until a required native dependency is unsupported by Expo Go or native release testing begins.
 - The app was aligned to Expo SDK 54 because the user's fully updated iPhone Expo Go app could not run the scaffolded SDK 57 project while the SDK 57 iOS App Store Expo Go release was still unavailable.
 - TASK-006 replaced the generated starter tabs with a simple Expo Router route skeleton for home, onboarding, results, place detail, day plan, saved, and settings.
+- TASK-007 added shared theme tokens and UI primitives for screen containers, buttons, chips, cards, loading, empty, and error states.
 
 ## Environment inventory
 
@@ -178,6 +179,24 @@ Known limitations:
 All TASK-006 screens are placeholders only. Real onboarding inputs, recommendation results, place details, day-plan behavior, saved data, settings behavior, and polished UI primitives remain for later tasks.
 Next task:
 TASK-007 — Create theme and UI primitives.
+```
+
+```text
+2026-07-14 — TASK-007
+Summary:
+Added shared theme tokens for color, spacing, typography, radii, and card shadows. Added reusable UI primitives for screen containers, buttons, chips, cards, loading states, empty states, and error states. Updated the placeholder route skeleton to use the new primitives as a lightweight preview without adding dependencies.
+Commands/tests:
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 1 test.
+`npx expo-doctor` — passed 18/18 checks.
+Manual verification:
+Started Expo web on port 8083 and verified HTTP 200 for `/`, `/onboarding`, `/results`, `/places/demo-place`, `/plan/demo-plan`, `/saved`, and `/settings`.
+Known limitations:
+The primitives are intentionally simple. Final visual polish, icons, richer form controls, and feature-specific interaction states remain for later tasks.
+Next task:
+TASK-008 — Add environment validation.
 ```
 
 ```text

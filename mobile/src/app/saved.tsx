@@ -1,4 +1,5 @@
 import { ThemedText } from "@/components/themed-text";
+import { EmptyState } from "@/components/ui";
 import {
   PlaceholderScreen,
   homeLink,
@@ -16,6 +17,10 @@ export default function SavedScreen() {
         Persistence and user-owned data isolation will be added after the local
         route and recommendation skeletons are in place.
       </ThemedText>
+      <EmptyState
+        title="Preview empty state"
+        message="Saved places will appear here once persistence exists."
+      />
     </PlaceholderScreen>
   );
 }

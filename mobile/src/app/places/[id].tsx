@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
+import { ErrorState } from "@/components/ui";
 import {
   PlaceholderScreen,
   homeLink,
@@ -20,6 +21,10 @@ export default function PlaceDetailScreen() {
         Future details will show only sourced facts, freshness, official links,
         verification notes, save actions, and incorrect-data feedback.
       </ThemedText>
+      <ErrorState
+        title="Preview error state"
+        message="Future provider failures will show bounded recovery copy."
+      />
     </PlaceholderScreen>
   );
 }

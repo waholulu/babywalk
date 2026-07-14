@@ -40,7 +40,7 @@
   Add onboarding, home, results, place detail, day plan, saved, and settings routes with placeholder content.  
   **Accept:** Every route is reachable without console errors.
 
-- [ ] **TASK-007 — Create theme and UI primitives**  
+- [x] **TASK-007 — Create theme and UI primitives**
   Add spacing, typography, radii, screen container, button, chip, card, loading, empty, and error components.  
   **Accept:** Components have simple tests or Storybook-equivalent preview only if it does not add major complexity.
 

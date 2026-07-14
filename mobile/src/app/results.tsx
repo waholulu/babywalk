@@ -1,4 +1,5 @@
 import { ThemedText } from "@/components/themed-text";
+import { LoadingState } from "@/components/ui";
 import {
   PlaceholderScreen,
   homeLink,
@@ -26,6 +27,7 @@ export default function ResultsScreen() {
         Future result cards will show age fit, travel estimate, budget, reasons,
         warnings, and source freshness.
       </ThemedText>
+      <LoadingState message="Preview loading state" />
     </PlaceholderScreen>
   );
 }
