@@ -108,7 +108,7 @@
   Load curated pilot data through versioned seed SQL or a documented import script.  
   **Accept:** Reset creates usable data with provenance/freshness fields.
 
-- [ ] **TASK-022 — Add Supabase client and repositories**  
+- [x] **TASK-022 — Add Supabase client and repositories**  
   Implement typed client initialization and place repository.  
   **Accept:** UI can switch between local fixtures and database implementation through an interface.
 

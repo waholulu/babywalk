@@ -8,7 +8,7 @@ import { ClientEnvResult } from "@/lib/env";
 function envResult(
   appEnv: "local" | "staging" | "production",
 ): ClientEnvResult {
-  return { ok: true, value: { appEnv } };
+  return { ok: true, value: { appEnv, placeDataSource: "fixtures" } };
 }
 
 describe("shouldShowScoreInspector", () => {

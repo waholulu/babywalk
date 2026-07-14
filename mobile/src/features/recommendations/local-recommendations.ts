@@ -13,6 +13,7 @@ import {
   WeatherSnapshot,
 } from "@/domain";
 import { mockPlaceCandidates } from "@/data/fixtures";
+import { PlaceRepository } from "@/data/repositories";
 
 export type RecommendationCardModel = {
   candidate: PlaceCandidate;
@@ -30,6 +31,7 @@ export type LocalRecommendationBuildResult = {
   excluded: HardFilterExclusion[];
   excludedCount: number;
   candidateCount: number;
+  sourceLabel: string;
 };
 
 export const defaultLocalRecommendationConstraints: FamilyConstraints = {
@@ -90,9 +92,24 @@ export const defaultTravelEstimates: CandidateTravelEstimate[] = [
 ];
 
 export function buildLocalRecommendations(): LocalRecommendationBuildResult {
+  return buildRecommendations(mockPlaceCandidates, "local fixtures");
+}
+
+export async function buildRepositoryRecommendations(
+  repository: PlaceRepository,
+  sourceLabel: string,
+): Promise<LocalRecommendationBuildResult> {
+  const candidates = await repository.listCandidates();
+  return buildRecommendations(candidates, sourceLabel);
+}
+
+export function buildRecommendations(
+  candidates: PlaceCandidate[],
+  sourceLabel: string,
+): LocalRecommendationBuildResult {
   const filtered = applyHardFilters({
     constraints: defaultLocalRecommendationConstraints,
-    candidates: mockPlaceCandidates,
+    candidates,
     travelEstimates: defaultTravelEstimates,
   });
   const scoredResults = scoreRecommendations({
@@ -108,9 +125,10 @@ export function buildLocalRecommendations(): LocalRecommendationBuildResult {
   });
 
   return {
-    candidateCount: mockPlaceCandidates.length,
+    candidateCount: candidates.length,
     excluded: filtered.excluded,
     excludedCount: filtered.excluded.length,
+    sourceLabel,
     cards: selectedResults.map((result) =>
       buildCardModel(result, filtered.included),
     ),

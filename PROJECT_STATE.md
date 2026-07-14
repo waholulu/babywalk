@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-021 — Add seed import
-**Next task:** TASK-022 — Add Supabase client and repositories
+**Last completed task:** TASK-022 — Add Supabase client and repositories
+**Next task:** TASK-023 — Add optional authentication
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -35,6 +35,7 @@
 - TASK-019 added the initial Supabase schema migration for profiles, child preferences, places, events, saved places, visits, place feedback, and recommendation feedback with constraints, timestamps, indexes, and RLS enabled.
 - TASK-020 added reviewed RLS policies and automated SQL policy tests for public curated reads, anonymous recommendation feedback, authenticated owner-only data access, and cross-user isolation.
 - TASK-021 added deterministic local seed data for 18 fixture places and 3 fixture events with provenance/freshness metadata plus automated seed checks.
+- TASK-022 added `@supabase/supabase-js`, client-safe Supabase configuration validation, a typed public places client, fixture and Supabase place repository implementations, and repository-selected recommendation loading.
 
 ## Environment inventory
 
@@ -68,6 +69,27 @@
 - App-store and privacy disclosures must match actual data behavior.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-022
+Summary:
+Added `@supabase/supabase-js`, extended client environment validation with `EXPO_PUBLIC_PLACE_DATA_SOURCE`, optional Supabase URL/anon-key validation, and added a typed public Supabase client helper. Added a `PlaceRepository` boundary with fixture and Supabase implementations. The recommendation results screen now loads candidates through the selected repository, keeping fixtures as the default zero-config source and allowing Supabase-backed public place reads when explicitly configured.
+Commands/tests:
+`npm install @supabase/supabase-js` — passed; npm reported 15 moderate audit findings in the dependency tree.
+`npx prettier --write ... .env.example ...` — failed only because Prettier could not infer a parser for `.env.example`; code files in the same command were formatted before that error.
+`npm run typecheck` — initially failed because env parsing needed explicit place-data-source narrowing and a score-inspector test fixture needed the new `placeDataSource`; passed after fixes.
+`npm test -- --runInBand src/test/env.test.ts src/test/place-repository.test.ts src/test/recommendation-results.test.ts src/test/score-inspector.test.ts` — passed, 4 suites and 13 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm test -- --runInBand` — passed, 12 test suites, 45 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with `EXPO_PUBLIC_APP_ENV=local` and `EXPO_PUBLIC_PLACE_DATA_SOURCE=fixtures`; `/results` served successfully on localhost. The first smoke command failed because the Windows `Start-Process` stdout/stderr redirection was invalid; the corrected command completed and the temporary Expo server was cleaned up.
+Known limitations:
+Supabase mode currently covers public place candidate reads only. Authenticated user repositories, save/visit/block mutations, realtime caching, and generated database types remain for later tasks.
+Next task:
+TASK-023 — Add optional authentication.
+```
 
 ```text
 2026-07-14 — TASK-021

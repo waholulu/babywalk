@@ -1,13 +1,23 @@
 import { Link } from "expo-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { Button, Card, Chip, ScreenContainer } from "@/components/ui";
+import {
+  Button,
+  Card,
+  Chip,
+  ErrorState,
+  LoadingState,
+  ScreenContainer,
+} from "@/components/ui";
 import { Radii, Spacing } from "@/constants/theme";
+import { createPlaceRepository } from "@/data/repositories";
 import { readClientEnv } from "@/lib/env";
 import {
-  buildLocalRecommendations,
+  buildRepositoryRecommendations,
+  LocalRecommendationBuildResult,
   RecommendationCardModel,
 } from "./local-recommendations";
 import {
@@ -16,8 +26,48 @@ import {
 } from "./score-inspector";
 
 export function RecommendationResultsScreen() {
-  const recommendations = buildLocalRecommendations();
-  const showInspector = shouldShowScoreInspector(readClientEnv());
+  const clientEnv = useMemo(() => readClientEnv(), []);
+  const showInspector = shouldShowScoreInspector(clientEnv);
+  const [recommendations, setRecommendations] =
+    useState<LocalRecommendationBuildResult | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadRecommendations = useCallback(() => {
+    if (!clientEnv.ok) {
+      setRecommendations(null);
+      setErrorMessage("Client configuration is invalid.");
+      setIsLoading(false);
+      return;
+    }
+
+    const repository = createPlaceRepository(clientEnv.value);
+    const sourceLabel =
+      clientEnv.value.placeDataSource === "supabase"
+        ? "Supabase places"
+        : "local fixtures";
+
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    void buildRepositoryRecommendations(repository, sourceLabel)
+      .then((result) => {
+        setRecommendations(result);
+      })
+      .catch(() => {
+        setRecommendations(null);
+        setErrorMessage(
+          "Places could not be loaded. Check configuration and try again.",
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [clientEnv]);
+
+  useEffect(() => {
+    loadRecommendations();
+  }, [loadRecommendations]);
 
   return (
     <ScreenContainer>
@@ -27,40 +77,59 @@ export function RecommendationResultsScreen() {
         </ThemedText>
         <ThemedText type="title">Three outing ideas</ThemedText>
         <ThemedText themeColor="textSecondary">
-          {recommendations.cards.length} shown from{" "}
-          {recommendations.candidateCount} local fixtures
+          {recommendations === null
+            ? "Loading outing ideas"
+            : `${recommendations.cards.length} shown from ${recommendations.candidateCount} ${recommendations.sourceLabel}`}
         </ThemedText>
       </ThemedView>
 
-      <View style={styles.list}>
-        {recommendations.cards.map((card) => (
-          <RecommendationCard
-            key={card.candidate.id}
-            card={card}
-            showInspector={showInspector}
-          />
-        ))}
-      </View>
+      {isLoading ? <LoadingState message="Loading outing ideas" /> : null}
 
-      <ThemedView type="backgroundElement" style={styles.pipelineNote}>
-        <ThemedText type="smallBold">Local deterministic pipeline</ThemedText>
-        <ThemedText type="small" themeColor="textSecondary">
-          {recommendations.excludedCount} candidates excluded by hard filters.
-        </ThemedText>
-        {showInspector ? (
-          <View style={styles.exclusionList}>
-            {recommendations.excluded.map((exclusion) => (
-              <ThemedText
-                key={exclusion.candidateId}
-                type="code"
-                themeColor="textSecondary"
-              >
-                {exclusion.candidateId}: {exclusion.codes.join(", ")}
-              </ThemedText>
+      {!isLoading && errorMessage !== null ? (
+        <ErrorState
+          title="Places unavailable"
+          message={errorMessage}
+          actionLabel="Retry"
+          onAction={loadRecommendations}
+        />
+      ) : null}
+
+      {!isLoading && recommendations !== null ? (
+        <>
+          <View style={styles.list}>
+            {recommendations.cards.map((card) => (
+              <RecommendationCard
+                key={card.candidate.id}
+                card={card}
+                showInspector={showInspector}
+              />
             ))}
           </View>
-        ) : null}
-      </ThemedView>
+
+          <ThemedView type="backgroundElement" style={styles.pipelineNote}>
+            <ThemedText type="smallBold">
+              Deterministic recommendation pipeline
+            </ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              {recommendations.excludedCount} candidates excluded by hard
+              filters.
+            </ThemedText>
+            {showInspector ? (
+              <View style={styles.exclusionList}>
+                {recommendations.excluded.map((exclusion) => (
+                  <ThemedText
+                    key={exclusion.candidateId}
+                    type="code"
+                    themeColor="textSecondary"
+                  >
+                    {exclusion.candidateId}: {exclusion.codes.join(", ")}
+                  </ThemedText>
+                ))}
+              </View>
+            ) : null}
+          </ThemedView>
+        </>
+      ) : null}
 
       <Link href="/" asChild>
         <Button variant="ghost">Back to home</Button>

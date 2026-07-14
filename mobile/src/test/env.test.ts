@@ -4,7 +4,28 @@ describe("client environment validation", () => {
   it("accepts a valid app environment", () => {
     expect(parseClientEnv({ EXPO_PUBLIC_APP_ENV: "local" })).toEqual({
       ok: true,
-      value: { appEnv: "local" },
+      value: { appEnv: "local", placeDataSource: "fixtures" },
+    });
+  });
+
+  it("accepts Supabase public configuration when Supabase data is selected", () => {
+    expect(
+      parseClientEnv({
+        EXPO_PUBLIC_APP_ENV: "local",
+        EXPO_PUBLIC_PLACE_DATA_SOURCE: "supabase",
+        EXPO_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",
+        EXPO_PUBLIC_SUPABASE_ANON_KEY: "publishable-anon-key",
+      }),
+    ).toEqual({
+      ok: true,
+      value: {
+        appEnv: "local",
+        placeDataSource: "supabase",
+        supabase: {
+          url: "http://127.0.0.1:54321",
+          anonKey: "publishable-anon-key",
+        },
+      },
     });
   });
 
@@ -23,5 +44,34 @@ describe("client environment validation", () => {
       issues: [{ name: "EXPO_PUBLIC_APP_ENV", reason: "invalid" }],
     });
     expect(JSON.stringify(result)).not.toContain("secret-ish-value");
+  });
+
+  it("requires Supabase public values only for Supabase data", () => {
+    expect(
+      parseClientEnv({
+        EXPO_PUBLIC_APP_ENV: "local",
+        EXPO_PUBLIC_PLACE_DATA_SOURCE: "supabase",
+      }),
+    ).toEqual({
+      ok: false,
+      issues: [
+        { name: "EXPO_PUBLIC_SUPABASE_URL", reason: "missing" },
+        { name: "EXPO_PUBLIC_SUPABASE_ANON_KEY", reason: "missing" },
+      ],
+    });
+  });
+
+  it("reports invalid data source and URL values without exposing raw values", () => {
+    const result = parseClientEnv({
+      EXPO_PUBLIC_APP_ENV: "local",
+      EXPO_PUBLIC_PLACE_DATA_SOURCE: "database-secret-ish",
+      EXPO_PUBLIC_SUPABASE_URL: "not-a-url-secret-ish",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      issues: [{ name: "EXPO_PUBLIC_PLACE_DATA_SOURCE", reason: "invalid" }],
+    });
+    expect(JSON.stringify(result)).not.toContain("secret-ish");
   });
 });
