@@ -66,7 +66,7 @@
   Implement transparent component scores, reason codes, warnings, confidence, and deterministic tie-breaking.  
   **Accept:** Snapshot/fixture tests show complete score breakdowns.
 
-- [ ] **TASK-013 — Implement diversity selection**  
+- [x] **TASK-013 — Implement diversity selection**
   Prevent the top three from being near-duplicates when comparable alternatives exist.  
   **Accept:** Unit tests verify category/location diversity rules.
 

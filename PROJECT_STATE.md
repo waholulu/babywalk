@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-012 — Implement scoring
-**Next task:** TASK-013 — Implement diversity selection
+**Last completed task:** TASK-013 — Implement diversity selection
+**Next task:** TASK-014 — Build plan input form
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -26,6 +26,7 @@
 - TASK-010 added 18 local fixture place candidates and scenario coverage metadata for future filter/scoring tests.
 - TASK-011 added a pure hard-filtering layer for recommendation candidates, including age, schedule, travel, budget, indoor/outdoor, blocked-place, and return-time exclusions.
 - TASK-012 added a pure transparent 100-point scoring layer with component breakdowns, reason codes, warnings, confidence, deterministic sorting, and fixture snapshot coverage.
+- TASK-013 added a pure diversity-selection step that prevents comparable top results from being near-duplicates by category or coarse area.
 
 ## Environment inventory
 
@@ -295,6 +296,25 @@ Known limitations:
 Scoring heuristics are intentionally early and local. Provider-backed travel/weather data, richer family history, and score tuning remain for later tasks.
 Next task:
 TASK-013 — Implement diversity selection.
+```
+
+```text
+2026-07-14 — TASK-013
+Summary:
+Implemented pure diversity selection under `mobile/src/domain/recommendation/diversity.ts`. The selector takes already-scored recommendations and candidate metadata, then chooses a small result set while promoting comparable alternatives from unused categories and coarse areas. It preserves score order when diverse alternatives are not within the comparable-score threshold.
+Commands/tests:
+`npm test -- --runInBand src/test/diversity.test.ts` — passed, 3 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 7 test suites, 27 tests, and 1 snapshot.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed the selector and tests for category diversity, location diversity, comparable-score threshold behavior, and deterministic ordering. No device test was required because this task only changes pure domain logic.
+Known limitations:
+Diversity uses category and coarse area metadata only. Map-distance clustering and richer similarity rules remain deferred until real data/provider work.
+Next task:
+TASK-014 — Build plan input form.
 ```
 
 ```text
