@@ -34,6 +34,10 @@
   Add `expo-dev-client`, EAS configuration, application identifiers/placeholders, and written build steps.  
   **Accept:** A development build runs on at least one real device.
 
+- [ ] **BLOCKER — Confirm development-build test path for TASK-005**  
+  Choose and prepare at least one real iOS or Android device path and confirm EAS CLI/account access for development-build verification.  
+  **Accept:** A named real device path is available, EAS access works, and the selected platform can install a development build.
+
 ## App shell
 
 - [ ] **TASK-006 — Create route skeleton**  

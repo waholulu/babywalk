@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
 **Last completed task:** TASK-004 — Activate CI  
-**Next task:** TASK-005 — Configure development build  
+**Next task:** BLOCKER — Confirm real-device development-build path before completing TASK-005  
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -17,6 +17,7 @@
 - The Expo starter currently uses `mobile/src/app` as the Expo Router root.
 - `mobile/` has passing local quality commands for format, lint, type checking, and Jest tests.
 - GitHub Actions CI is active for pushes to `main` and pull requests.
+- TASK-005 is blocked because no real iOS/Android device path is configured and `eas` is not installed, but the task acceptance requires a development build running on at least one real device.
 
 ## Environment inventory
 
@@ -136,4 +137,19 @@ Known limitations:
 GitHub Actions reported a warning that `actions/checkout@v4` and `actions/setup-node@v4` target Node.js 20 and are being forced to run on Node.js 24 by GitHub-hosted runners. This does not fail CI.
 Next task:
 TASK-005 — Configure development build.
+```
+
+```text
+2026-07-14 — TASK-005 BLOCKED
+Summary:
+Started TASK-005 planning, but did not add development-build configuration because the task acceptance requires a development build to run on at least one real device.
+Commands/tests:
+`Get-Command eas` — failed; EAS CLI is not installed.
+`Get-Command adb` — failed; Android Debug Bridge is not installed.
+Manual verification:
+Reviewed PROJECT_STATE environment inventory; iOS test path and Android test path are both not configured.
+Known limitations:
+Cannot truthfully complete TASK-005 until an Expo/EAS path and at least one real device test path are available.
+Next task:
+BLOCKER — Confirm real-device development-build path, install/sign in to EAS CLI or choose the supported EAS invocation path, then resume TASK-005.
 ```
