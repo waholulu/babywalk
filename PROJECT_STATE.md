@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
 **Last completed task:** TASK-017 — Add development score inspector
-**Next task:** TASK-018 — Initialize local Supabase
+**Next task:** BLOCKER — Install Docker Desktop for TASK-018
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -31,6 +31,7 @@
 - TASK-015 connected local fixtures to the deterministic recommendation pipeline and replaced the results placeholder with three explainable recommendation cards.
 - TASK-016 replaced the place detail placeholder with a structured fixture detail screen that labels unknown values and emits verify-before-leaving notes.
 - TASK-017 added a development-only score inspector for score components and hard-filter exclusions, gated off for production environments.
+- TASK-018 is blocked because Docker is not installed or not on PATH; local Supabase cannot start/reset without Docker.
 
 ## Environment inventory
 
@@ -395,6 +396,23 @@ Known limitations:
 The inspector is only on the results screen and is not user-toggleable; this is intentional for the first debug surface.
 Next task:
 TASK-018 — Initialize local Supabase.
+```
+
+```text
+2026-07-14 — TASK-018 BLOCKED
+Summary:
+Attempted to begin local Supabase initialization, but the required Docker prerequisite is missing. No Supabase config was created because TASK-018 acceptance requires a local database to start and reset reproducibly.
+Commands/tests:
+`docker --version` — failed; `docker` is not recognized.
+`docker info` — failed; `docker` is not recognized.
+`supabase --version` — failed; `supabase` is not recognized.
+`npx supabase --version` — passed, 2.109.1.
+Manual verification:
+Not run; Docker Desktop is unavailable.
+Known limitations:
+TASK-018 remains unstarted. Install and start Docker Desktop, then rerun `docker --version` and `docker info` before initializing Supabase.
+Next task:
+BLOCKER — Install Docker Desktop for TASK-018.
 ```
 
 ```text
