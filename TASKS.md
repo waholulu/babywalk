@@ -36,7 +36,7 @@
 
 ## App shell
 
-- [ ] **TASK-006 — Create route skeleton**  
+- [x] **TASK-006 — Create route skeleton**
   Add onboarding, home, results, place detail, day plan, saved, and settings routes with placeholder content.  
   **Accept:** Every route is reachable without console errors.
 

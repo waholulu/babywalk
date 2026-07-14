@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-005 — Establish physical-device Expo Go path
-**Next task:** TASK-006 — Create route skeleton
+**Last completed task:** TASK-006 — Create route skeleton
+**Next task:** TASK-007 — Create theme and UI primitives
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -19,6 +19,7 @@
 - GitHub Actions CI is active for pushes to `main` and pull requests.
 - TASK-005 verified Expo Go as the initial physical-device path for the Windows beginner workflow; EAS development builds are deferred until a required native dependency is unsupported by Expo Go or native release testing begins.
 - The app was aligned to Expo SDK 54 because the user's fully updated iPhone Expo Go app could not run the scaffolded SDK 57 project while the SDK 57 iOS App Store Expo Go release was still unavailable.
+- TASK-006 replaced the generated starter tabs with a simple Expo Router route skeleton for home, onboarding, results, place detail, day plan, saved, and settings.
 
 ## Environment inventory
 
@@ -159,6 +160,24 @@ Known limitations:
 Expo SDK 57 was deferred because the iOS App Store Expo Go app available on the user's device could not run it yet. EAS development builds, expo-dev-client, Apple signing, iOS device registration, and Android APK generation remain deferred to TASK-027B or native release testing.
 Next task:
 TASK-006 — Create route skeleton.
+```
+
+```text
+2026-07-14 — TASK-006
+Summary:
+Created the first SproutScout route skeleton with placeholder screens for home, onboarding, results, place detail, day plan, saved, and settings. Replaced the generated starter tab/explore route with a simple Expo Router Slot layout and a shared placeholder screen component under `src/features/navigation`.
+Commands/tests:
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed after refreshing Expo Router generated route types.
+`npm test -- --runInBand` — passed, 1 test.
+`npx expo-doctor` — passed 18/18 checks.
+Manual verification:
+Started Expo web on port 8083 and verified HTTP 200 for `/`, `/onboarding`, `/results`, `/places/demo-place`, `/plan/demo-plan`, `/saved`, and `/settings`.
+Known limitations:
+All TASK-006 screens are placeholders only. Real onboarding inputs, recommendation results, place details, day-plan behavior, saved data, settings behavior, and polished UI primitives remain for later tasks.
+Next task:
+TASK-007 — Create theme and UI primitives.
 ```
 
 ```text
