@@ -82,6 +82,44 @@ describe("client environment validation", () => {
     });
   });
 
+  it("accepts staging Supabase configuration with a matching hosted project ref", () => {
+    expect(
+      parseClientEnv({
+        EXPO_PUBLIC_APP_ENV: "staging",
+        EXPO_PUBLIC_PLACE_DATA_SOURCE: "supabase",
+        EXPO_PUBLIC_SUPABASE_URL: "https://pspaowtnajsdwcyzrafl.supabase.co",
+        EXPO_PUBLIC_SUPABASE_ANON_KEY: "publishable-anon-key",
+        EXPO_PUBLIC_SUPABASE_PROJECT_REF: "pspaowtnajsdwcyzrafl",
+      }),
+    ).toEqual({
+      ok: true,
+      value: {
+        appEnv: "staging",
+        placeDataSource: "supabase",
+        supabase: {
+          url: "https://pspaowtnajsdwcyzrafl.supabase.co",
+          anonKey: "publishable-anon-key",
+          projectRef: "pspaowtnajsdwcyzrafl",
+        },
+      },
+    });
+  });
+
+  it("rejects hosted Supabase URLs without a matching project ref", () => {
+    expect(
+      parseClientEnv({
+        EXPO_PUBLIC_APP_ENV: "staging",
+        EXPO_PUBLIC_PLACE_DATA_SOURCE: "supabase",
+        EXPO_PUBLIC_SUPABASE_URL: "https://productionrefexample.supabase.co",
+        EXPO_PUBLIC_SUPABASE_ANON_KEY: "publishable-anon-key",
+        EXPO_PUBLIC_SUPABASE_PROJECT_REF: "pspaowtnajsdwcyzrafl",
+      }),
+    ).toEqual({
+      ok: false,
+      issues: [{ name: "EXPO_PUBLIC_SUPABASE_PROJECT_REF", reason: "invalid" }],
+    });
+  });
+
   it("requires optional Supabase public configuration to be complete", () => {
     expect(
       parseClientEnv({

@@ -9,6 +9,7 @@ import { useColorScheme } from "react-native";
 
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { ConfigErrorScreen } from "@/components/config-error-screen";
+import { EnvironmentBanner } from "@/components/environment-banner";
 import { readClientEnv } from "@/lib/env";
 
 SplashScreen.preventAutoHideAsync();
@@ -21,7 +22,10 @@ export default function TabLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <AnimatedSplashOverlay />
       {clientEnv.ok ? (
-        <Slot />
+        <>
+          <EnvironmentBanner appEnv={clientEnv.value.appEnv} />
+          <Slot />
+        </>
       ) : (
         <ConfigErrorScreen issues={clientEnv.issues} />
       )}

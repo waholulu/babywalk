@@ -10,6 +10,7 @@ export type ClientEnv = {
   supabase?: {
     url: string;
     anonKey: string;
+    projectRef?: string;
   };
 };
 
@@ -18,7 +19,8 @@ export type ClientEnvIssue = {
     | "EXPO_PUBLIC_APP_ENV"
     | "EXPO_PUBLIC_PLACE_DATA_SOURCE"
     | "EXPO_PUBLIC_SUPABASE_URL"
-    | "EXPO_PUBLIC_SUPABASE_ANON_KEY";
+    | "EXPO_PUBLIC_SUPABASE_ANON_KEY"
+    | "EXPO_PUBLIC_SUPABASE_PROJECT_REF";
   reason: "missing" | "invalid";
 };
 
@@ -30,6 +32,7 @@ type ClientEnvSource = {
   EXPO_PUBLIC_PLACE_DATA_SOURCE?: string;
   EXPO_PUBLIC_SUPABASE_URL?: string;
   EXPO_PUBLIC_SUPABASE_ANON_KEY?: string;
+  EXPO_PUBLIC_SUPABASE_PROJECT_REF?: string;
 };
 
 export function parseClientEnv(env: ClientEnvSource): ClientEnvResult {
@@ -41,6 +44,7 @@ export function parseClientEnv(env: ClientEnvSource): ClientEnvResult {
     : undefined;
   const supabaseUrl = env.EXPO_PUBLIC_SUPABASE_URL?.trim();
   const supabaseAnonKey = env.EXPO_PUBLIC_SUPABASE_ANON_KEY?.trim();
+  const supabaseProjectRef = env.EXPO_PUBLIC_SUPABASE_PROJECT_REF?.trim();
   const issues: ClientEnvIssue[] = [];
 
   if (!appEnv) {
@@ -59,7 +63,7 @@ export function parseClientEnv(env: ClientEnvSource): ClientEnvResult {
   if (parsedPlaceDataSource === "supabase") {
     if (!supabaseUrl) {
       issues.push({ name: "EXPO_PUBLIC_SUPABASE_URL", reason: "missing" });
-    } else if (!isHttpUrl(supabaseUrl)) {
+    } else if (!isValidSupabaseUrl(supabaseUrl, supabaseProjectRef, issues)) {
       issues.push({ name: "EXPO_PUBLIC_SUPABASE_URL", reason: "invalid" });
     }
 
@@ -75,7 +79,7 @@ export function parseClientEnv(env: ClientEnvSource): ClientEnvResult {
   ) {
     if (!supabaseUrl) {
       issues.push({ name: "EXPO_PUBLIC_SUPABASE_URL", reason: "missing" });
-    } else if (!isHttpUrl(supabaseUrl)) {
+    } else if (!isValidSupabaseUrl(supabaseUrl, supabaseProjectRef, issues)) {
       issues.push({ name: "EXPO_PUBLIC_SUPABASE_URL", reason: "invalid" });
     }
 
@@ -103,7 +107,11 @@ export function parseClientEnv(env: ClientEnvSource): ClientEnvResult {
       placeDataSource: parsedPlaceDataSource,
       supabase:
         supabaseUrl && supabaseAnonKey
-          ? { url: supabaseUrl, anonKey: supabaseAnonKey }
+          ? {
+              url: supabaseUrl,
+              anonKey: supabaseAnonKey,
+              projectRef: supabaseProjectRef || undefined,
+            }
           : undefined,
     },
   };
@@ -115,6 +123,8 @@ export function readClientEnv(): ClientEnvResult {
     EXPO_PUBLIC_PLACE_DATA_SOURCE: process.env.EXPO_PUBLIC_PLACE_DATA_SOURCE,
     EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
     EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+    EXPO_PUBLIC_SUPABASE_PROJECT_REF:
+      process.env.EXPO_PUBLIC_SUPABASE_PROJECT_REF,
   });
 }
 
@@ -126,11 +136,50 @@ function isPlaceDataSource(value: string): value is PlaceDataSource {
   return placeDataSources.includes(value as PlaceDataSource);
 }
 
-function isHttpUrl(value: string): boolean {
+function isValidSupabaseUrl(
+  value: string,
+  projectRef: string | undefined,
+  issues: ClientEnvIssue[],
+): boolean {
   try {
     const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    const isHttp = url.protocol === "http:" || url.protocol === "https:";
+
+    if (!isHttp) {
+      return false;
+    }
+
+    if (url.hostname.endsWith(".supabase.co")) {
+      if (!projectRef) {
+        issues.push({
+          name: "EXPO_PUBLIC_SUPABASE_PROJECT_REF",
+          reason: "missing",
+        });
+        return true;
+      }
+
+      if (!isSupabaseProjectRef(projectRef)) {
+        issues.push({
+          name: "EXPO_PUBLIC_SUPABASE_PROJECT_REF",
+          reason: "invalid",
+        });
+        return true;
+      }
+
+      if (url.hostname !== `${projectRef}.supabase.co`) {
+        issues.push({
+          name: "EXPO_PUBLIC_SUPABASE_PROJECT_REF",
+          reason: "invalid",
+        });
+      }
+    }
+
+    return true;
   } catch {
     return false;
   }
+}
+
+function isSupabaseProjectRef(value: string): boolean {
+  return /^[a-z0-9]{20}$/.test(value);
 }

@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** BLOCKER — Authenticate Supabase CLI for TASK-024A
-**Next task:** TASK-024A — Create minimal hosted Supabase staging target
+**Last completed task:** TASK-024A — Create minimal hosted Supabase staging target
+**Next task:** TASK-025 — Implement incorrect-data feedback
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -38,6 +38,7 @@
 - TASK-022 added `@supabase/supabase-js`, client-safe Supabase configuration validation, a typed public places client, fixture and Supabase place repository implementations, and repository-selected recommendation loading.
 - TASK-023 added optional guest-preserving email magic-link auth plumbing, a Settings account panel, and protected-cache clearing on sign-out.
 - TASK-024 added working Save, Mark visited, and Do not recommend actions on place detail with a local repository, optimistic UI state, error rollback, and tests.
+- TASK-024A linked the local Supabase CLI to hosted staging project `babywalk` (`pspaowtnajsdwcyzrafl`), applied existing migrations, added hosted URL/project-ref validation, added visible local/staging environment banners, and documented staging Expo configuration without committing secrets.
 
 ## Environment inventory
 
@@ -69,9 +70,34 @@
 - Family recommendations can lose trust quickly when hours or amenities are wrong.
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
-- TASK-025 cannot meet its stated acceptance until TASK-024A creates and verifies a real hosted staging Supabase target.
+- TASK-025 can now target hosted staging, but it still needs authenticated feedback implementation and verification.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-024A
+Summary:
+Established the minimal hosted Supabase staging path using the user's new `babywalk` project, ref `pspaowtnajsdwcyzrafl`, in region `ca-central-1`. Linked the local Supabase CLI to that hosted project and applied the two existing migrations. Added `EXPO_PUBLIC_SUPABASE_PROJECT_REF` validation so hosted Supabase URLs must match their explicit project ref, preventing staging from silently pointing at another hosted project. Added a visible non-production environment banner that shows `STAGING` or `LOCAL`, plus `mobile/.env.staging.example` with public staging URL/ref placeholders and an empty publishable-key slot.
+Commands/tests:
+`npx supabase projects list` — passed and showed `babywalk` as `ACTIVE_HEALTHY`.
+`npx supabase link --project-ref pspaowtnajsdwcyzrafl` — passed.
+`npx supabase db push --linked --dry-run` — passed and listed the two pending migrations.
+`npx supabase db push --linked` — applied both migrations; the CLI emitted a post-apply pg-delta cache warning, so migration state was verified separately.
+`npx supabase migration list --linked` — passed and confirmed local/remote migration versions `20260714191031` and `20260714191641` match.
+`npx supabase db lint --linked` — passed with no schema errors.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 15 suites and 61 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+`git diff --check` — passed; only Windows line-ending normalization warnings were reported.
+Manual verification:
+Used the staging publishable key from the local shell only, without writing it to tracked files. A Supabase JS query against hosted staging `places` returned `staging_places_count=0`, confirming the app can connect to the migrated staging database. Started Expo web in staging Supabase mode and verified `/settings` returned HTTP 200. Banner label tests confirm staging renders `STAGING` and production renders no banner.
+Known limitations:
+Hosted staging has schema/RLS migrations but no seed data. The staging publishable key remains local-only and must be copied into an ignored local env file or shell when running Expo; no EAS environment variables or installable staging builds exist yet. TASK-025 still needs to implement and verify incorrect-data feedback against staging.
+Next task:
+TASK-025 — Implement incorrect-data feedback.
+```
 
 ```text
 2026-07-14 — BLOCKER — Authenticate Supabase CLI for TASK-024A
