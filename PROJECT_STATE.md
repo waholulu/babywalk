@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-015 — Build recommendation results
-**Next task:** TASK-016 — Build place detail screen
+**Last completed task:** TASK-016 — Build place detail screen
+**Next task:** TASK-017 — Add development score inspector
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -29,6 +29,7 @@
 - TASK-013 added a pure diversity-selection step that prevents comparable top results from being near-duplicates by category or coarse area.
 - TASK-014 replaced the home placeholder with a local mobile-first plan input form, validation helpers, accessibility labels/states, keyboard-friendly scrolling, reset behavior, and default values.
 - TASK-015 connected local fixtures to the deterministic recommendation pipeline and replaced the results placeholder with three explainable recommendation cards.
+- TASK-016 replaced the place detail placeholder with a structured fixture detail screen that labels unknown values and emits verify-before-leaving notes.
 
 ## Environment inventory
 
@@ -355,6 +356,25 @@ Known limitations:
 Results use a fixed local scenario and do not yet consume live home form input, persist preferences, fetch provider data, or implement place detail content.
 Next task:
 TASK-016 — Build place detail screen.
+```
+
+```text
+2026-07-14 — TASK-016
+Summary:
+Built a fixture-backed place detail screen. The detail model renders structured facts, schedule, amenities, source, freshness, verify-before-leaving notes, and placeholder actions for save, visited, block, and report incorrect data. Unknown age, price, schedule, amenities, and freshness are labeled as unknown and surfaced in verification notes instead of being shown as confident facts.
+Commands/tests:
+`npm test -- --runInBand src/test/place-detail.test.ts` — passed, 3 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 10 test suites, 36 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web on port 8086 with `EXPO_PUBLIC_APP_ENV=local`; `/places/hoboken-story-room-fixture` and `/places/missing-place` both returned HTTP 200. The server was stopped afterward.
+Known limitations:
+Detail data is fixture-only. Official website/call links, maps, save/visited/block/report persistence, and real provider details remain later tasks.
+Next task:
+TASK-017 — Add development score inspector.
 ```
 
 ```text

@@ -78,7 +78,7 @@
   Connect local fixtures to domain logic and render three cards.  
   **Accept:** Canonical scenarios display expected reason codes and warnings.
 
-- [ ] **TASK-016 — Build place detail screen**  
+- [x] **TASK-016 — Build place detail screen**
   Render structured data, source/freshness, verify-before-leaving text, and placeholder actions.  
   **Accept:** Unknown data is not displayed as a confident fact.
 
