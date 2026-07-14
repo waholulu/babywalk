@@ -44,8 +44,8 @@ export function buildPlaceActionButtons(
     {
       id: "report",
       label: "Report incorrect data",
-      hint: "Feedback reporting is added in TASK-025.",
-      disabled: true,
+      hint: "Open a short form to report outdated or incorrect place data.",
+      disabled: isBusy,
     },
   ];
 }

@@ -66,7 +66,7 @@ describe("buildPlaceActionButtons", () => {
       expect.objectContaining({
         id: "report",
         label: "Report incorrect data",
-        disabled: true,
+        disabled: false,
       }),
     ]);
   });

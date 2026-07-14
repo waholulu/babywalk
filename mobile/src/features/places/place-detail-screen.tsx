@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -9,21 +9,42 @@ import { Radii, Spacing } from "@/constants/theme";
 import {
   createInitialPlaceActionState,
   createLocalPlaceActionsRepository,
+  createSupabasePlaceFeedbackRepository,
   PlaceActionState,
 } from "@/data/repositories";
+import { createSupabaseClient } from "@/lib/supabase";
+import { readClientEnv } from "@/lib/env";
+import { useTheme } from "@/hooks/use-theme";
 import { buildPlaceActionButtons } from "./place-actions";
 import { getPlaceDetailModel, PlaceDetailFact } from "./place-detail";
+import {
+  normalizeFeedbackDetails,
+  placeFeedbackOptions,
+  PlaceFeedbackType,
+} from "./place-feedback";
 
 type PlaceDetailScreenProps = {
   id: string;
 };
 
 export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
+  const theme = useTheme();
   const detail = getPlaceDetailModel(id);
   const actionsRepository = useMemo(
     () => createLocalPlaceActionsRepository(),
     [],
   );
+  const feedbackRepository = useMemo(() => {
+    const env = readClientEnv();
+
+    if (!env.ok || env.value.supabase === undefined) {
+      return undefined;
+    }
+
+    return createSupabasePlaceFeedbackRepository(
+      createSupabaseClient(env.value.supabase),
+    );
+  }, []);
   const [actionState, setActionState] = useState<PlaceActionState>(
     createInitialPlaceActionState(),
   );
@@ -32,6 +53,17 @@ export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
   );
   const [actionError, setActionError] = useState<string | undefined>(undefined);
   const [isActionBusy, setIsActionBusy] = useState(false);
+  const [isReportFormVisible, setIsReportFormVisible] = useState(false);
+  const [feedbackType, setFeedbackType] =
+    useState<PlaceFeedbackType>("incorrect_hours");
+  const [feedbackDetails, setFeedbackDetails] = useState("");
+  const [feedbackMessage, setFeedbackMessage] = useState<string | undefined>(
+    undefined,
+  );
+  const [feedbackError, setFeedbackError] = useState<string | undefined>(
+    undefined,
+  );
+  const [isFeedbackBusy, setIsFeedbackBusy] = useState(false);
 
   const refreshActionState = useCallback(() => {
     void actionsRepository.getState().then(setActionState);
@@ -60,6 +92,9 @@ export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
 
   async function runAction(actionId: "save" | "visit" | "block" | "report") {
     if (actionId === "report") {
+      setIsReportFormVisible((visible) => !visible);
+      setFeedbackMessage(undefined);
+      setFeedbackError(undefined);
       return;
     }
 
@@ -115,6 +150,46 @@ export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
       setActionError("Action could not be saved. Try again.");
     } finally {
       setIsActionBusy(false);
+    }
+  }
+
+  async function submitFeedback() {
+    setFeedbackError(undefined);
+    setFeedbackMessage(undefined);
+
+    if (feedbackRepository === undefined) {
+      setFeedbackError(
+        "Feedback needs staging Supabase configuration and sign-in.",
+      );
+      return;
+    }
+
+    setIsFeedbackBusy(true);
+
+    try {
+      const result = await feedbackRepository.submit({
+        placeId: id,
+        feedbackType,
+        details: feedbackDetails,
+      });
+
+      if (result.ok) {
+        setFeedbackDetails("");
+        setFeedbackMessage("Thanks. Your report was sent for review.");
+        return;
+      }
+
+      if (result.reason === "auth_required") {
+        setFeedbackError("Sign in from Settings before sending feedback.");
+      } else if (result.reason === "place_not_found") {
+        setFeedbackError("This place is not available in the database yet.");
+      } else {
+        setFeedbackError("Feedback could not be sent. Try again.");
+      }
+    } catch {
+      setFeedbackError("Feedback could not be sent. Try again.");
+    } finally {
+      setIsFeedbackBusy(false);
     }
   }
 
@@ -191,9 +266,77 @@ export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
             {actionError}
           </ThemedText>
         )}
-        <ThemedText type="small" themeColor="textSecondary">
-          Report incorrect data is added in TASK-025.
-        </ThemedText>
+        {isReportFormVisible ? (
+          <View style={styles.feedbackForm}>
+            <ThemedText type="small" themeColor="textSecondary">
+              Choose what looks wrong. Do not include private family details.
+            </ThemedText>
+            <View style={styles.feedbackOptions}>
+              {placeFeedbackOptions.map((option) => (
+                <Button
+                  key={option.type}
+                  variant={
+                    option.type === feedbackType ? "primary" : "secondary"
+                  }
+                  disabled={isFeedbackBusy}
+                  onPress={() => {
+                    setFeedbackType(option.type);
+                  }}
+                  style={styles.feedbackOptionButton}
+                >
+                  {option.label}
+                </Button>
+              ))}
+            </View>
+            <TextInput
+              accessibilityLabel="Feedback details"
+              editable={!isFeedbackBusy}
+              maxLength={2000}
+              multiline
+              onChangeText={setFeedbackDetails}
+              placeholder="Optional details"
+              placeholderTextColor={theme.textSecondary}
+              style={[
+                styles.feedbackInput,
+                {
+                  borderColor: theme.border,
+                  color: theme.text,
+                  backgroundColor: theme.background,
+                },
+              ]}
+              value={feedbackDetails}
+            />
+            <ThemedText type="small" themeColor="textSecondary">
+              {normalizeFeedbackDetails(feedbackDetails)?.length ?? 0}/2000
+            </ThemedText>
+            <Button
+              disabled={isFeedbackBusy}
+              onPress={() => {
+                void submitFeedback();
+              }}
+            >
+              {isFeedbackBusy ? "Sending..." : "Send report"}
+            </Button>
+          </View>
+        ) : null}
+        {feedbackMessage === undefined ? null : (
+          <ThemedText
+            type="small"
+            themeColor="textSecondary"
+            accessibilityLiveRegion="polite"
+          >
+            {feedbackMessage}
+          </ThemedText>
+        )}
+        {feedbackError === undefined ? null : (
+          <ThemedText
+            type="smallBold"
+            themeColor="danger"
+            accessibilityRole="alert"
+          >
+            {feedbackError}
+          </ThemedText>
+        )}
       </Card>
 
       <View style={styles.navigation}>
@@ -268,6 +411,25 @@ const styles = StyleSheet.create({
   actionButton: {
     flex: 1,
     minWidth: 148,
+  },
+  feedbackForm: {
+    gap: Spacing.two,
+  },
+  feedbackOptions: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.two,
+  },
+  feedbackOptionButton: {
+    flexGrow: 1,
+    minWidth: 180,
+  },
+  feedbackInput: {
+    minHeight: 96,
+    borderRadius: Radii.medium,
+    borderWidth: 1,
+    padding: Spacing.two,
+    textAlignVertical: "top",
   },
   navigation: {
     gap: Spacing.two,

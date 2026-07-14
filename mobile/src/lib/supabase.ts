@@ -33,6 +33,23 @@ export type PublicDatabase = {
         Insert: never;
         Update: never;
       };
+      place_feedback: {
+        Row: {
+          id: string;
+          user_id: string;
+          place_id: string;
+          feedback_type: string;
+          details: string | null;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          place_id: string;
+          feedback_type: string;
+          details?: string | null;
+        };
+        Update: never;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
 **Last completed task:** TASK-024A — Create minimal hosted Supabase staging target
-**Next task:** TASK-025 — Implement incorrect-data feedback
+**Next task:** BLOCKER — Provide confirmed staging auth session for TASK-025
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -39,6 +39,7 @@
 - TASK-023 added optional guest-preserving email magic-link auth plumbing, a Settings account panel, and protected-cache clearing on sign-out.
 - TASK-024 added working Save, Mark visited, and Do not recommend actions on place detail with a local repository, optimistic UI state, error rollback, and tests.
 - TASK-024A linked the local Supabase CLI to hosted staging project `babywalk` (`pspaowtnajsdwcyzrafl`), applied existing migrations, added hosted URL/project-ref validation, added visible local/staging environment banners, and documented staging Expo configuration without committing secrets.
+- TASK-025 implementation work added a structured incorrect-data feedback form, validation, and Supabase repository, but final staging acceptance is blocked by staging Auth email confirmation.
 
 ## Environment inventory
 
@@ -70,9 +71,33 @@
 - Family recommendations can lose trust quickly when hours or amenities are wrong.
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
-- TASK-025 can now target hosted staging, but it still needs authenticated feedback implementation and verification.
+- TASK-025 app-side implementation exists, but final completion still needs authenticated staging verification.
+- Staging Auth currently requires email confirmation for synthetic password users, so TASK-025 cannot yet verify an authenticated `place_feedback` insert with the publishable key.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-025 BLOCKED
+Summary:
+Implemented the app-side incorrect-data feedback path, including structured feedback type choices, optional detail trimming/capping, payload shaping that omits internal moderation fields, a Supabase feedback repository, and a place-detail report form. Automated checks pass. Final TASK-025 acceptance is blocked because hosted staging Auth requires email confirmation for the synthetic password user, so the publishable-key verification cannot obtain an authenticated session to insert through RLS.
+Commands/tests:
+`npx supabase db query --linked --file supabase\seed.sql` — passed and loaded existing development seed fixtures into hosted staging so `place_feedback.place_id` can reference a staging place.
+`npx supabase db query --linked "select id, source_place_id from public.places where source_place_id = 'hoboken-story-room-fixture' limit 1;"` — passed and confirmed staging place UUID `71000000-0000-0000-0000-000000000001`.
+Staging publishable-key script with `sproutscout-task025-...@example.com` — failed because Supabase rejected the example.com address as invalid.
+Staging publishable-key script with a synthetic Gmail-shaped address — failed at password sign-in with `Email not confirmed`.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 16 suites and 67 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+`npx supabase db lint --linked` — passed with no schema errors.
+Manual verification:
+Reviewed the app payload shaping and repository tests to confirm mobile code sends only `user_id`, `place_id`, `feedback_type`, and `details`; it does not expose or write `status`. Could not complete the required authenticated staging insert because no confirmed staging session was available.
+Known limitations:
+TASK-025 remains unchecked. The report UI requires a completed Supabase auth session; current auth callback/session persistence remains deferred, and staging Auth email confirmation blocks synthetic password-session verification.
+Next task:
+BLOCKER — Provide confirmed staging auth session for TASK-025.
+```
 
 ```text
 2026-07-14 — TASK-024A

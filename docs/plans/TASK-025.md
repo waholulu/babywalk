@@ -2,50 +2,60 @@
 
 ## Objective
 
-Let a parent submit structured incorrect-data feedback from place detail without exposing moderation internals, while preserving the current guest flow.
+Let a parent submit structured incorrect-data feedback for a place without exposing moderation internals, and verify that one authenticated report reaches the hosted staging database.
 
 ## In scope
 
-- Add a feedback type model that matches the existing `place_feedback` SQL constraint.
-- Add a feedback repository boundary for submitting reports.
-- Add a place-detail report form with feedback type and optional details.
-- Keep internal moderation status hidden from the mobile UI.
-- Add tests for validation, payload shaping, and UI action model behavior.
+- Add a typed place-feedback model matching the existing `place_feedback.feedback_type` constraint.
+- Add payload validation and shaping that trims details and omits internal moderation fields.
+- Add a feedback repository boundary and a Supabase implementation.
+- Add a simple place-detail feedback form with structured type choices and optional details.
+- Show guest/sign-in-required and submission success/error states.
+- Verify one authenticated report reaches hosted staging without exposing `status`.
 
 ## Out of scope
 
-- Staging Supabase project setup, which is currently scheduled for TASK-038.
 - Admin moderation UI.
 - Feedback history screen.
-- Provider-side correction workflows.
-- Anonymous database writes, because current RLS allows `place_feedback` only for authenticated owners.
+- Provider-side correction workflow.
+- Anonymous writes; current RLS allows `place_feedback` only for authenticated users.
+- Full magic-link callback/session persistence, which remains outside this task.
+- EAS builds or production configuration.
 
 ## Files expected to change
 
-- `mobile/src/data/repositories/*feedback*`
-- `mobile/src/features/places/*feedback*`
-- `mobile/src/features/places/place-detail-screen.tsx`
 - `mobile/src/lib/supabase.ts`
-- `mobile/src/test/*`
-- `docs/plans/TASK-025.md`
+- `mobile/src/data/repositories/place-feedback-repository.ts`
+- `mobile/src/data/repositories/place-feedback-repository.supabase.ts`
+- `mobile/src/data/repositories/index.ts`
+- `mobile/src/features/places/place-feedback.ts`
+- `mobile/src/features/places/place-detail-screen.tsx`
+- `mobile/src/features/places/place-actions.ts`
+- `mobile/src/test/place-feedback.test.ts`
+- `mobile/src/test/place-actions.test.ts`
 - `TASKS.md`
 - `PROJECT_STATE.md`
+- `docs/plans/TASK-025.md`
 
 ## Existing behavior inspected
 
-- `TASKS.md` acceptance says a report should reach staging database.
-- `PROJECT_STATE.md` says staging is not configured yet; TASK-038 is the planned staging-environment task.
-- `supabase/migrations/20260714191031_initial_schema.sql` defines `place_feedback` with `feedback_type`, `details`, and internal `status`.
-- `supabase/migrations/20260714191641_rls_policies.sql` grants authenticated users `select, insert` only for their own `place_feedback`; anonymous users cannot insert.
-- `mobile/src/features/places/place-detail-screen.tsx` currently says incorrect-data reporting is deferred to TASK-025.
+- Hosted staging project `babywalk` is linked as `pspaowtnajsdwcyzrafl`.
+- `place_feedback` exists with allowed `feedback_type` values: `incorrect_hours`, `closed_permanently`, `wrong_age_fit`, `wrong_price`, `wrong_amenity`, `duplicate`, and `other`.
+- `place_feedback.status` defaults to `new` and must remain internal; mobile users have no update grant.
+- RLS permits authenticated users to insert/select only their own `place_feedback`.
+- Place detail currently disables “Report incorrect data” and shows TASK-025 placeholder text.
+- Auth plumbing can check for an existing Supabase session, but full magic-link callback persistence is deferred.
+- Staging currently has migrations but no seed data.
 
 ## Implementation steps
 
-1. Confirm whether TASK-025 can be completed against local Supabase or whether staging is a blocking prerequisite.
-2. If local implementation is acceptable, add a typed repository and UI form that submits only `user_id`, `place_id`, `feedback_type`, and `details`.
-3. Add tests for validation and payload shaping.
-4. Run available checks.
-5. Update docs honestly with either completion evidence or blocker evidence.
+1. Add feedback type constants, labels, detail validation, and insert-payload shaping.
+2. Extend Supabase database types with a narrow `place_feedback` insert surface.
+3. Add a repository interface and Supabase implementation that requires an active session and inserts only `user_id`, `place_id`, `feedback_type`, and `details`.
+4. Replace the disabled report action with a simple inline form on place detail.
+5. Add focused unit tests for labels, validation, payload shaping, missing-session behavior, and insert payload fields.
+6. Verify staging with a synthetic authenticated user and an existing/seeded staging place.
+7. Run all project checks and update task state after verification.
 
 ## Test plan
 
@@ -61,31 +71,46 @@ Let a parent submit structured incorrect-data feedback from place detail without
 - Expected result: Passes.
 - Command: `npx expo-doctor`
 - Expected result: Passes.
+- Command: `npx supabase db lint --linked`
+- Expected result: Passes with no schema errors.
+- Command: `git diff --check`
+- Expected result: Passes.
 
 ### Manual
 
-- Device/environment: Requires either local authenticated Supabase session or staging Supabase, depending on final scope decision.
-- Steps: Submit a structured incorrect-data report from place detail.
-- Expected result: Report reaches `place_feedback` without exposing or allowing edits to moderation `status`.
+- Device/environment: Hosted staging Supabase project `babywalk`.
+- Steps: Ensure one staging place exists, create/sign in as a synthetic test user, submit one incorrect-data report through the same insert payload shape used by the app, and read it back as that user without selecting `status`.
+- Expected result: One `place_feedback` row reaches staging, belongs to the test user, references the staging place, and no internal moderation fields are exposed through the client read.
 
 ## Risks and rollback
 
-- Risk: Current task acceptance requires staging before the project has staging.
-- Mitigation: Do not mark TASK-025 complete unless the database target is real and verified; create a blocker if staging is required.
-- Rollback: Revert the TASK-025 commit if implementation proceeds and causes regression.
+- Risk: Users without a completed auth session cannot submit reports.
+- Mitigation: Show clear sign-in-required copy and keep the form from pretending a report was sent.
+- Risk: Free-text feedback may contain sensitive data.
+- Mitigation: Keep details optional, capped at 2000 characters by validation and database constraint, and do not log report details.
+- Rollback: Revert the TASK-025 commit; no schema changes are planned.
 
 ## Security/privacy review
 
-- New data collected: Optional free-text report details.
-- Secrets involved: None.
-- RLS/auth impact: Uses existing authenticated owner-only insert policy.
-- Logging impact: None.
+- New data collected: Optional user-entered incorrect-data details.
+- Secrets involved: Staging publishable key is used locally for verification only; no service-role or secret key is committed.
+- RLS/auth impact: Uses existing authenticated owner-only insert/read policy; no RLS weakening.
+- Logging impact: No feedback details are logged.
 
 ## Completion evidence
 
-- Files changed: `docs/plans/TASK-025.md`, `TASKS.md`, `PROJECT_STATE.md`.
+- Files changed: `mobile/src/lib/supabase.ts`, `mobile/src/data/repositories/place-feedback-repository.ts`, `mobile/src/data/repositories/place-feedback-repository.supabase.ts`, `mobile/src/data/repositories/index.ts`, `mobile/src/features/places/place-feedback.ts`, `mobile/src/features/places/place-detail-screen.tsx`, `mobile/src/features/places/place-actions.ts`, `mobile/src/test/place-feedback.test.ts`, `mobile/src/test/place-actions.test.ts`, `TASKS.md`, `PROJECT_STATE.md`, `docs/plans/TASK-025.md`.
 - Commands run and results:
-  - `rg -n "place_feedback|feedback|incorrect" supabase\migrations mobile\src TASKS.md DATABASE.md PRODUCT_SPEC.md` — inspected feedback schema, RLS policies, product requirements, and current UI references.
-- Manual test result: Confirmed `place_feedback` exists locally and authenticated owner-only insert policy exists, but no staging database target is documented or configured.
-- Remaining limitations: No application feature was implemented for TASK-025 because the stated acceptance cannot be truthfully verified without staging.
-- Acceptance criteria status: Blocked. Added `BLOCKER — Provide staging Supabase target for TASK-025`.
+  - `npx supabase db query --linked --file supabase\seed.sql` — passed and loaded existing development seed fixtures into hosted staging.
+  - `npx supabase db query --linked "select id, source_place_id from public.places where source_place_id = 'hoboken-story-room-fixture' limit 1;"` — passed and confirmed the staging place exists.
+  - Staging publishable-key script with `example.com` synthetic email — failed because Supabase rejected the email domain as invalid.
+  - Staging publishable-key script with a synthetic Gmail-shaped email — failed because staging Auth requires email confirmation before password sign-in.
+  - `npm run format:check` — passed.
+  - `npm run lint` — passed.
+  - `npm run typecheck` — passed.
+  - `npm test -- --runInBand` — passed, 16 suites and 67 tests.
+  - `npx expo-doctor` — passed, 18/18 checks.
+  - `npx supabase db lint --linked` — passed with no schema errors.
+- Manual test result: App-side payload shaping and repository tests confirm the client submits only `user_id`, `place_id`, `feedback_type`, and `details`, without `status`. The required authenticated staging insert could not be completed because no confirmed staging session was available.
+- Remaining limitations: TASK-025 is blocked by staging Auth email confirmation. The feedback UI requires a completed Supabase auth session; auth callback/session persistence remains deferred.
+- Acceptance criteria status: Blocked. Added `BLOCKER — Provide confirmed staging auth session for TASK-025`.

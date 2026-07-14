@@ -128,6 +128,10 @@
   Create a separate hosted Supabase project for staging, apply the existing migrations, configure the local Expo app to connect with a publishable key, and make the app visibly identify staging mode.
   **Accept:** The staging project is separate from local and future production, existing migrations apply successfully, the Expo app can connect using a publishable key, no database password/access token/secret key/service-role key is committed, and the app cannot silently point to production.
 
+- [ ] **BLOCKER — Provide confirmed staging auth session for TASK-025**
+  Configure or provide a staging test account/session that can authenticate with the publishable key and write through RLS.
+  **Accept:** A synthetic staging user can obtain an authenticated session and insert one `place_feedback` row for an existing staging place without using a committed service-role key or exposing moderation fields.
+
 - [ ] **TASK-025 — Implement incorrect-data feedback**  
   Add structured reporting and moderation state.  
   **Accept:** A report reaches staging database without exposing internal fields.

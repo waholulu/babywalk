@@ -13,3 +13,9 @@ export {
   createSupabasePlaceRepository,
   mapSupabasePlaceRowToCandidate,
 } from "./place-repository.supabase";
+export type {
+  PlaceFeedbackRepository,
+  SubmitPlaceFeedbackInput,
+  SubmitPlaceFeedbackResult,
+} from "./place-feedback-repository";
+export { createSupabasePlaceFeedbackRepository } from "./place-feedback-repository.supabase";
