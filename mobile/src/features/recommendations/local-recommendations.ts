@@ -2,6 +2,7 @@ import {
   applyHardFilters,
   CandidateTravelEstimate,
   FamilyConstraints,
+  HardFilterExclusion,
   PlaceCandidate,
   RecommendationResult,
   RecommendationWarning,
@@ -26,6 +27,7 @@ export type RecommendationCardModel = {
 
 export type LocalRecommendationBuildResult = {
   cards: RecommendationCardModel[];
+  excluded: HardFilterExclusion[];
   excludedCount: number;
   candidateCount: number;
 };
@@ -107,6 +109,7 @@ export function buildLocalRecommendations(): LocalRecommendationBuildResult {
 
   return {
     candidateCount: mockPlaceCandidates.length,
+    excluded: filtered.excluded,
     excludedCount: filtered.excluded.length,
     cards: selectedResults.map((result) =>
       buildCardModel(result, filtered.included),

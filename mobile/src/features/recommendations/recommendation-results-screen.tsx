@@ -5,13 +5,19 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Button, Card, Chip, ScreenContainer } from "@/components/ui";
 import { Radii, Spacing } from "@/constants/theme";
+import { readClientEnv } from "@/lib/env";
 import {
   buildLocalRecommendations,
   RecommendationCardModel,
 } from "./local-recommendations";
+import {
+  buildScoreInspectorRows,
+  shouldShowScoreInspector,
+} from "./score-inspector";
 
 export function RecommendationResultsScreen() {
   const recommendations = buildLocalRecommendations();
+  const showInspector = shouldShowScoreInspector(readClientEnv());
 
   return (
     <ScreenContainer>
@@ -28,7 +34,11 @@ export function RecommendationResultsScreen() {
 
       <View style={styles.list}>
         {recommendations.cards.map((card) => (
-          <RecommendationCard key={card.candidate.id} card={card} />
+          <RecommendationCard
+            key={card.candidate.id}
+            card={card}
+            showInspector={showInspector}
+          />
         ))}
       </View>
 
@@ -37,6 +47,19 @@ export function RecommendationResultsScreen() {
         <ThemedText type="small" themeColor="textSecondary">
           {recommendations.excludedCount} candidates excluded by hard filters.
         </ThemedText>
+        {showInspector ? (
+          <View style={styles.exclusionList}>
+            {recommendations.excluded.map((exclusion) => (
+              <ThemedText
+                key={exclusion.candidateId}
+                type="code"
+                themeColor="textSecondary"
+              >
+                {exclusion.candidateId}: {exclusion.codes.join(", ")}
+              </ThemedText>
+            ))}
+          </View>
+        ) : null}
       </ThemedView>
 
       <Link href="/" asChild>
@@ -46,7 +69,13 @@ export function RecommendationResultsScreen() {
   );
 }
 
-function RecommendationCard({ card }: { card: RecommendationCardModel }) {
+function RecommendationCard({
+  card,
+  showInspector,
+}: {
+  card: RecommendationCardModel;
+  showInspector: boolean;
+}) {
   const { candidate, result } = card;
 
   return (
@@ -80,6 +109,8 @@ function RecommendationCard({ card }: { card: RecommendationCardModel }) {
         Source: {candidate.source.label} • {candidate.source.freshness}
       </ThemedText>
 
+      {showInspector ? <ScoreInspector card={card} /> : null}
+
       <Link
         href={{ pathname: "/places/[id]", params: { id: candidate.id } }}
         asChild
@@ -87,6 +118,25 @@ function RecommendationCard({ card }: { card: RecommendationCardModel }) {
         <Button variant="secondary">Open place</Button>
       </Link>
     </Card>
+  );
+}
+
+function ScoreInspector({ card }: { card: RecommendationCardModel }) {
+  return (
+    <ThemedView type="background" style={styles.inspector}>
+      <ThemedText type="smallBold">Score inspector</ThemedText>
+      {buildScoreInspectorRows(card).map((row) => (
+        <View key={row.label} style={styles.inspectorRow}>
+          <ThemedText type="code" themeColor="textSecondary">
+            {row.label}
+          </ThemedText>
+          <ThemedText type="code">{row.value}</ThemedText>
+        </View>
+      ))}
+      <ThemedText type="code" themeColor="textSecondary">
+        confidence: {card.result.confidence}
+      </ThemedText>
+    </ThemedView>
   );
 }
 
@@ -189,5 +239,18 @@ const styles = StyleSheet.create({
     borderRadius: Radii.medium,
     gap: Spacing.one,
     padding: Spacing.three,
+  },
+  exclusionList: {
+    gap: Spacing.one,
+  },
+  inspector: {
+    borderRadius: Radii.medium,
+    gap: Spacing.one,
+    padding: Spacing.two,
+  },
+  inspectorRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: Spacing.two,
   },
 });

@@ -82,7 +82,7 @@
   Render structured data, source/freshness, verify-before-leaving text, and placeholder actions.  
   **Accept:** Unknown data is not displayed as a confident fact.
 
-- [ ] **TASK-017 — Add development score inspector**  
+- [x] **TASK-017 — Add development score inspector**
   Add a development-only panel for score components and exclusion reasons.  
   **Accept:** It is absent from production builds.
 

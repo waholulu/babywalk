@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-016 — Build place detail screen
-**Next task:** TASK-017 — Add development score inspector
+**Last completed task:** TASK-017 — Add development score inspector
+**Next task:** TASK-018 — Initialize local Supabase
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -30,6 +30,7 @@
 - TASK-014 replaced the home placeholder with a local mobile-first plan input form, validation helpers, accessibility labels/states, keyboard-friendly scrolling, reset behavior, and default values.
 - TASK-015 connected local fixtures to the deterministic recommendation pipeline and replaced the results placeholder with three explainable recommendation cards.
 - TASK-016 replaced the place detail placeholder with a structured fixture detail screen that labels unknown values and emits verify-before-leaving notes.
+- TASK-017 added a development-only score inspector for score components and hard-filter exclusions, gated off for production environments.
 
 ## Environment inventory
 
@@ -375,6 +376,25 @@ Known limitations:
 Detail data is fixture-only. Official website/call links, maps, save/visited/block/report persistence, and real provider details remain later tasks.
 Next task:
 TASK-017 — Add development score inspector.
+```
+
+```text
+2026-07-14 — TASK-017
+Summary:
+Added a development-only score inspector to the recommendation results screen. Local and staging environments show score component rows for each recommendation and hard-filter exclusion IDs/codes; production and invalid env states do not render the inspector. The local recommendation builder now preserves exclusion details for this debug surface.
+Commands/tests:
+`npm test -- --runInBand src/test/score-inspector.test.ts` — passed, 3 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 11 test suites, 39 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web on port 8087 with `EXPO_PUBLIC_APP_ENV=local`; `/results` returned HTTP 200. The server was stopped afterward.
+Known limitations:
+The inspector is only on the results screen and is not user-toggleable; this is intentional for the first debug surface.
+Next task:
+TASK-018 — Initialize local Supabase.
 ```
 
 ```text
