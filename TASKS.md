@@ -62,7 +62,7 @@
   Implement pure age, schedule, travel, budget, indoor/outdoor, blocked-place, and return-time filters.  
   **Accept:** Unit tests include boundaries and unknown values.
 
-- [ ] **TASK-012 — Implement scoring**  
+- [x] **TASK-012 — Implement scoring**
   Implement transparent component scores, reason codes, warnings, confidence, and deterministic tie-breaking.  
   **Accept:** Snapshot/fixture tests show complete score breakdowns.
 

@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-011 — Implement hard filters
-**Next task:** TASK-012 — Implement scoring
+**Last completed task:** TASK-012 — Implement scoring
+**Next task:** TASK-013 — Implement diversity selection
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -25,6 +25,7 @@
 - TASK-009 added provider-neutral domain models for family constraints, place candidates, weather snapshots, recommendation results, reason codes, warnings, score components, and confidence.
 - TASK-010 added 18 local fixture place candidates and scenario coverage metadata for future filter/scoring tests.
 - TASK-011 added a pure hard-filtering layer for recommendation candidates, including age, schedule, travel, budget, indoor/outdoor, blocked-place, and return-time exclusions.
+- TASK-012 added a pure transparent 100-point scoring layer with component breakdowns, reason codes, warnings, confidence, deterministic sorting, and fixture snapshot coverage.
 
 ## Environment inventory
 
@@ -275,6 +276,25 @@ Known limitations:
 Schedule and return-time filtering are intentionally simple single-stop checks. Rich one- or two-stop planning remains for TASK-031.
 Next task:
 TASK-012 — Implement scoring.
+```
+
+```text
+2026-07-14 — TASK-012
+Summary:
+Implemented pure recommendation scoring under `mobile/src/domain/recommendation/scoring.ts`. The scorer produces a 100-point component breakdown for age/activity fit, schedule fit, travel convenience, weather fit, budget fit, amenities confidence, novelty, and family preference. It also attaches deterministic reason codes, uncertainty warnings, confidence, and stable tie-breaking.
+Commands/tests:
+`npm test -- --runInBand src/test/scoring.test.ts -u` — passed and wrote/updated the scoring snapshot.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 6 test suites, 24 tests, and 1 snapshot.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed the fixture snapshot for complete score breakdowns, reason codes, warnings, confidence, and deterministic order. No device test was required because this task only changes pure domain logic.
+Known limitations:
+Scoring heuristics are intentionally early and local. Provider-backed travel/weather data, richer family history, and score tuning remain for later tasks.
+Next task:
+TASK-013 — Implement diversity selection.
 ```
 
 ```text
