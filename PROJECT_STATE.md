@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-003 — Configure quality commands  
-**Next task:** BLOCKER — Initialize the root Git repository and connect it to GitHub before completing TASK-004  
+**Last completed task:** TASK-004 — Activate CI  
+**Next task:** TASK-005 — Configure development build  
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -16,14 +16,14 @@
 - Node major is pinned to 22 in `.nvmrc`.
 - The Expo starter currently uses `mobile/src/app` as the Expo Router root.
 - `mobile/` has passing local quality commands for format, lint, type checking, and Jest tests.
-- TASK-004 is blocked because CI acceptance requires a GitHub repository, default branch, and test pull request, but `D:\github\babywalk` is not currently a Git worktree.
+- GitHub Actions CI is active for pushes to `main` and pull requests.
 
 ## Environment inventory
 
 | Item | Version/status | Notes |
 |---|---|---|
 | Operating system | Microsoft Windows NT 10.0.26200.0 | `scripts/doctor.ps1` ran under Windows PowerShell 5.1.26100.8655; interactive shell also reported PowerShell 7.5.8. |
-| Git | 2.41.0.windows.3 | Git command is installed. This folder is not currently inside a Git worktree. |
+| Git | 2.41.0.windows.3 | Git command is installed. `D:\github\babywalk` is initialized as a Git repository on branch `main`. |
 | Node | v22.22.2 | Installed. Expo SDK 57 requires Node 22.13.x minimum; project pins Node major 22 in `.nvmrc`. |
 | npm | 10.9.7 | Installed. `npx` also reports 10.9.7. |
 | Docker | Missing | Needed for local Supabase. Temporary exception: continue through app scaffold/local fixture tasks without Docker; install Docker Desktop or document a reviewed cloud-backend exception before TASK-018. |
@@ -31,7 +31,7 @@
 | Android test path | Not configured | `adb` and Android emulator commands are missing. Viable path to document/confirm later: physical Android device or Android Studio emulator before native/dev-build verification. |
 | Expo account | Not verified | `eas` CLI is not installed. Needed for EAS/development build tasks. |
 | Supabase account | Not verified | Not needed until later staging work; local Supabase will require Docker. |
-| GitHub repository | Not initialized here | `git rev-parse --is-inside-work-tree` failed because `D:\github\babywalk` has no `.git` repository. |
+| GitHub repository | Connected | Remote `origin` points to `https://github.com/waholulu/babywalk.git`; default branch is `main`. |
 
 ## Open decisions
 
@@ -115,15 +115,25 @@ TASK-004 — Activate CI.
 ```
 
 ```text
-2026-07-14 — TASK-004 BLOCKED
+2026-07-14 — TASK-004
 Summary:
-Started TASK-004 planning and inspected the CI template, but did not activate CI because the acceptance criteria require GitHub Actions to pass on the default branch and a test pull request.
+Activated GitHub Actions CI for mobile quality checks on pushes to `main` and pull requests. Initialized the root Git repository, connected it to `https://github.com/waholulu/babywalk.git`, pushed `main`, opened test PR #1, and verified both CI contexts.
 Commands/tests:
-`git rev-parse --is-inside-work-tree` — failed; `D:\github\babywalk` is not a Git repository.
+`git init -b main` — initialized the root repository.
+`git remote add origin https://github.com/waholulu/babywalk.git` — connected the GitHub remote.
+`npm run format:check` — passed locally.
+`npm run lint` — passed locally.
+`npm run typecheck` — passed locally.
+`npm test -- --runInBand` — passed locally.
+`git commit -m "Initialize SproutScout Expo scaffold"` — created initial commit `e35abd3`.
+`git push -u origin main` — pushed `main`.
+`gh run watch 29348932412 --repo waholulu/babywalk --exit-status` — push CI passed on `main`.
+`gh pr create ...` — opened PR #1, `Validate CI workflow`.
+`gh run watch 29349028561 --repo waholulu/babywalk --exit-status` — pull request CI passed.
 Manual verification:
-Confirmed `templates/ci.yml` already matches the TASK-003 mobile quality commands and `.github/workflows/` does not exist.
+Reviewed `.github/workflows/ci.yml`; it runs `npm ci`, `npm run format:check`, `npm run lint`, `npm run typecheck`, and `npm test -- --runInBand` from `mobile/`.
 Known limitations:
-Cannot truthfully complete TASK-004 until the project root is initialized as a Git repository, pushed to GitHub, and a test pull request is available for CI verification.
+GitHub Actions reported a warning that `actions/checkout@v4` and `actions/setup-node@v4` target Node.js 20 and are being forced to run on Node.js 24 by GitHub-hosted runners. This does not fail CI.
 Next task:
-BLOCKER — Initialize the root Git repository and connect it to GitHub, then resume TASK-004.
+TASK-005 — Configure development build.
 ```
