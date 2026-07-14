@@ -88,11 +88,11 @@
 
 ## Backend
 
-- [ ] **BLOCKER — Install Docker Desktop for TASK-018**
+- [x] **BLOCKER — Install Docker Desktop for TASK-018**
   Install and start Docker Desktop on Windows before local Supabase initialization.
   **Accept:** `docker --version` and `docker info` both pass from `D:\github\babywalk`.
 
-- [ ] **TASK-018 — Initialize local Supabase**  
+- [x] **TASK-018 — Initialize local Supabase**
   Create `supabase/`, config, and documented start/reset commands.  
   **Accept:** A new local database starts and resets reproducibly.
 

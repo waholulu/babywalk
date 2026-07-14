@@ -1,9 +1,9 @@
 # Project State
 
 **Working name:** SproutScout  
-**Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-017 — Add development score inspector
-**Next task:** BLOCKER — Install Docker Desktop for TASK-018
+**Current phase:** Phase 2 — Backend foundation
+**Last completed task:** TASK-018 — Initialize local Supabase
+**Next task:** TASK-019 — Create initial schema migration
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -31,7 +31,7 @@
 - TASK-015 connected local fixtures to the deterministic recommendation pipeline and replaced the results placeholder with three explainable recommendation cards.
 - TASK-016 replaced the place detail placeholder with a structured fixture detail screen that labels unknown values and emits verify-before-leaving notes.
 - TASK-017 added a development-only score inspector for score components and hard-filter exclusions, gated off for production environments.
-- TASK-018 is blocked because Docker is not installed or not on PATH; local Supabase cannot start/reset without Docker.
+- TASK-018 initialized local Supabase, documented local commands, and verified the local stack can start, report status, and reset.
 
 ## Environment inventory
 
@@ -41,11 +41,11 @@
 | Git | 2.41.0.windows.3 | Git command is installed. `D:\github\babywalk` is initialized as a Git repository on branch `main`. |
 | Node | v22.22.2 | Installed. Project pins Node major 22 in `.nvmrc`. |
 | npm | 10.9.7 | Installed. `npx` also reports 10.9.7. |
-| Docker | Missing | Needed for local Supabase. Temporary exception: continue through app scaffold/local fixture tasks without Docker; install Docker Desktop or document a reviewed cloud-backend exception before TASK-018. |
+| Docker | 29.6.1 | Docker Desktop is installed and the daemon runs. The existing shell did not have Docker's bin directory on PATH, so TASK-018 used `C:\Program Files\Docker\Docker\resources\bin` as a temporary PATH prefix. |
 | iOS test path | Verified | iPhone 16 Pro on iOS 26.5 opened the app through Expo Go QR code in LAN mode, loaded the initial screen, and received a Fast Refresh text update. |
 | Android test path | Not configured | `adb` and Android emulator commands are missing. Preferred initial path: physical Android device with Expo Go QR scan. |
 | Expo account | Not required for TASK-005 | EAS CLI/account setup is deferred until TASK-027B or native release testing. |
-| Supabase account | Not verified | Not needed until later staging work; local Supabase will require Docker. |
+| Supabase local stack | Verified | `npx supabase` CLI 2.109.1 is available. Local Supabase start/status/reset were verified for project id `babywalk`. |
 | GitHub repository | Connected | Remote `origin` points to `https://github.com/waholulu/babywalk.git`; default branch is `main`. |
 
 ## Open decisions
@@ -413,6 +413,29 @@ Known limitations:
 TASK-018 remains unstarted. Install and start Docker Desktop, then rerun `docker --version` and `docker info` before initializing Supabase.
 Next task:
 BLOCKER — Install Docker Desktop for TASK-018.
+```
+
+```text
+2026-07-14 — TASK-018
+Summary:
+Initialized local Supabase under `supabase/` with CLI-generated config, a local README, and an intentionally empty seed file until TASK-021 adds curated seed data. Docker Desktop was installed and started; Docker works when its bin directory is added to the current shell PATH. Local Supabase start, status, and database reset were verified. Supabase command output included local default keys/secrets; those values were not copied into project docs.
+Commands/tests:
+`docker --version` — initially failed in the existing shell because Docker was not on PATH after installation.
+`docker info` — initially failed in the existing shell because Docker was not on PATH after installation.
+`C:\Program Files\Docker\Docker\resources\bin\docker.exe --version` — passed, Docker version 29.6.1.
+`C:\Program Files\Docker\Docker\resources\bin\docker.exe info --format '{{.ServerVersion}}'` — passed, server version 29.6.1.
+`supabase --version` — failed; the Supabase CLI is not globally installed.
+`npx supabase --version` — passed, 2.109.1.
+`npx supabase init` — passed and created local Supabase config.
+`npx supabase start` — passed and started the local stack.
+`npx supabase status` — passed.
+`npx supabase db reset` — passed. After adding `supabase/seed.sql`, reset completed without the missing-seed warning.
+Manual verification:
+Docker Desktop was started locally. No mobile/device manual test was required for this backend initialization task.
+Known limitations:
+The current shell still needs a temporary PATH prefix for Docker until a new terminal picks up Docker's installed PATH. No schema migrations, RLS policies, or seed data exist yet.
+Next task:
+TASK-019 — Create initial schema migration.
 ```
 
 ```text
