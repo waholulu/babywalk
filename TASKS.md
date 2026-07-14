@@ -50,7 +50,7 @@
 
 ## Domain and local vertical slice
 
-- [ ] **TASK-009 — Define domain models**  
+- [x] **TASK-009 — Define domain models**
   Add `FamilyConstraints`, `PlaceCandidate`, `WeatherSnapshot`, `RecommendationResult`, reason codes, warnings, and confidence types.  
   **Accept:** No provider-specific type appears in domain models.
 

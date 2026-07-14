@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-008 — Add environment validation
-**Next task:** TASK-009 — Define domain models
+**Last completed task:** TASK-009 — Define domain models
+**Next task:** TASK-010 — Create mock candidate dataset
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -22,6 +22,7 @@
 - TASK-006 replaced the generated starter tabs with a simple Expo Router route skeleton for home, onboarding, results, place detail, day plan, saved, and settings.
 - TASK-007 added shared theme tokens and UI primitives for screen containers, buttons, chips, cards, loading, empty, and error states.
 - TASK-008 added dependency-free client environment validation for `EXPO_PUBLIC_APP_ENV`, a safe configuration error screen, and `mobile/.env.example`.
+- TASK-009 added provider-neutral domain models for family constraints, place candidates, weather snapshots, recommendation results, reason codes, warnings, score components, and confidence.
 
 ## Environment inventory
 
@@ -216,6 +217,25 @@ Known limitations:
 Only `EXPO_PUBLIC_APP_ENV` is required now because Supabase and external providers are not configured yet. Supabase URL/anon-key and provider adapter validation are deferred to their own implementation tasks.
 Next task:
 TASK-009 — Define domain models.
+```
+
+```text
+2026-07-14 — TASK-009
+Summary:
+Added provider-neutral domain models under `mobile/src/domain/` for shared primitives, family constraints, place candidates, weather snapshots, recommendation results, reason codes, warning codes, score components, and confidence levels. Added vocabulary tests for reason codes, score components, and provider-neutral naming.
+Commands/tests:
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 7 tests.
+`npx expo-doctor` — passed 18/18 checks.
+`rg -n "google|mapbox|openweather|yelp|foursquare|supabase|provider|api" mobile\src\domain` — found no matches.
+Manual verification:
+Reviewed domain files for provider-specific names and sensitive family fields. The models avoid child names, exact birth dates, medical details, and precise home addresses.
+Known limitations:
+Types only. Mock data, hard filters, scoring, diversity selection, and UI wiring remain for later tasks.
+Next task:
+TASK-010 — Create mock candidate dataset.
 ```
 
 ```text
