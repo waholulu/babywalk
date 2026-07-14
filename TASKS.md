@@ -120,6 +120,10 @@
   Add repository methods, optimistic UI only where safe, and error recovery.  
   **Accept:** User-owned data remains isolated and persists after restart.
 
+- [ ] **BLOCKER — Authenticate Supabase CLI for TASK-024A**
+  Sign in the local Supabase CLI or provide a local-only access token and identify the target Supabase organization/region/project naming for staging.
+  **Accept:** `npx supabase projects list` succeeds from `D:\github\babywalk` without committing any access token, database password, secret key, or service-role key.
+
 - [ ] **TASK-024A — Create minimal hosted Supabase staging target**
   Create a separate hosted Supabase project for staging, apply the existing migrations, configure the local Expo app to connect with a publishable key, and make the app visibly identify staging mode.
   **Accept:** The staging project is separate from local and future production, existing migrations apply successfully, the Expo app can connect using a publishable key, no database password/access token/secret key/service-role key is committed, and the app cannot silently point to production.

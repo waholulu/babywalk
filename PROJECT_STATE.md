@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
 **Last completed task:** TASK-024 — Implement save/visit/block actions
-**Next task:** TASK-024A — Create minimal hosted Supabase staging target
+**Next task:** BLOCKER — Authenticate Supabase CLI for TASK-024A
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -69,9 +69,25 @@
 - Family recommendations can lose trust quickly when hours or amenities are wrong.
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
+- TASK-024A cannot create or configure hosted staging until the local Supabase CLI has cloud authentication.
 - TASK-025 cannot meet its stated acceptance until TASK-024A creates and verifies a real hosted staging Supabase target.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-024A BLOCKED
+Summary:
+Attempted to begin `TASK-024A — Create minimal hosted Supabase staging target`, but the Supabase CLI has no cloud access token/session in this environment. A hosted staging project cannot be listed, created, linked, or migrated until the CLI is authenticated with the user's Supabase account and the intended staging organization/region/project naming is known.
+Commands/tests:
+`npx supabase --version` — passed, 2.109.1.
+`npx supabase projects list` — failed with `LegacyPlatformAuthRequiredError`; the CLI requested `supabase login` or a local `SUPABASE_ACCESS_TOKEN`.
+Manual verification:
+Reviewed `TASKS.md`, `PROJECT_STATE.md`, and the blocker plan to confirm no secrets were written to tracked files.
+Known limitations:
+No hosted Supabase project was created, linked, or migrated. No Expo staging configuration was changed.
+Next task:
+BLOCKER — Authenticate Supabase CLI for TASK-024A.
+```
 
 ```text
 2026-07-14 — TASK-024A SCOPE ADDED
