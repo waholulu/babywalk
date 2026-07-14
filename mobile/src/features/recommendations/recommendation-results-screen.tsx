@@ -1,0 +1,193 @@
+import { Link } from "expo-router";
+import { StyleSheet, View } from "react-native";
+
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { Button, Card, Chip, ScreenContainer } from "@/components/ui";
+import { Radii, Spacing } from "@/constants/theme";
+import {
+  buildLocalRecommendations,
+  RecommendationCardModel,
+} from "./local-recommendations";
+
+export function RecommendationResultsScreen() {
+  const recommendations = buildLocalRecommendations();
+
+  return (
+    <ScreenContainer>
+      <ThemedView style={styles.header}>
+        <ThemedText type="smallBold" themeColor="primary">
+          Results
+        </ThemedText>
+        <ThemedText type="title">Three outing ideas</ThemedText>
+        <ThemedText themeColor="textSecondary">
+          {recommendations.cards.length} shown from{" "}
+          {recommendations.candidateCount} local fixtures
+        </ThemedText>
+      </ThemedView>
+
+      <View style={styles.list}>
+        {recommendations.cards.map((card) => (
+          <RecommendationCard key={card.candidate.id} card={card} />
+        ))}
+      </View>
+
+      <ThemedView type="backgroundElement" style={styles.pipelineNote}>
+        <ThemedText type="smallBold">Local deterministic pipeline</ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          {recommendations.excludedCount} candidates excluded by hard filters.
+        </ThemedText>
+      </ThemedView>
+
+      <Link href="/" asChild>
+        <Button variant="ghost">Back to home</Button>
+      </Link>
+    </ScreenContainer>
+  );
+}
+
+function RecommendationCard({ card }: { card: RecommendationCardModel }) {
+  const { candidate, result } = card;
+
+  return (
+    <Card>
+      <View style={styles.cardHeader}>
+        <View style={styles.titleBlock}>
+          <ThemedText type="subtitle">{candidate.name}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            {candidate.category.replaceAll("_", " ")} • {candidate.area.label}
+          </ThemedText>
+        </View>
+        <ThemedView type="background" style={styles.scoreBadge}>
+          <ThemedText type="smallBold">{result.totalScore}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            score
+          </ThemedText>
+        </ThemedView>
+      </View>
+
+      <View style={styles.factGrid}>
+        <Fact label="Travel" value={card.travelLabel} />
+        <Fact label="Price" value={card.priceLabel} />
+        <Fact label="Mode" value={candidate.indoorOutdoor} />
+        <Fact label="Age" value={card.ageFitLabel} />
+      </View>
+
+      <CodeRow label="Reasons" values={card.reasonCodes} />
+      <WarningList warnings={card.warnings} />
+
+      <ThemedText type="small" themeColor="textSecondary">
+        Source: {candidate.source.label} • {candidate.source.freshness}
+      </ThemedText>
+
+      <Link
+        href={{ pathname: "/places/[id]", params: { id: candidate.id } }}
+        asChild
+      >
+        <Button variant="secondary">Open place</Button>
+      </Link>
+    </Card>
+  );
+}
+
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <ThemedView type="background" style={styles.fact}>
+      <ThemedText type="small" themeColor="textSecondary">
+        {label}
+      </ThemedText>
+      <ThemedText type="smallBold">{value}</ThemedText>
+    </ThemedView>
+  );
+}
+
+function CodeRow({ label, values }: { label: string; values: string[] }) {
+  return (
+    <View style={styles.codeSection}>
+      <ThemedText type="smallBold">{label}</ThemedText>
+      <View style={styles.chipRow}>
+        {values.map((value) => (
+          <Chip key={value} selected>
+            {value}
+          </Chip>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+function WarningList({
+  warnings,
+}: {
+  warnings: RecommendationCardModel["warnings"];
+}) {
+  if (warnings.length === 0) {
+    return null;
+  }
+
+  return (
+    <View style={styles.codeSection}>
+      <ThemedText type="smallBold" themeColor="warning">
+        Verify
+      </ThemedText>
+      {warnings.map((warning) => (
+        <ThemedText key={warning.code} type="small" themeColor="warning">
+          {warning.code}: {warning.message}
+        </ThemedText>
+      ))}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  header: {
+    gap: Spacing.one,
+  },
+  list: {
+    gap: Spacing.three,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.three,
+    justifyContent: "space-between",
+  },
+  titleBlock: {
+    flex: 1,
+    minWidth: 220,
+    gap: Spacing.one,
+  },
+  scoreBadge: {
+    minWidth: 72,
+    borderRadius: Radii.medium,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+  },
+  factGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.two,
+  },
+  fact: {
+    flex: 1,
+    minWidth: 132,
+    borderRadius: Radii.medium,
+    gap: Spacing.one,
+    padding: Spacing.two,
+  },
+  codeSection: {
+    gap: Spacing.two,
+  },
+  chipRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.two,
+  },
+  pipelineNote: {
+    borderRadius: Radii.medium,
+    gap: Spacing.one,
+    padding: Spacing.three,
+  },
+});

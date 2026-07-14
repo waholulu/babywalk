@@ -74,7 +74,7 @@
   Build the home screen inputs with validation and saved defaults.  
   **Accept:** Keyboard, screen reader labels, validation, and reset behavior work.
 
-- [ ] **TASK-015 — Build recommendation results**  
+- [x] **TASK-015 — Build recommendation results**
   Connect local fixtures to domain logic and render three cards.  
   **Accept:** Canonical scenarios display expected reason codes and warnings.
 

@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`buildLocalRecommendations builds three canonical local recommendation cards 1`] = `
+{
+  "candidateCount": 18,
+  "cards": [
+    {
+      "confidence": "medium",
+      "displayedReasons": [
+        "AGE_MATCH",
+        "HOME_BEFORE_NAP",
+      ],
+      "displayedWarnings": [
+        "VERIFY_AMENITIES",
+        "LIMITED_SOURCE_FRESHNESS",
+      ],
+      "id": "hoboken-story-room-fixture",
+      "name": "Hoboken Story Room Fixture",
+      "reasons": [
+        "AGE_MATCH",
+        "HOME_BEFORE_NAP",
+        "UNDER_BUDGET",
+        "WEATHER_MATCH",
+        "SHORT_DRIVE",
+        "NEW_TO_FAMILY",
+      ],
+      "totalScore": 99,
+      "warnings": [
+        "VERIFY_AMENITIES",
+        "LIMITED_SOURCE_FRESHNESS",
+      ],
+    },
+    {
+      "confidence": "medium",
+      "displayedReasons": [
+        "AGE_MATCH",
+        "HOME_BEFORE_NAP",
+      ],
+      "displayedWarnings": [
+        "VERIFY_HOURS",
+        "LIMITED_SOURCE_FRESHNESS",
+      ],
+      "id": "montclair-art-play-space-fixture",
+      "name": "Montclair Art Play Space Fixture",
+      "reasons": [
+        "AGE_MATCH",
+        "HOME_BEFORE_NAP",
+        "UNDER_BUDGET",
+        "WEATHER_MATCH",
+        "NEW_TO_FAMILY",
+      ],
+      "totalScore": 92,
+      "warnings": [
+        "VERIFY_HOURS",
+        "LIMITED_SOURCE_FRESHNESS",
+      ],
+    },
+    {
+      "confidence": "medium",
+      "displayedReasons": [
+        "AGE_MATCH",
+        "HOME_BEFORE_NAP",
+      ],
+      "displayedWarnings": [
+        "VERIFY_AMENITIES",
+        "LIMITED_SOURCE_FRESHNESS",
+      ],
+      "id": "newark-community-gym-fixture",
+      "name": "Newark Community Gym Fixture",
+      "reasons": [
+        "AGE_MATCH",
+        "HOME_BEFORE_NAP",
+        "UNDER_BUDGET",
+        "WEATHER_MATCH",
+        "NEW_TO_FAMILY",
+      ],
+      "totalScore": 91,
+      "warnings": [
+        "VERIFY_AMENITIES",
+        "LIMITED_SOURCE_FRESHNESS",
+      ],
+    },
+  ],
+  "excludedCount": 9,
+}
+`;

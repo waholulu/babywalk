@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-014 — Build plan input form
-**Next task:** TASK-015 — Build recommendation results
+**Last completed task:** TASK-015 — Build recommendation results
+**Next task:** TASK-016 — Build place detail screen
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -28,6 +28,7 @@
 - TASK-012 added a pure transparent 100-point scoring layer with component breakdowns, reason codes, warnings, confidence, deterministic sorting, and fixture snapshot coverage.
 - TASK-013 added a pure diversity-selection step that prevents comparable top results from being near-duplicates by category or coarse area.
 - TASK-014 replaced the home placeholder with a local mobile-first plan input form, validation helpers, accessibility labels/states, keyboard-friendly scrolling, reset behavior, and default values.
+- TASK-015 connected local fixtures to the deterministic recommendation pipeline and replaced the results placeholder with three explainable recommendation cards.
 
 ## Environment inventory
 
@@ -335,6 +336,25 @@ Known limitations:
 Form submission only validates and shows a local ready summary. It does not yet generate recommendations, persist defaults, request location permission, or navigate to results.
 Next task:
 TASK-015 — Build recommendation results.
+```
+
+```text
+2026-07-14 — TASK-015
+Summary:
+Added a local recommendation builder that applies hard filters, scoring, and diversity selection to mock place candidates with deterministic travel estimates and a local weather snapshot. Replaced the results placeholder with three recommendation cards showing place facts, travel estimate, price band, indoor/outdoor status, age fit, score, reason codes, warnings, confidence, source, and freshness. Added snapshot coverage for the canonical local scenario.
+Commands/tests:
+`npm test -- --runInBand src/test/recommendation-results.test.ts -u` — passed and wrote the canonical results snapshot.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 9 test suites, 33 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web on port 8085 with `EXPO_PUBLIC_APP_ENV=local`; `http://localhost:8085/results` returned HTTP 200. The server was stopped afterward.
+Known limitations:
+Results use a fixed local scenario and do not yet consume live home form input, persist preferences, fetch provider data, or implement place detail content.
+Next task:
+TASK-016 — Build place detail screen.
 ```
 
 ```text
