@@ -104,7 +104,7 @@
   Implement public curated reads and user-owned writes.  
   **Accept:** Automated cross-user tests prove isolation.
 
-- [ ] **TASK-021 — Add seed import**  
+- [x] **TASK-021 — Add seed import**  
   Load curated pilot data through versioned seed SQL or a documented import script.  
   **Accept:** Reset creates usable data with provenance/freshness fields.
 

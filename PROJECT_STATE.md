@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-020 — Add RLS policies and tests
-**Next task:** TASK-021 — Add seed import
+**Last completed task:** TASK-021 — Add seed import
+**Next task:** TASK-022 — Add Supabase client and repositories
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -34,6 +34,7 @@
 - TASK-018 initialized local Supabase, documented local commands, and verified the local stack can start, report status, and reset.
 - TASK-019 added the initial Supabase schema migration for profiles, child preferences, places, events, saved places, visits, place feedback, and recommendation feedback with constraints, timestamps, indexes, and RLS enabled.
 - TASK-020 added reviewed RLS policies and automated SQL policy tests for public curated reads, anonymous recommendation feedback, authenticated owner-only data access, and cross-user isolation.
+- TASK-021 added deterministic local seed data for 18 fixture places and 3 fixture events with provenance/freshness metadata plus automated seed checks.
 
 ## Environment inventory
 
@@ -67,6 +68,28 @@
 - App-store and privacy disclosures must match actual data behavior.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-021
+Summary:
+Replaced the empty `supabase/seed.sql` with deterministic local seed data for 18 active place fixtures and 3 scheduled event fixtures. Seed records use fixed UUIDs, `sproutscout_seed_v1` provenance, source IDs, freshness/review timestamps, amenity metadata, and verification notes that clearly mark them as local development fixtures to verify before pilot use. Added `supabase/tests/seed_checks.sql` and made the existing RLS policy test seed-aware by counting only its own `rls_test` records.
+Commands/tests:
+`npx supabase db reset` — passed and applied migrations plus `supabase/seed.sql` from an empty local database.
+`Get-Content -Raw supabase\tests\seed_checks.sql | docker exec -i supabase_db_babywalk psql -v ON_ERROR_STOP=1 -U postgres -d postgres` — passed; SQL assertions confirmed 18 seed places, 3 seed events, active curated place records, provenance/freshness metadata, and no obvious sensitive placeholder data.
+`Get-Content -Raw supabase\tests\rls_policy_checks.sql | docker exec -i supabase_db_babywalk psql -v ON_ERROR_STOP=1 -U postgres -d postgres` — initially failed because seed data increased public active-place counts; after scoping the assertions to `source = 'rls_test'`, passed.
+`npx supabase db lint` — passed with no schema errors.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 11 test suites, 39 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed seed data for personal data, unsupported real-world factual claims, and provenance/freshness metadata. The seed uses fixture names and area-level labels only; no secrets, child names, exact birthdays, medical details, or precise home addresses were added.
+Known limitations:
+Seed records are development fixtures, not the final 50–100 professionally curated pilot places. Real curation remains TASK-039.
+Next task:
+TASK-022 — Add Supabase client and repositories.
+```
 
 ```text
 2026-07-14 — TASK-020

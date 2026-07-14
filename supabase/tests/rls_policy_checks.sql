@@ -247,12 +247,12 @@ begin;
   select set_config('request.jwt.claim.sub', '', true);
 
   select pg_temp.assert_eq(
-    (select count(*) from public.places),
+    (select count(*) from public.places where source = 'rls_test'),
     1,
     'anonymous users can read only active places'
   );
   select pg_temp.assert_eq(
-    (select count(*) from public.events),
+    (select count(*) from public.events where source = 'rls_test'),
     1,
     'anonymous users can read only scheduled events'
   );
