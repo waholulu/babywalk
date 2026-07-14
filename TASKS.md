@@ -96,7 +96,7 @@
   Create `supabase/`, config, and documented start/reset commands.  
   **Accept:** A new local database starts and resets reproducibly.
 
-- [ ] **TASK-019 — Create initial schema migration**  
+- [x] **TASK-019 — Create initial schema migration**
   Implement the reviewed subset of `DATABASE.md`, constraints, timestamps, and indexes.  
   **Accept:** Migration applies from empty database and rolls forward cleanly.
 

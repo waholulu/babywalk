@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-018 — Initialize local Supabase
-**Next task:** TASK-019 — Create initial schema migration
+**Last completed task:** TASK-019 — Create initial schema migration
+**Next task:** TASK-020 — Add RLS policies and tests
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -32,6 +32,7 @@
 - TASK-016 replaced the place detail placeholder with a structured fixture detail screen that labels unknown values and emits verify-before-leaving notes.
 - TASK-017 added a development-only score inspector for score components and hard-filter exclusions, gated off for production environments.
 - TASK-018 initialized local Supabase, documented local commands, and verified the local stack can start, report status, and reset.
+- TASK-019 added the initial Supabase schema migration for profiles, child preferences, places, events, saved places, visits, place feedback, and recommendation feedback with constraints, timestamps, indexes, and RLS enabled.
 
 ## Environment inventory
 
@@ -436,6 +437,30 @@ Known limitations:
 The current shell still needs a temporary PATH prefix for Docker until a new terminal picks up Docker's installed PATH. No schema migrations, RLS policies, or seed data exist yet.
 Next task:
 TASK-019 — Create initial schema migration.
+```
+
+```text
+2026-07-14 — TASK-019
+Summary:
+Added the first committed Supabase migration, `20260714191031_initial_schema.sql`. The migration creates the reviewed MVP schema subset: profiles, child_preferences, places, events, saved_places, visits, place_feedback, and recommendation_feedback. It adds data bounds, enum-like check constraints, timestamps, updated_at triggers, lookup/policy indexes, unique source ID indexes, and enables RLS on all eight public tables.
+Commands/tests:
+`npx supabase migration new initial_schema` — passed and created the migration file.
+`npx supabase db reset` — passed and applied the migration from an empty local database.
+`npx supabase db lint` — passed with no schema errors.
+`npx supabase migration list` — failed because the local project is not linked to a remote Supabase project.
+`npx supabase migration list --local` — passed and listed `20260714191031`.
+`docker exec supabase_db_babywalk psql -U postgres -d postgres -c "select relname, relrowsecurity from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r' order by relname;"` — passed and confirmed all 8 public tables have RLS enabled.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 11 test suites, 39 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed migration fields for privacy. It avoids child names, exact birth dates, medical fields, precise home addresses, and secrets.
+Known limitations:
+RLS policies and cross-user policy tests are intentionally deferred to TASK-020.
+Next task:
+TASK-020 — Add RLS policies and tests.
 ```
 
 ```text
