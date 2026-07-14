@@ -69,6 +69,22 @@ export function parseClientEnv(env: ClientEnvSource): ClientEnvResult {
         reason: "missing",
       });
     }
+  } else if (
+    parsedPlaceDataSource !== undefined &&
+    (supabaseUrl || supabaseAnonKey)
+  ) {
+    if (!supabaseUrl) {
+      issues.push({ name: "EXPO_PUBLIC_SUPABASE_URL", reason: "missing" });
+    } else if (!isHttpUrl(supabaseUrl)) {
+      issues.push({ name: "EXPO_PUBLIC_SUPABASE_URL", reason: "invalid" });
+    }
+
+    if (!supabaseAnonKey) {
+      issues.push({
+        name: "EXPO_PUBLIC_SUPABASE_ANON_KEY",
+        reason: "missing",
+      });
+    }
   }
 
   if (
@@ -86,8 +102,8 @@ export function parseClientEnv(env: ClientEnvSource): ClientEnvResult {
       appEnv,
       placeDataSource: parsedPlaceDataSource,
       supabase:
-        parsedPlaceDataSource === "supabase"
-          ? { url: supabaseUrl ?? "", anonKey: supabaseAnonKey ?? "" }
+        supabaseUrl && supabaseAnonKey
+          ? { url: supabaseUrl, anonKey: supabaseAnonKey }
           : undefined,
     },
   };

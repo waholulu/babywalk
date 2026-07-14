@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-022 — Add Supabase client and repositories
-**Next task:** TASK-023 — Add optional authentication
+**Last completed task:** TASK-023 — Add optional authentication
+**Next task:** TASK-024 — Implement save/visit/block actions
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -36,6 +36,7 @@
 - TASK-020 added reviewed RLS policies and automated SQL policy tests for public curated reads, anonymous recommendation feedback, authenticated owner-only data access, and cross-user isolation.
 - TASK-021 added deterministic local seed data for 18 fixture places and 3 fixture events with provenance/freshness metadata plus automated seed checks.
 - TASK-022 added `@supabase/supabase-js`, client-safe Supabase configuration validation, a typed public places client, fixture and Supabase place repository implementations, and repository-selected recommendation loading.
+- TASK-023 added optional guest-preserving email magic-link auth plumbing, a Settings account panel, and protected-cache clearing on sign-out.
 
 ## Environment inventory
 
@@ -69,6 +70,26 @@
 - App-store and privacy disclosures must match actual data behavior.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-023
+Summary:
+Added optional authentication plumbing while preserving guest mode. Supabase URL/anon-key can now be configured as an optional pair even when place data uses fixtures. Added an auth service boundary for guest mode and Supabase email magic-link requests, a protected in-memory cache that is cleared on sign-out, and a Settings account panel that shows guest status, optional email sign-in, and sign-out.
+Commands/tests:
+`npx prettier --write src/lib/env.ts src/features/auth src/app/settings.tsx src/test/env.test.ts src/test/auth-service.test.ts` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand src/test/auth-service.test.ts src/test/env.test.ts` — passed, 2 suites and 13 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm test -- --runInBand` — passed, 13 test suites, 52 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with `EXPO_PUBLIC_APP_ENV=local` and `EXPO_PUBLIC_PLACE_DATA_SOURCE=fixtures`; `/settings` returned HTTP 200 without Supabase credentials, confirming guest mode remains available. The temporary Expo server was stopped afterward.
+Known limitations:
+Magic-link callback/deep-link session completion, persisted session storage, profile creation, and authenticated user data repositories are deferred. Save/visit/block actions remain TASK-024.
+Next task:
+TASK-024 — Implement save/visit/block actions.
+```
 
 ```text
 2026-07-14 — TASK-022

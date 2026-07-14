@@ -112,7 +112,7 @@
   Implement typed client initialization and place repository.  
   **Accept:** UI can switch between local fixtures and database implementation through an interface.
 
-- [ ] **TASK-023 — Add optional authentication**  
+- [x] **TASK-023 — Add optional authentication**  
   Add a low-friction parent sign-in path while preserving a usable guest flow.  
   **Accept:** Sign-out clears protected cache; guest input is not unexpectedly lost.
 
