@@ -30,13 +30,9 @@
   Initialize the project root as a Git repository, create/connect the GitHub remote, and make a default branch available for GitHub Actions verification.  
   **Accept:** `git status` works at `D:\github\babywalk`, a GitHub remote exists, and a test pull request can be opened for CI.
 
-- [ ] **TASK-005 — Configure development build**  
-  Add `expo-dev-client`, EAS configuration, application identifiers/placeholders, and written build steps.  
-  **Accept:** A development build runs on at least one real device.
-
-- [ ] **BLOCKER — Confirm development-build test path for TASK-005**  
-  Choose and prepare at least one real iOS or Android device path and confirm EAS CLI/account access for development-build verification.  
-  **Accept:** A named real device path is available, EAS access works, and the selected platform can install a development build.
+- [ ] **TASK-005 — Establish physical-device Expo Go path**  
+  Verify the current app runs on at least one physical iOS or Android device using Expo Go, and document the beginner-friendly Windows workflow.  
+  **Accept:** `npx expo start` runs, the app opens on a physical device from the Expo Go QR code, Fast Refresh is verified after changing visible text, LAN or Tunnel mode is documented, and the device/OS are recorded in `PROJECT_STATE.md`.
 
 ## App shell
 
@@ -133,6 +129,10 @@
 - [ ] **TASK-027 — Add distance/travel abstraction**  
   Start with a simple estimate and interface that can accept a routing provider later.  
   **Accept:** Domain tests do not require maps or network.
+
+- [ ] **TASK-027B — Migrate from Expo Go to an EAS development build**  
+  Add `expo-dev-client`, EAS configuration, application identifiers/placeholders, and written build steps when Expo Go no longer supports a required native dependency or before native release testing.  
+  **Accept:** A development build installs and runs on at least one real device, and the selected EAS profile/build steps are documented.
 
 - [ ] **TASK-028 — Add weather Edge Function adapter**  
   Validate input/output, timeout, error mapping, and local mock.  

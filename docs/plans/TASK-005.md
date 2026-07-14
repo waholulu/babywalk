@@ -1,51 +1,52 @@
-# TASK-005 Execution Plan — Configure Development Build
+# TASK-005 Execution Plan — Establish Physical-Device Expo Go Path
 
 ## Objective
 
-Configure an Expo development build path with `expo-dev-client`, EAS configuration, application identifiers/placeholders, and written build steps, then verify the development build on at least one real device.
+Verify the current Expo app runs on at least one physical iOS or Android device using Expo Go, and document the lowest-friction Windows development workflow before adding native development-build complexity.
 
 ## In scope
 
-- Add `expo-dev-client`.
-- Add EAS configuration.
-- Add placeholder bundle/application identifiers appropriate for development builds.
-- Document build and install steps.
-- Verify on a real iOS or Android device before marking complete.
+- Start the project with `npx expo start`.
+- Open the app on a physical iOS or Android device by scanning the Expo Go QR code.
+- Verify that the initial screen loads.
+- Verify Fast Refresh by changing visible text and observing the update on the device.
+- Document whether LAN or Tunnel mode was used.
+- Record the test device and operating system in `PROJECT_STATE.md`.
 
 ## Out of scope
 
-- App Store or Play Store submission.
-- Production EAS profiles.
-- Native feature implementation.
-- Proceeding without a real device verification path.
+- Installing `expo-dev-client`.
+- Adding EAS configuration.
+- Apple Developer account setup.
+- iOS device registration.
+- Android APK generation.
+- App feature implementation.
 
 ## Files expected to change
 
-- `mobile/package.json`
-- `mobile/package-lock.json`
-- `mobile/app.json`
-- `mobile/eas.json`
-- Development-build documentation file, if needed.
+- A minimal visible-text file only if needed for Fast Refresh verification, then restore or keep the smallest harmless text change if appropriate.
 - `PROJECT_STATE.md`
 - `TASKS.md`
 - `docs/plans/TASK-005.md`
 
 ## Existing behavior inspected
 
-- Read `PROJECT_STATE.md` and selected `TASK-005` in `TASKS.md`.
-- Confirmed TASK-005 acceptance requires: "A development build runs on at least one real device."
-- Checked for local `eas`; command is not installed.
-- Checked for local `adb`; command is not installed.
-- Current `PROJECT_STATE.md` says iOS test path and Android test path are not configured, and Expo account/EAS setup is not verified.
+- TASK-005 previously required an EAS development build on a real device.
+- The user clarified the preferred beginner workflow is Expo Go QR scanning from Windows.
+- `PROJECT_STATE.md` currently says no iOS or Android physical-device path is configured.
+- EAS development-build work is now deferred to TASK-027B.
 
 ## Implementation steps
 
-1. Block until a real-device test path is available and EAS account/CLI setup is confirmed.
-2. Install `expo-dev-client` with the Expo-compatible installer.
-3. Add `eas.json` and development identifiers/placeholders.
-4. Document exact local/EAS commands for the selected platform.
-5. Build, install, and launch the development build on the selected real device.
-6. Run local quality checks and update project state only after verification.
+1. Run `npx expo start` from `mobile/`.
+2. Choose LAN first if the phone and Windows machine are on the same network; use Tunnel if LAN cannot connect.
+3. Have the user scan the QR code in Expo Go on a physical iOS or Android device.
+4. Confirm the initial screen loads.
+5. Change visible starter text temporarily and confirm Fast Refresh updates the device.
+6. Stop the dev server.
+7. Run local quality checks.
+8. Update `PROJECT_STATE.md` with device model, OS, LAN/Tunnel mode, verification result, and next task.
+9. Mark TASK-005 complete only after physical-device evidence is recorded.
 
 ## Test plan
 
@@ -65,27 +66,29 @@ Configure an Expo development build path with `expo-dev-client`, EAS configurati
 
 ### Manual
 
-- Device/environment: At least one real iOS or Android device.
-- Steps: Build and install the development build, launch it, and confirm the app opens.
-- Expected result: Development build runs on the real device.
+- Device/environment: Physical iOS or Android device with Expo Go installed.
+- Steps: Start Expo, scan QR code, confirm initial screen loads, edit visible text, confirm Fast Refresh, record LAN/Tunnel mode.
+- Expected result: App loads and Fast Refresh works on the physical device.
 
 ## Risks and rollback
 
-- Risk: Adding native/development-build configuration without a device can leave unverified native state.
-- Mitigation: Stop before implementation until the device and EAS path are available.
-- Rollback: Remove dev-client/EAS config changes if verification fails.
+- Risk: LAN mode may fail because of network isolation, firewall, VPN, or different Wi-Fi networks.
+- Mitigation: Retry with Tunnel mode and document which mode works.
+- Rollback: Stop the dev server and revert any temporary visible-text edit.
 
 ## Security/privacy review
 
-- New data collected: None yet.
-- Secrets involved: None yet; EAS credentials must not be committed.
+- New data collected: Device model, mobile OS version, and LAN/Tunnel mode for developer environment documentation.
+- Secrets involved: None.
 - RLS/auth impact: None.
 - Logging impact: None.
 
 ## Completion evidence
 
-- Files changed: `docs/plans/TASK-005.md`.
-- Commands run and results: `Get-Command eas` returned no command; `Get-Command adb` returned no command.
-- Manual test result: Blocked; no real device or emulator path is configured, and no EAS CLI/account setup is verified.
-- Remaining limitations: Cannot satisfy TASK-005 acceptance until a real-device development-build path exists.
-- Acceptance criteria status: Blocked, not complete.
+Fill after implementation:
+
+- Files changed:
+- Commands run and results:
+- Manual test result:
+- Remaining limitations:
+- Acceptance criteria status:

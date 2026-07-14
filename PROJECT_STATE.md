@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
 **Last completed task:** TASK-004 — Activate CI  
-**Next task:** BLOCKER — Confirm real-device development-build path before completing TASK-005  
+**Next task:** TASK-005 — Establish physical-device Expo Go path  
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -17,7 +17,7 @@
 - The Expo starter currently uses `mobile/src/app` as the Expo Router root.
 - `mobile/` has passing local quality commands for format, lint, type checking, and Jest tests.
 - GitHub Actions CI is active for pushes to `main` and pull requests.
-- TASK-005 is blocked because no real iOS/Android device path is configured and `eas` is not installed, but the task acceptance requires a development build running on at least one real device.
+- TASK-005 now uses Expo Go as the initial physical-device path for the Windows beginner workflow; EAS development builds are deferred until a required native dependency is unsupported by Expo Go or native release testing begins.
 
 ## Environment inventory
 
@@ -28,9 +28,9 @@
 | Node | v22.22.2 | Installed. Expo SDK 57 requires Node 22.13.x minimum; project pins Node major 22 in `.nvmrc`. |
 | npm | 10.9.7 | Installed. `npx` also reports 10.9.7. |
 | Docker | Missing | Needed for local Supabase. Temporary exception: continue through app scaffold/local fixture tasks without Docker; install Docker Desktop or document a reviewed cloud-backend exception before TASK-018. |
-| iOS test path | Not configured | Windows cannot run the iOS simulator. Viable path to document/confirm later: physical iPhone with Expo Go/development build. |
-| Android test path | Not configured | `adb` and Android emulator commands are missing. Viable path to document/confirm later: physical Android device or Android Studio emulator before native/dev-build verification. |
-| Expo account | Not verified | `eas` CLI is not installed. Needed for EAS/development build tasks. |
+| iOS test path | Not configured | Windows cannot run the iOS simulator. Preferred initial path: physical iPhone with Expo Go QR scan. |
+| Android test path | Not configured | `adb` and Android emulator commands are missing. Preferred initial path: physical Android device with Expo Go QR scan. |
+| Expo account | Not required for TASK-005 | EAS CLI/account setup is deferred until TASK-027B or native release testing. |
 | Supabase account | Not verified | Not needed until later staging work; local Supabase will require Docker. |
 | GitHub repository | Connected | Remote `origin` points to `https://github.com/waholulu/babywalk.git`; default branch is `main`. |
 
@@ -136,20 +136,19 @@ Reviewed `.github/workflows/ci.yml`; it runs `npm ci`, `npm run format:check`, `
 Known limitations:
 GitHub Actions reported a warning that `actions/checkout@v4` and `actions/setup-node@v4` target Node.js 20 and are being forced to run on Node.js 24 by GitHub-hosted runners. This does not fail CI.
 Next task:
-TASK-005 — Configure development build.
+TASK-005 — Establish physical-device Expo Go path.
 ```
 
 ```text
-2026-07-14 — TASK-005 BLOCKED
+2026-07-14 — TASK-005 SCOPE UPDATED
 Summary:
-Started TASK-005 planning, but did not add development-build configuration because the task acceptance requires a development build to run on at least one real device.
+Changed TASK-005 from EAS development-build setup to the lower-friction Expo Go physical-device workflow for Windows development. Deferred expo-dev-client, EAS Build, Apple signing, Android APK generation, and paid Apple Developer enrollment to a later EAS development-build migration task.
 Commands/tests:
-`Get-Command eas` — failed; EAS CLI is not installed.
-`Get-Command adb` — failed; Android Debug Bridge is not installed.
+Documentation/task update only; no app commands required.
 Manual verification:
-Reviewed PROJECT_STATE environment inventory; iOS test path and Android test path are both not configured.
+Reviewed TASKS.md and PROJECT_STATE.md to ensure TASK-005 now requires Expo Go QR launch, Fast Refresh verification, LAN/Tunnel documentation, and physical device/OS recording.
 Known limitations:
-Cannot truthfully complete TASK-005 until an Expo/EAS path and at least one real device test path are available.
+TASK-005 still requires user-side physical device verification. EAS development-build setup is deferred to TASK-027B.
 Next task:
-BLOCKER — Confirm real-device development-build path, install/sign in to EAS CLI or choose the supported EAS invocation path, then resume TASK-005.
+TASK-005 — Establish physical-device Expo Go path.
 ```
