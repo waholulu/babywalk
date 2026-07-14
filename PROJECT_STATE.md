@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-023 — Add optional authentication
-**Next task:** TASK-024 — Implement save/visit/block actions
+**Last completed task:** TASK-024 — Implement save/visit/block actions
+**Next task:** TASK-025 — Implement incorrect-data feedback
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -37,6 +37,7 @@
 - TASK-021 added deterministic local seed data for 18 fixture places and 3 fixture events with provenance/freshness metadata plus automated seed checks.
 - TASK-022 added `@supabase/supabase-js`, client-safe Supabase configuration validation, a typed public places client, fixture and Supabase place repository implementations, and repository-selected recommendation loading.
 - TASK-023 added optional guest-preserving email magic-link auth plumbing, a Settings account panel, and protected-cache clearing on sign-out.
+- TASK-024 added working Save, Mark visited, and Do not recommend actions on place detail with a local repository, optimistic UI state, error rollback, and tests.
 
 ## Environment inventory
 
@@ -70,6 +71,27 @@
 - App-store and privacy disclosures must match actual data behavior.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-024
+Summary:
+Replaced the disabled Save, Visited, and Do not recommend placeholders on place detail with working local actions. Added a `PlaceActionsRepository` boundary, a dependency-free local repository using `localStorage` when available and memory fallback otherwise, pure button-label helpers, optimistic UI updates, error rollback, and action status messages. Report incorrect data remains disabled for TASK-025.
+Commands/tests:
+`npx prettier --write src/data/repositories/place-actions-repository.ts src/data/repositories/place-actions-repository.local.ts src/data/repositories/index.ts src/features/places/place-actions.ts src/features/places/place-detail.ts src/features/places/place-detail-screen.tsx src/test/place-actions.test.ts` — passed.
+`npm run typecheck` — initially failed because `mobile/src/features/places/index.ts` still exported the removed `PlaceDetailAction` type; passed after removing the stale export.
+`npm test -- --runInBand src/test/place-actions.test.ts src/test/place-detail.test.ts` — passed, 2 suites and 7 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 14 test suites, 56 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with `EXPO_PUBLIC_APP_ENV=local` and `EXPO_PUBLIC_PLACE_DATA_SOURCE=fixtures`; `/places/hoboken-story-room-fixture` returned HTTP 200. The temporary Expo server was stopped afterward.
+Known limitations:
+Native Expo Go persistence uses the in-memory fallback until a reviewed native storage dependency or Supabase-backed action repository is added. Supabase writes for saved/visited data and a database-backed blocked-place model remain future work. Incorrect-data reporting remains TASK-025.
+Next task:
+TASK-025 — Implement incorrect-data feedback.
+```
 
 ```text
 2026-07-14 — TASK-023

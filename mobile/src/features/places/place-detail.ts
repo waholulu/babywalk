@@ -7,18 +7,12 @@ export type PlaceDetailFact = {
   confidence: "known" | "unknown";
 };
 
-export type PlaceDetailAction = {
-  label: string;
-  disabledReason: string;
-};
-
 export type PlaceDetailModel = {
   candidate: PlaceCandidate;
   facts: PlaceDetailFact[];
   scheduleFacts: PlaceDetailFact[];
   amenityFacts: PlaceDetailFact[];
   verifyNotes: string[];
-  actions: PlaceDetailAction[];
 };
 
 export function getPlaceDetailModel(id: string): PlaceDetailModel | null {
@@ -34,7 +28,6 @@ export function getPlaceDetailModel(id: string): PlaceDetailModel | null {
     scheduleFacts: buildScheduleFacts(candidate),
     amenityFacts: buildAmenityFacts(candidate),
     verifyNotes: buildVerifyNotes(candidate),
-    actions: buildPlaceholderActions(),
   };
 }
 
@@ -117,27 +110,6 @@ function buildVerifyNotes(candidate: PlaceCandidate): string[] {
   }
 
   return notes;
-}
-
-function buildPlaceholderActions(): PlaceDetailAction[] {
-  return [
-    {
-      label: "Save",
-      disabledReason: "Save action is added in TASK-024.",
-    },
-    {
-      label: "Visited",
-      disabledReason: "Visit history is added in TASK-024.",
-    },
-    {
-      label: "Do not recommend",
-      disabledReason: "Blocking is added in TASK-024.",
-    },
-    {
-      label: "Report incorrect data",
-      disabledReason: "Feedback reporting is added in TASK-025.",
-    },
-  ];
 }
 
 function buildAgeFact(candidate: PlaceCandidate): PlaceDetailFact {

@@ -116,7 +116,7 @@
   Add a low-friction parent sign-in path while preserving a usable guest flow.  
   **Accept:** Sign-out clears protected cache; guest input is not unexpectedly lost.
 
-- [ ] **TASK-024 — Implement save/visit/block actions**  
+- [x] **TASK-024 — Implement save/visit/block actions**  
   Add repository methods, optimistic UI only where safe, and error recovery.  
   **Accept:** User-owned data remains isolated and persists after restart.
 
