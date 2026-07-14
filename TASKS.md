@@ -54,7 +54,7 @@
   Add `FamilyConstraints`, `PlaceCandidate`, `WeatherSnapshot`, `RecommendationResult`, reason codes, warnings, and confidence types.  
   **Accept:** No provider-specific type appears in domain models.
 
-- [ ] **TASK-010 — Create mock candidate dataset**  
+- [x] **TASK-010 — Create mock candidate dataset**
   Add 15–20 varied pilot fixtures with known/unknown fields.  
   **Accept:** Dataset covers all canonical test scenarios and contains no copyrighted descriptions copied at length.
 

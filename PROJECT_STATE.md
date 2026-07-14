@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-009 — Define domain models
-**Next task:** TASK-010 — Create mock candidate dataset
+**Last completed task:** TASK-010 — Create mock candidate dataset
+**Next task:** TASK-011 — Implement hard filters
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -23,6 +23,7 @@
 - TASK-007 added shared theme tokens and UI primitives for screen containers, buttons, chips, cards, loading, empty, and error states.
 - TASK-008 added dependency-free client environment validation for `EXPO_PUBLIC_APP_ENV`, a safe configuration error screen, and `mobile/.env.example`.
 - TASK-009 added provider-neutral domain models for family constraints, place candidates, weather snapshots, recommendation results, reason codes, warnings, score components, and confidence.
+- TASK-010 added 18 local fixture place candidates and scenario coverage metadata for future filter/scoring tests.
 
 ## Environment inventory
 
@@ -236,6 +237,25 @@ Known limitations:
 Types only. Mock data, hard filters, scoring, diversity selection, and UI wiring remain for later tasks.
 Next task:
 TASK-010 — Create mock candidate dataset.
+```
+
+```text
+2026-07-14 — TASK-010
+Summary:
+Added 18 local fixture place candidates under `mobile/src/data/fixtures/` using the provider-neutral `PlaceCandidate` type. The dataset covers varied North Jersey + NYC-style categories, areas, age ranges, price bands, indoor/outdoor modes, schedule windows, amenities, and explicit unknown values. Added scenario coverage metadata and dataset tests.
+Commands/tests:
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 11 tests.
+`npx expo-doctor` — passed 18/18 checks.
+`rg -n "description|google|mapbox|openweather|yelp|foursquare|provider|api|copyright" mobile\src\data\fixtures` — found no matches.
+Manual verification:
+Reviewed fixture records for obvious real-place factual claims, copied descriptions, sensitive family data, and provider-specific fields. Fixtures are explicitly labeled as local fixture data and contain no descriptions.
+Known limitations:
+Fixture data is not real curated data. It is only for local deterministic development and tests.
+Next task:
+TASK-011 — Implement hard filters.
 ```
 
 ```text
