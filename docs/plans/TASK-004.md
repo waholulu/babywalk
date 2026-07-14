@@ -76,8 +76,8 @@ Add GitHub Actions CI for the scaffolded mobile app so formatting, linting, type
 
 ## Completion evidence
 
-- Files changed: `docs/plans/TASK-004.md`.
-- Commands run and results: `git rev-parse --is-inside-work-tree` initially failed because the workspace root was not a Git repository. After the repository was initialized and connected to `https://github.com/waholulu/babywalk.git`, local quality commands passed and the workflow was pushed to `main`.
-- Manual test result: GitHub Actions passed on `main` push run `29348932412`. Pull request verification is in progress on branch `task-004-ci-validation`.
-- Remaining limitations: TASK-004 is not complete until the pull request CI run passes.
-- Acceptance criteria status: In progress.
+- Files changed: `.github/workflows/ci.yml`, `PROJECT_STATE.md`, `TASKS.md`, `docs/plans/TASK-004.md`.
+- Commands run and results: `git init -b main` initialized the root repository; `git remote add origin https://github.com/waholulu/babywalk.git` connected the remote; local `npm run format:check`, `npm run lint`, `npm run typecheck`, and `npm test -- --runInBand` passed; `git push -u origin main` pushed initial commit `e35abd3`; GitHub Actions push run `29348932412` passed; PR #1 was opened from `task-004-ci-validation`; GitHub Actions pull request run `29349028561` passed.
+- Manual test result: Reviewed `.github/workflows/ci.yml`; it runs the TASK-003 mobile quality commands from `mobile/`.
+- Remaining limitations: GitHub Actions reported a non-failing warning that `actions/checkout@v4` and `actions/setup-node@v4` target Node.js 20 and are being forced to run on Node.js 24 by hosted runners.
+- Acceptance criteria status: Complete; CI passed on the default branch and on a test pull request.

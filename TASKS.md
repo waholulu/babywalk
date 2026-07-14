@@ -22,11 +22,11 @@
   Add `lint`, `typecheck`, `test`, and `format:check`; configure strict TypeScript and a first passing test.  
   **Accept:** All commands pass locally.
 
-- [ ] **TASK-004 — Activate CI**  
+- [x] **TASK-004 — Activate CI**  
   Adapt `templates/ci.yml` to the scaffold and add GitHub Actions.  
   **Accept:** CI passes on the default branch and a test pull request.
 
-- [ ] **BLOCKER — Initialize GitHub repository for TASK-004**  
+- [x] **BLOCKER — Initialize GitHub repository for TASK-004**  
   Initialize the project root as a Git repository, create/connect the GitHub remote, and make a default branch available for GitHub Actions verification.  
   **Accept:** `git status` works at `D:\github\babywalk`, a GitHub remote exists, and a test pull request can be opened for CI.
 
