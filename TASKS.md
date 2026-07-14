@@ -120,6 +120,10 @@
   Add repository methods, optimistic UI only where safe, and error recovery.  
   **Accept:** User-owned data remains isolated and persists after restart.
 
+- [ ] **BLOCKER — Provide staging Supabase target for TASK-025**
+  Create or identify a staging Supabase project and client configuration that can receive an authenticated incorrect-data report.
+  **Accept:** Staging Supabase URL/anon key are available for local testing, migrations are applied, and an authenticated test user can insert one `place_feedback` row without exposing moderation fields.
+
 - [ ] **TASK-025 — Implement incorrect-data feedback**  
   Add structured reporting and moderation state.  
   **Accept:** A report reaches staging database without exposing internal fields.

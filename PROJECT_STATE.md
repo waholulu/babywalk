@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
 **Last completed task:** TASK-024 — Implement save/visit/block actions
-**Next task:** TASK-025 — Implement incorrect-data feedback
+**Next task:** BLOCKER — Provide staging Supabase target for TASK-025
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -69,8 +69,23 @@
 - Family recommendations can lose trust quickly when hours or amenities are wrong.
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
+- TASK-025 cannot meet its stated acceptance until a real staging Supabase target exists.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-025 BLOCKED
+Summary:
+Started TASK-025 by creating `docs/plans/TASK-025.md` and inspecting the existing feedback schema, RLS policies, place-detail UI, and project state. The task acceptance requires a report to reach the staging database, but no staging Supabase project/configuration exists yet; staging setup is currently scheduled later as TASK-038. Per task rules, this creates a blocking prerequisite instead of improvising against a fake target.
+Commands/tests:
+`rg -n "place_feedback|feedback|incorrect" supabase\migrations mobile\src TASKS.md DATABASE.md PRODUCT_SPEC.md` — inspected feedback schema, RLS policies, product requirements, and current UI references.
+Manual verification:
+Confirmed `place_feedback` exists locally and authenticated owner-only insert policy exists, but no staging database target is documented or configured.
+Known limitations:
+No application feature was implemented for TASK-025 because the stated acceptance cannot be truthfully verified without staging. A blocker task was added to provide a staging Supabase target and authenticated test path.
+Next task:
+BLOCKER — Provide staging Supabase target for TASK-025.
+```
 
 ```text
 2026-07-14 — TASK-024
