@@ -30,7 +30,7 @@
   Initialize the project root as a Git repository, create/connect the GitHub remote, and make a default branch available for GitHub Actions verification.  
   **Accept:** `git status` works at `D:\github\babywalk`, a GitHub remote exists, and a test pull request can be opened for CI.
 
-- [ ] **TASK-005 — Establish physical-device Expo Go path**  
+- [x] **TASK-005 — Establish physical-device Expo Go path**
   Verify the current app runs on at least one physical iOS or Android device using Expo Go, and document the beginner-friendly Windows workflow.  
   **Accept:** `npx expo start` runs, the app opens on a physical device from the Expo Go QR code, Fast Refresh is verified after changing visible text, LAN or Tunnel mode is documented, and the device/OS are recorded in `PROJECT_STATE.md`.
 

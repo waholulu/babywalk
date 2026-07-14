@@ -2,22 +2,23 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-004 — Activate CI  
-**Next task:** TASK-005 — Establish physical-device Expo Go path  
+**Last completed task:** TASK-005 — Establish physical-device Expo Go path
+**Next task:** TASK-006 — Create route skeleton
 **Last updated:** 2026-07-14
 
 ## Current facts
 
 - The MVP product scope and architecture are documented.
 - The pilot geography is North Jersey + NYC.
-- `mobile/` contains the initial Expo SDK 57 + React Native + TypeScript starter with Expo Router.
+- `mobile/` contains an Expo SDK 54 + React Native + TypeScript starter with Expo Router.
 - No external API is required for the first local recommendation slice.
 - The working name has not received trademark or domain clearance.
 - Node major is pinned to 22 in `.nvmrc`.
 - The Expo starter currently uses `mobile/src/app` as the Expo Router root.
 - `mobile/` has passing local quality commands for format, lint, type checking, and Jest tests.
 - GitHub Actions CI is active for pushes to `main` and pull requests.
-- TASK-005 now uses Expo Go as the initial physical-device path for the Windows beginner workflow; EAS development builds are deferred until a required native dependency is unsupported by Expo Go or native release testing begins.
+- TASK-005 verified Expo Go as the initial physical-device path for the Windows beginner workflow; EAS development builds are deferred until a required native dependency is unsupported by Expo Go or native release testing begins.
+- The app was aligned to Expo SDK 54 because the user's fully updated iPhone Expo Go app could not run the scaffolded SDK 57 project while the SDK 57 iOS App Store Expo Go release was still unavailable.
 
 ## Environment inventory
 
@@ -25,10 +26,10 @@
 |---|---|---|
 | Operating system | Microsoft Windows NT 10.0.26200.0 | `scripts/doctor.ps1` ran under Windows PowerShell 5.1.26100.8655; interactive shell also reported PowerShell 7.5.8. |
 | Git | 2.41.0.windows.3 | Git command is installed. `D:\github\babywalk` is initialized as a Git repository on branch `main`. |
-| Node | v22.22.2 | Installed. Expo SDK 57 requires Node 22.13.x minimum; project pins Node major 22 in `.nvmrc`. |
+| Node | v22.22.2 | Installed. Project pins Node major 22 in `.nvmrc`. |
 | npm | 10.9.7 | Installed. `npx` also reports 10.9.7. |
 | Docker | Missing | Needed for local Supabase. Temporary exception: continue through app scaffold/local fixture tasks without Docker; install Docker Desktop or document a reviewed cloud-backend exception before TASK-018. |
-| iOS test path | Not configured | Windows cannot run the iOS simulator. Preferred initial path: physical iPhone with Expo Go QR scan. |
+| iOS test path | Verified | iPhone 16 Pro on iOS 26.5 opened the app through Expo Go QR code in LAN mode, loaded the initial screen, and received a Fast Refresh text update. |
 | Android test path | Not configured | `adb` and Android emulator commands are missing. Preferred initial path: physical Android device with Expo Go QR scan. |
 | Expo account | Not required for TASK-005 | EAS CLI/account setup is deferred until TASK-027B or native release testing. |
 | Supabase account | Not verified | Not needed until later staging work; local Supabase will require Docker. |
@@ -36,7 +37,7 @@
 
 ## Open decisions
 
-1. Which real device will be the primary development device?
+1. Whether iPhone 16 Pro on iOS 26.5 remains the primary development device.
 2. Whether guest mode remains fully local or uses anonymous authentication.
 3. Which external place and weather providers will be used after the local slice.
 4. Final product name after professional clearance.
@@ -137,6 +138,27 @@ Known limitations:
 GitHub Actions reported a warning that `actions/checkout@v4` and `actions/setup-node@v4` target Node.js 20 and are being forced to run on Node.js 24 by GitHub-hosted runners. This does not fail CI.
 Next task:
 TASK-005 — Establish physical-device Expo Go path.
+```
+
+```text
+2026-07-14 — TASK-005
+Summary:
+Established the Windows beginner physical-device path using Expo Go. The original SDK 57 scaffold could not open on the user's fully updated iPhone Expo Go app because SDK 57 support was not yet available through the iOS App Store path, so the project was aligned to Expo SDK 54 and the generated starter was minimally adjusted for SDK 54-compatible APIs.
+Commands/tests:
+`npm install expo@~54.0.0` — succeeded and moved the project toward SDK 54.
+`npx expo install --fix` — failed after identifying SDK 54-compatible target versions because the existing SDK 57 dependency tree created an npm peer-resolution conflict.
+Removed generated `mobile/node_modules` and `mobile/package-lock.json`, then ran `npm install` — succeeded and regenerated the lockfile for SDK 54.
+`npx expo-doctor` — passed 18/18 checks.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 1 test.
+Manual verification:
+Started the app with `npx expo start --clear` from `mobile/` and used LAN mode. The app opened from the Expo Go QR code on an iPhone 16 Pro running iOS 26.5. The initial screen loaded. Fast Refresh was verified by temporarily changing visible text from `get started` to `fast refresh check`, observing the phone update, and restoring the original text.
+Known limitations:
+Expo SDK 57 was deferred because the iOS App Store Expo Go app available on the user's device could not run it yet. EAS development builds, expo-dev-client, Apple signing, iOS device registration, and Android APK generation remain deferred to TASK-027B or native release testing.
+Next task:
+TASK-006 — Create route skeleton.
 ```
 
 ```text
