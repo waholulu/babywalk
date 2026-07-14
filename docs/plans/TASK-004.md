@@ -77,7 +77,7 @@ Add GitHub Actions CI for the scaffolded mobile app so formatting, linting, type
 ## Completion evidence
 
 - Files changed: `docs/plans/TASK-004.md`.
-- Commands run and results: `git rev-parse --is-inside-work-tree` failed because the workspace root is not a Git repository.
-- Manual test result: Blocked; no GitHub repository/default branch/test pull request is available.
-- Remaining limitations: CI cannot be activated or accepted until the root project is initialized as a Git repository and connected to GitHub.
-- Acceptance criteria status: Blocked, not complete.
+- Commands run and results: `git rev-parse --is-inside-work-tree` initially failed because the workspace root was not a Git repository. After the repository was initialized and connected to `https://github.com/waholulu/babywalk.git`, local quality commands passed and the workflow was pushed to `main`.
+- Manual test result: GitHub Actions passed on `main` push run `29348932412`. Pull request verification is in progress on branch `task-004-ci-validation`.
+- Remaining limitations: TASK-004 is not complete until the pull request CI run passes.
+- Acceptance criteria status: In progress.
