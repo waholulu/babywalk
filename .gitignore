@@ -1,0 +1,45 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+!templates/.env.example
+*.pem
+*.p8
+*.p12
+*.mobileprovision
+
+# JavaScript
+node_modules/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Expo / React Native
+.expo/
+dist/
+web-build/
+*.jks
+*.keystore
+
+# Native generated folders may be ignored if the project uses managed/CNG workflow.
+# Revisit this decision during scaffold based on the chosen Expo workflow.
+
+# Supabase local
+supabase/.temp/
+
+# Test and build output
+coverage/
+artifacts/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+
+# Temporary agent files
+*.bak
+*.tmp
