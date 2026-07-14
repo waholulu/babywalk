@@ -70,4 +70,4 @@ Document the missing Supabase cloud authentication prerequisite that prevents TA
   - `git diff --check` — passed; only line-ending normalization warnings were reported for existing Windows checkout behavior.
 - Manual test result: Reviewed the blocker text to confirm it asks for local cloud authentication without committing secrets.
 - Remaining limitations: TASK-024A cannot proceed until Supabase cloud auth is available and the staging organization/region/project naming is known.
-- Acceptance criteria status: Blocker documented.
+- Acceptance criteria status: Complete. `npx supabase projects list` succeeds after user login, and no secrets were committed.

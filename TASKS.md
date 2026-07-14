@@ -120,7 +120,7 @@
   Add repository methods, optimistic UI only where safe, and error recovery.  
   **Accept:** User-owned data remains isolated and persists after restart.
 
-- [ ] **BLOCKER — Authenticate Supabase CLI for TASK-024A**
+- [x] **BLOCKER — Authenticate Supabase CLI for TASK-024A**
   Sign in the local Supabase CLI or provide a local-only access token and identify the target Supabase organization/region/project naming for staging.
   **Accept:** `npx supabase projects list` succeeds from `D:\github\babywalk` without committing any access token, database password, secret key, or service-role key.
 

@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-024 — Implement save/visit/block actions
-**Next task:** BLOCKER — Authenticate Supabase CLI for TASK-024A
+**Last completed task:** BLOCKER — Authenticate Supabase CLI for TASK-024A
+**Next task:** TASK-024A — Create minimal hosted Supabase staging target
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -69,10 +69,23 @@
 - Family recommendations can lose trust quickly when hours or amenities are wrong.
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
-- TASK-024A cannot create or configure hosted staging until the local Supabase CLI has cloud authentication.
 - TASK-025 cannot meet its stated acceptance until TASK-024A creates and verifies a real hosted staging Supabase target.
 
 ## Task completion log
+
+```text
+2026-07-14 — BLOCKER — Authenticate Supabase CLI for TASK-024A
+Summary:
+The user completed Supabase cloud login for the local CLI. `npx supabase projects list` now succeeds from the repository and lists hosted Supabase projects, so TASK-024A can proceed to selecting or creating a separate staging target.
+Commands/tests:
+`npx supabase projects list` — passed; project refs and metadata were returned. No access token, database password, secret key, or service-role key was written to tracked files.
+Manual verification:
+Confirmed `git status --short` was clean before updating blocker state.
+Known limitations:
+TASK-024A still needs a staging target choice and migration/application verification.
+Next task:
+TASK-024A — Create minimal hosted Supabase staging target.
+```
 
 ```text
 2026-07-14 — TASK-024A BLOCKED
