@@ -44,7 +44,7 @@
   Add spacing, typography, radii, screen container, button, chip, card, loading, empty, and error components.  
   **Accept:** Components have simple tests or Storybook-equivalent preview only if it does not add major complexity.
 
-- [ ] **TASK-008 — Add environment validation**  
+- [x] **TASK-008 — Add environment validation**
   Parse client-safe environment variables and show a clear development error when missing.  
   **Accept:** Invalid configuration fails early without printing secrets.
 

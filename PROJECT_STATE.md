@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-007 — Create theme and UI primitives
-**Next task:** TASK-008 — Add environment validation
+**Last completed task:** TASK-008 — Add environment validation
+**Next task:** TASK-009 — Define domain models
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -21,6 +21,7 @@
 - The app was aligned to Expo SDK 54 because the user's fully updated iPhone Expo Go app could not run the scaffolded SDK 57 project while the SDK 57 iOS App Store Expo Go release was still unavailable.
 - TASK-006 replaced the generated starter tabs with a simple Expo Router route skeleton for home, onboarding, results, place detail, day plan, saved, and settings.
 - TASK-007 added shared theme tokens and UI primitives for screen containers, buttons, chips, cards, loading, empty, and error states.
+- TASK-008 added dependency-free client environment validation for `EXPO_PUBLIC_APP_ENV`, a safe configuration error screen, and `mobile/.env.example`.
 
 ## Environment inventory
 
@@ -197,6 +198,24 @@ Known limitations:
 The primitives are intentionally simple. Final visual polish, icons, richer form controls, and feature-specific interaction states remain for later tasks.
 Next task:
 TASK-008 — Add environment validation.
+```
+
+```text
+2026-07-14 — TASK-008
+Summary:
+Added dependency-free client environment validation for `EXPO_PUBLIC_APP_ENV` with allowed values `local`, `staging`, and `production`. Added `mobile/.env.example`, pure parser tests, and a configuration error screen that names missing or invalid variables without rendering raw values.
+Commands/tests:
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 4 tests.
+`npx expo-doctor` — passed 18/18 checks.
+Manual verification:
+With `EXPO_PUBLIC_APP_ENV=local`, Expo web returned HTTP 200 for `/`, `/onboarding`, `/results`, `/places/demo-place`, `/plan/demo-plan`, `/saved`, and `/settings`. Without `EXPO_PUBLIC_APP_ENV`, Expo web returned HTTP 200 for `/` and rendered `Configuration needed`, `EXPO_PUBLIC_APP_ENV`, and `missing` without exposing raw values.
+Known limitations:
+Only `EXPO_PUBLIC_APP_ENV` is required now because Supabase and external providers are not configured yet. Supabase URL/anon-key and provider adapter validation are deferred to their own implementation tasks.
+Next task:
+TASK-009 — Define domain models.
 ```
 
 ```text
