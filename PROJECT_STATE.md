@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-013 — Implement diversity selection
-**Next task:** TASK-014 — Build plan input form
+**Last completed task:** TASK-014 — Build plan input form
+**Next task:** TASK-015 — Build recommendation results
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -27,6 +27,7 @@
 - TASK-011 added a pure hard-filtering layer for recommendation candidates, including age, schedule, travel, budget, indoor/outdoor, blocked-place, and return-time exclusions.
 - TASK-012 added a pure transparent 100-point scoring layer with component breakdowns, reason codes, warnings, confidence, deterministic sorting, and fixture snapshot coverage.
 - TASK-013 added a pure diversity-selection step that prevents comparable top results from being near-duplicates by category or coarse area.
+- TASK-014 replaced the home placeholder with a local mobile-first plan input form, validation helpers, accessibility labels/states, keyboard-friendly scrolling, reset behavior, and default values.
 
 ## Environment inventory
 
@@ -315,6 +316,25 @@ Known limitations:
 Diversity uses category and coarse area metadata only. Map-distance clustering and richer similarity rules remain deferred until real data/provider work.
 Next task:
 TASK-014 — Build plan input form.
+```
+
+```text
+2026-07-14 — TASK-014
+Summary:
+Replaced the home placeholder with a mobile-first local `PlanInputForm`. The form captures child age, coarse area, available window, nap start, max travel, budget, indoor/outdoor preference, energy level, stroller and bathroom requirements, and interests. Added pure validation helpers with tests, accessible labels/states, keyboard-friendly screen scrolling, reset behavior, and a local validated summary.
+Commands/tests:
+`npm test -- --runInBand src/test/plan-input.test.ts` — passed, 5 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 8 test suites, 32 tests, and 1 snapshot.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web on port 8084 with `EXPO_PUBLIC_APP_ENV=local`; `http://localhost:8084/` returned HTTP 200. The server was stopped afterward. The cleanup command matched and killed its own PowerShell process after printing the 200 result, so the shell command exit code was non-zero despite the successful HTTP response.
+Known limitations:
+Form submission only validates and shows a local ready summary. It does not yet generate recommendations, persist defaults, request location permission, or navigate to results.
+Next task:
+TASK-015 — Build recommendation results.
 ```
 
 ```text

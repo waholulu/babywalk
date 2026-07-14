@@ -70,7 +70,7 @@
   Prevent the top three from being near-duplicates when comparable alternatives exist.  
   **Accept:** Unit tests verify category/location diversity rules.
 
-- [ ] **TASK-014 — Build plan input form**  
+- [x] **TASK-014 — Build plan input form**
   Build the home screen inputs with validation and saved defaults.  
   **Accept:** Keyboard, screen reader labels, validation, and reset behavior work.
 

@@ -19,7 +19,12 @@ export function ScreenContainer({
     <ThemedView style={styles.root}>
       <SafeAreaView style={styles.safeArea}>
         {scroll ? (
-          <ScrollView contentContainerStyle={styles.scrollContent}>
+          <ScrollView
+            automaticallyAdjustKeyboardInsets
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={styles.scrollContent}
+          >
             {content}
           </ScrollView>
         ) : (
