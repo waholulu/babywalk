@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-019 — Create initial schema migration
-**Next task:** TASK-020 — Add RLS policies and tests
+**Last completed task:** TASK-020 — Add RLS policies and tests
+**Next task:** TASK-021 — Add seed import
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -33,6 +33,7 @@
 - TASK-017 added a development-only score inspector for score components and hard-filter exclusions, gated off for production environments.
 - TASK-018 initialized local Supabase, documented local commands, and verified the local stack can start, report status, and reset.
 - TASK-019 added the initial Supabase schema migration for profiles, child preferences, places, events, saved places, visits, place feedback, and recommendation feedback with constraints, timestamps, indexes, and RLS enabled.
+- TASK-020 added reviewed RLS policies and automated SQL policy tests for public curated reads, anonymous recommendation feedback, authenticated owner-only data access, and cross-user isolation.
 
 ## Environment inventory
 
@@ -66,6 +67,28 @@
 - App-store and privacy disclosures must match actual data behavior.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-020
+Summary:
+Added `20260714191641_rls_policies.sql` with minimal grants and Row Level Security policies. Anonymous and authenticated clients can read only active places and scheduled events. Authenticated users can access only their own profiles, child preferences, saved places, visits, place feedback, and recommendation feedback. Anonymous recommendation feedback inserts are allowed only with a null `user_id`. Place feedback is insert/read-only for mobile users so moderation status is not client-writable.
+Commands/tests:
+`npx supabase migration new rls_policies` — passed and created the migration file.
+`npx supabase db reset` — passed and applied both migrations from an empty local database.
+`Get-Content -Raw supabase\tests\rls_policy_checks.sql | docker exec -i supabase_db_babywalk psql -v ON_ERROR_STOP=1 -U postgres -d postgres` — passed; SQL assertions covered anonymous public reads, anonymous recommendation feedback limits, User A/User B read isolation, blocked cross-user writes, blocked cross-user deletes, and blocked place-feedback moderation updates.
+`npx supabase db lint` — passed with no schema errors.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 11 test suites, 39 tests, and 2 snapshots.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed the migration for least-privilege behavior and sensitive data exposure. No secrets, child names, exact birth dates, medical details, precise home addresses, broad cross-user policies, or client-writable moderation status were introduced.
+Known limitations:
+Public place/event reads currently expose table columns allowed by the schema. If beta requirements need narrower public projection, add restricted public views or Edge Functions before exposing curated records broadly.
+Next task:
+TASK-021 — Add seed import.
+```
 
 ```text
 2026-07-14 — TASK-001

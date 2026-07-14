@@ -100,7 +100,7 @@
   Implement the reviewed subset of `DATABASE.md`, constraints, timestamps, and indexes.  
   **Accept:** Migration applies from empty database and rolls forward cleanly.
 
-- [ ] **TASK-020 — Add RLS policies and tests**  
+- [x] **TASK-020 — Add RLS policies and tests**  
   Implement public curated reads and user-owned writes.  
   **Accept:** Automated cross-user tests prove isolation.
 
