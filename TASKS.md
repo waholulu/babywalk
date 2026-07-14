@@ -58,7 +58,7 @@
   Add 15–20 varied pilot fixtures with known/unknown fields.  
   **Accept:** Dataset covers all canonical test scenarios and contains no copyrighted descriptions copied at length.
 
-- [ ] **TASK-011 — Implement hard filters**  
+- [x] **TASK-011 — Implement hard filters**
   Implement pure age, schedule, travel, budget, indoor/outdoor, blocked-place, and return-time filters.  
   **Accept:** Unit tests include boundaries and unknown values.
 

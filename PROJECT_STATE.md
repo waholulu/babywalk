@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 1 — App shell and developer experience  
-**Last completed task:** TASK-010 — Create mock candidate dataset
-**Next task:** TASK-011 — Implement hard filters
+**Last completed task:** TASK-011 — Implement hard filters
+**Next task:** TASK-012 — Implement scoring
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -24,6 +24,7 @@
 - TASK-008 added dependency-free client environment validation for `EXPO_PUBLIC_APP_ENV`, a safe configuration error screen, and `mobile/.env.example`.
 - TASK-009 added provider-neutral domain models for family constraints, place candidates, weather snapshots, recommendation results, reason codes, warnings, score components, and confidence.
 - TASK-010 added 18 local fixture place candidates and scenario coverage metadata for future filter/scoring tests.
+- TASK-011 added a pure hard-filtering layer for recommendation candidates, including age, schedule, travel, budget, indoor/outdoor, blocked-place, and return-time exclusions.
 
 ## Environment inventory
 
@@ -256,6 +257,24 @@ Known limitations:
 Fixture data is not real curated data. It is only for local deterministic development and tests.
 Next task:
 TASK-011 — Implement hard filters.
+```
+
+```text
+2026-07-14 — TASK-011
+Summary:
+Implemented pure hard filters for recommendation candidates under `mobile/src/domain/recommendation/`. The filter returns included candidates plus excluded candidate IDs with hard-filter codes for age range, schedule conflict, travel too far, over budget, indoor/outdoor mismatch, blocked place, and impossible return time. Unknown or missing values are preserved as non-excluding unless another known value proves incompatibility.
+Commands/tests:
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 5 test suites and 22 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed the implementation and unit tests for inclusive boundaries, unknown age, unknown price, unknown indoor/outdoor mode, unknown travel, missing schedule, missing visit duration, blocked places, and multi-code exclusions. No physical-device test was required because this task only changes pure domain logic.
+Known limitations:
+Schedule and return-time filtering are intentionally simple single-stop checks. Rich one- or two-stop planning remains for TASK-031.
+Next task:
+TASK-012 — Implement scoring.
 ```
 
 ```text
