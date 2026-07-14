@@ -120,9 +120,9 @@
   Add repository methods, optimistic UI only where safe, and error recovery.  
   **Accept:** User-owned data remains isolated and persists after restart.
 
-- [ ] **BLOCKER — Provide staging Supabase target for TASK-025**
-  Create or identify a staging Supabase project and client configuration that can receive an authenticated incorrect-data report.
-  **Accept:** Staging Supabase URL/anon key are available for local testing, migrations are applied, and an authenticated test user can insert one `place_feedback` row without exposing moderation fields.
+- [ ] **TASK-024A — Create minimal hosted Supabase staging target**
+  Create a separate hosted Supabase project for staging, apply the existing migrations, configure the local Expo app to connect with a publishable key, and make the app visibly identify staging mode.
+  **Accept:** The staging project is separate from local and future production, existing migrations apply successfully, the Expo app can connect using a publishable key, no database password/access token/secret key/service-role key is committed, and the app cannot silently point to production.
 
 - [ ] **TASK-025 — Implement incorrect-data feedback**  
   Add structured reporting and moderation state.  
@@ -186,9 +186,9 @@
 
 ## Release
 
-- [ ] **TASK-038 — Create staging environment**  
-  Separate Supabase project, secrets, EAS profile, and app identifier/suffix.  
-  **Accept:** Staging build cannot accidentally write to production.
+- [ ] **TASK-038 — Complete staging release environment**
+  Add the EAS preview profile, staging app identifier suffix, EAS environment variables, staging installable build, Sentry, release channel, and safeguards that staging builds cannot write to production.
+  **Accept:** A staging release build installs on a real device, reports errors to the staging monitoring project, uses staging release/update configuration, and cannot accidentally write to production.
 
 - [ ] **TASK-039 — Curate 50–100 pilot places**  
   Review source, freshness, categories, age fit, price, and verification notes.  

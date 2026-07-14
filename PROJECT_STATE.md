@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
 **Last completed task:** TASK-024 — Implement save/visit/block actions
-**Next task:** BLOCKER — Provide staging Supabase target for TASK-025
+**Next task:** TASK-024A — Create minimal hosted Supabase staging target
 **Last updated:** 2026-07-14
 
 ## Current facts
@@ -69,9 +69,23 @@
 - Family recommendations can lose trust quickly when hours or amenities are wrong.
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
-- TASK-025 cannot meet its stated acceptance until a real staging Supabase target exists.
+- TASK-025 cannot meet its stated acceptance until TASK-024A creates and verifies a real hosted staging Supabase target.
 
 ## Task completion log
+
+```text
+2026-07-14 — TASK-024A SCOPE ADDED
+Summary:
+Converted the previous TASK-025 staging blocker into a numbered prerequisite task: `TASK-024A — Create minimal hosted Supabase staging target`. The new task asks for a separate hosted Supabase staging project, existing migrations applied there, local Expo connection through publishable client configuration, visible staging identification, and explicit secret-safety/prod-safety acceptance criteria. Renamed the later release task to `TASK-038 — Complete staging release environment` and kept EAS preview builds, staging app identifiers, EAS environment variables, installable staging builds, Sentry, release channel, and staging-build production-write safeguards there.
+Commands/tests:
+`git diff --check` — passed; only line-ending normalization warnings were reported for existing Windows checkout behavior.
+Manual verification:
+Reviewed `TASKS.md`, `PROJECT_STATE.md`, and `docs/plans/TASK-024A.md` to confirm this change only updates task sequencing and documentation; no application feature or secret was changed.
+Known limitations:
+No hosted Supabase project was created by this documentation update. TASK-024A still needs to be executed before TASK-025 can be implemented and verified.
+Next task:
+TASK-024A — Create minimal hosted Supabase staging target.
+```
 
 ```text
 2026-07-14 — TASK-025 BLOCKED
