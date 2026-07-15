@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-031 — Implement schedule planner
-**Next task:** TASK-032 — Build day-plan UI
+**Last completed task:** TASK-032 — Build day-plan UI
+**Next task:** TASK-033 — Add personalization from history
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -46,6 +46,7 @@
 - TASK-029 added a `get-candidates` Supabase Edge Function with server-side mock provider normalization, cost-limit enforcement, bounded errors, and a mobile adapter that validates internal `PlaceCandidate` schemas without exposing provider raw fields.
 - TASK-030 added a pure curated/provider candidate merge step with conservative duplicate detection, curated-first source precedence, duplicate records, and provenance metadata alongside merged candidates.
 - TASK-031 added a pure schedule planner that produces one- or two-stop plans from ordered candidates, known travel estimates, activity buffers, available windows, nap return targets, and candidate schedule windows, with explicit no-plan results.
+- TASK-032 replaced the day-plan placeholder with a deterministic local day-plan UI that renders timeline steps, assumptions, a backup idea, verification warnings, and navigation back to results or constraints.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -81,6 +82,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-032
+Summary:
+Replaced the `/plan/[id]` placeholder with a mobile-first day-plan screen under `mobile/src/features/plans`. The screen builds a deterministic local plan from the existing recommendation results and schedule planner, then renders leave/arrival/activity/depart/return timeline steps, selected stops, assumptions, a backup idea, and verification warnings. It includes actions to return to results and modify constraints.
+Commands/tests:
+`npm test -- --runInBand src/test/day-plan.test.ts` — passed, 1 suite and 1 test.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 23 suites and 94 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with `EXPO_PUBLIC_APP_ENV=local` and `EXPO_PUBLIC_PLACE_DATA_SOURCE=fixtures`; `/plan/local-morning` returned HTTP 200 on port 65318.
+Known limitations:
+The plan is still built from the fixed local recommendation scenario. It does not yet consume live home-form constraints, persist plans, use provider-backed travel between stops, or personalize from history.
+Next task:
+TASK-033 — Add personalization from history.
+```
 
 ```text
 2026-07-15 — TASK-031

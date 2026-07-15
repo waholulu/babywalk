@@ -168,7 +168,7 @@
   Produce one- or two-stop plans with travel/activity buffers and return target.  
   **Accept:** No overlaps; impossible plans return an explicit no-plan result.
 
-- [ ] **TASK-032 — Build day-plan UI**  
+- [x] **TASK-032 — Build day-plan UI**
   Render timeline, assumptions, backup, and verification warnings.  
   **Accept:** User can return to results and modify constraints.
 
