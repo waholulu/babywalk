@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-030 — Merge curated and provider candidates
-**Next task:** TASK-031 — Implement schedule planner
+**Last completed task:** TASK-031 — Implement schedule planner
+**Next task:** TASK-032 — Build day-plan UI
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -45,6 +45,7 @@
 - TASK-028 added a `get-weather` Supabase Edge Function with request validation, timeout/error mapping, local mock output, mobile weather repositories, and fallback to deterministic fixture weather when the adapter is unavailable.
 - TASK-029 added a `get-candidates` Supabase Edge Function with server-side mock provider normalization, cost-limit enforcement, bounded errors, and a mobile adapter that validates internal `PlaceCandidate` schemas without exposing provider raw fields.
 - TASK-030 added a pure curated/provider candidate merge step with conservative duplicate detection, curated-first source precedence, duplicate records, and provenance metadata alongside merged candidates.
+- TASK-031 added a pure schedule planner that produces one- or two-stop plans from ordered candidates, known travel estimates, activity buffers, available windows, nap return targets, and candidate schedule windows, with explicit no-plan results.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -80,6 +81,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-031
+Summary:
+Added a pure schedule planner under `mobile/src/domain/scheduling`. The planner takes family constraints, ordered candidates, known travel estimates, max stop count, and an activity buffer, then returns either a one- or two-stop plan or an explicit no-plan reason. Plans include leave time, return time, return target, buffer minutes, and scheduled stops with arrival/activity/departure times. The planner respects available windows, nap start as the return target, candidate schedule windows, travel time, visit duration, and non-overlap by construction.
+Commands/tests:
+`npm test -- --runInBand src/test/schedule-planner.test.ts` — passed, 1 suite and 5 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 22 suites and 93 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed the planner diff and test output. No device or Edge Function manual test was required because this task only adds pure domain logic.
+Known limitations:
+The planner is not wired into the UI yet, uses known per-candidate travel estimates, and uses a conservative simple estimate for travel between stops rather than route-provider travel. TASK-032 will render day plans.
+Next task:
+TASK-032 — Build day-plan UI.
+```
 
 ```text
 2026-07-15 — TASK-030

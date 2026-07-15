@@ -164,7 +164,7 @@
 
 ## Day planning and quality
 
-- [ ] **TASK-031 — Implement schedule planner**  
+- [x] **TASK-031 — Implement schedule planner**
   Produce one- or two-stop plans with travel/activity buffers and return target.  
   **Accept:** No overlaps; impossible plans return an explicit no-plan result.
 

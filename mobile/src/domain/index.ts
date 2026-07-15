@@ -6,6 +6,7 @@ export * from "./recommendation/diversity";
 export * from "./recommendation/hard-filters";
 export * from "./recommendation/scoring";
 export * from "./recommendation/types";
+export * from "./scheduling";
 export {
   calculateStraightLineDistanceMiles,
   createSimpleTravelEstimator,
