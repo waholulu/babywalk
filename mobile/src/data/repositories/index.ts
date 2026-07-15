@@ -13,6 +13,12 @@ export {
   createSupabasePlaceRepository,
   mapSupabasePlaceRowToCandidate,
 } from "./place-repository.supabase";
+export {
+  createSupabasePlaceProviderRepository,
+  validatePlaceProviderRequest,
+  validatePlaceProviderResponse,
+} from "./place-provider-repository.supabase";
+export type { PlaceProviderRequest } from "./place-provider-repository.supabase";
 export type {
   PlaceFeedbackRepository,
   SubmitPlaceFeedbackInput,

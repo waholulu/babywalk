@@ -154,7 +154,7 @@
   Validate input/output, timeout, error mapping, and local mock.  
   **Accept:** Weather outage degrades gracefully.
 
-- [ ] **TASK-029 — Add place-provider Edge Function adapter**  
+- [x] **TASK-029 — Add place-provider Edge Function adapter**
   Keep secret key server-side, request only needed fields, normalize responses, and enforce cost limits.  
   **Accept:** Mobile receives internal schemas only; provider errors are bounded and logged.
 

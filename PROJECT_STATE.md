@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-028 — Add weather Edge Function adapter
-**Next task:** TASK-029 — Add place-provider Edge Function adapter
+**Last completed task:** TASK-029 — Add place-provider Edge Function adapter
+**Next task:** TASK-030 — Merge curated and provider candidates
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -43,6 +43,7 @@
 - TASK-026 added user-triggered foreground location permission through Expo Location, manual area fallback states, coarse current-location labels, and iOS permission copy without storing precise home address.
 - TASK-027 added a provider-neutral travel estimator interface, a deterministic no-network simple distance estimator, and local fixture travel estimates generated from coarse coordinates instead of a fixed minutes array.
 - TASK-028 added a `get-weather` Supabase Edge Function with request validation, timeout/error mapping, local mock output, mobile weather repositories, and fallback to deterministic fixture weather when the adapter is unavailable.
+- TASK-029 added a `get-candidates` Supabase Edge Function with server-side mock provider normalization, cost-limit enforcement, bounded errors, and a mobile adapter that validates internal `PlaceCandidate` schemas without exposing provider raw fields.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -78,6 +79,26 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-029
+Summary:
+Added the first place-provider adapter boundary. Supabase now has a dependency-free `get-candidates` Edge Function that accepts a coarse area/coordinate request, enforces a maximum candidate limit of 10, normalizes mock provider records to internal place candidate fields on the server, and returns bounded JSON errors while logging only a short failure reason. Mobile now has a Supabase place-provider repository that validates request shape, invokes `get-candidates`, validates internal `PlaceCandidate` output, preserves unknown values, and drops raw provider-only fields before callers see candidates.
+Commands/tests:
+`npm test -- --runInBand src/test/place-provider-repository.test.ts` — passed, 1 suite and 5 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 20 suites and 84 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+`npx supabase functions serve get-candidates --no-verify-jwt` plus HTTP POST smoke — passed; `task029_function_http=200 candidates=2 first=sproutscout_mock_place_provider:mock-library-morning rawProviderFieldPresent=False`.
+Manual verification:
+Confirmed the local Edge Function response returns internal candidate fields and does not expose the raw mock provider field checked in the smoke command.
+Known limitations:
+The adapter uses a mock provider only. No external provider account, API key, billing, deployment secret, persistence, or curated/provider deduplication was added. TASK-030 is responsible for merging curated and provider candidates.
+Next task:
+TASK-030 — Merge curated and provider candidates.
+```
 
 ```text
 2026-07-15 — TASK-028
