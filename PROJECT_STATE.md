@@ -72,9 +72,23 @@
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
 - TASK-025 app-side implementation exists, but final completion still needs authenticated staging verification.
-- Staging Auth currently requires email confirmation for synthetic password users, so TASK-025 cannot yet verify an authenticated `place_feedback` insert with the publishable key.
+- Staging Auth currently has email signups disabled, so TASK-025 cannot yet verify an authenticated `place_feedback` insert with the publishable key.
 
 ## Task completion log
+
+```text
+2026-07-15 — BLOCKER — Provide confirmed staging auth session for TASK-025
+Summary:
+Retried the TASK-025 staging verification after the user adjusted Auth settings. The previous `Email not confirmed` blocker changed to `Email signups are disabled`, so the publishable-key mobile path still cannot create/sign in a synthetic staging user and insert through RLS.
+Commands/tests:
+Staging publishable-key script with a synthetic Gmail-shaped address — failed at signup with `Email signups are disabled`.
+Manual verification:
+No secrets were written to tracked files. The app-side TASK-025 implementation remains committed and CI-passing, but final acceptance still requires a confirmed/authenticated staging session.
+Known limitations:
+TASK-025 remains unchecked until staging Auth allows the intended test path or a confirmed test account/session is available.
+Next task:
+BLOCKER — Provide confirmed staging auth session for TASK-025.
+```
 
 ```text
 2026-07-14 — TASK-025 BLOCKED
