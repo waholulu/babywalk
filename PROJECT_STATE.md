@@ -87,6 +87,22 @@
 ## Task completion log
 
 ```text
+2026-07-15 — TASK-036 BLOCKED
+Summary:
+Started TASK-036 and created `docs/plans/TASK-036.md`. Confirmed the current Windows workspace does not have a runnable mobile E2E target. `adb`, `emulator`, `maestro`, `detox`, and `appium` are not installed; Android SDK environment variables are not configured; default Android SDK and Maestro folders are absent. The only verified physical path remains manual Expo Go on iPhone 16 Pro running iOS 26.5 in LAN mode.
+Commands/tests:
+`Get-Command adb/emulator/maestro/detox/appium/npx` — only `npx` was found.
+`Get-ChildItem Env:ANDROID_HOME,Env:ANDROID_SDK_ROOT,Env:JAVA_HOME` — no configured variables found.
+Default Android SDK and Maestro folder checks — no runnable target found.
+Manual verification:
+Not run for this task. Manual iPhone Expo Go testing remains possible, but it does not satisfy automated E2E acceptance.
+Known limitations:
+TASK-036 cannot be completed until an Android emulator/physical Android device with adb, or another supported automated target, is configured. On Windows, iOS simulator automation is not available.
+Next task:
+BLOCKER — Configure a runnable E2E target for TASK-036, preferably Android Studio emulator plus adb, or revise TASK-036 to accept Expo web smoke tests until mobile automation is available.
+```
+
+```text
 2026-07-15 — TASK-035
 Summary:
 Narrowed TASK-035 from concrete Sentry setup to a crash reporting abstraction so the MVP can continue without external monitoring credentials. Added `mobile/src/lib/error-reporting.ts` with `captureException`, `captureMessage`, scoped context helpers, provider replacement hooks, local/staging sanitized development logs, and production noop behavior. The privacy filter drops sensitive context keys and redacts common email, token, secret, password, and precise-number patterns from messages. Recommendation loading failures now report through the wrapper without changing user-facing recovery.
