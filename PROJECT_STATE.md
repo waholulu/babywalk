@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-027 — Add distance/travel abstraction
-**Next task:** TASK-027B — Migrate from Expo Go to an EAS development build
+**Last completed task:** TASK-028 — Add weather Edge Function adapter
+**Next task:** TASK-029 — Add place-provider Edge Function adapter
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -42,6 +42,7 @@
 - TASK-025 added a structured incorrect-data feedback form, validation, Supabase repository, and verified one authenticated staging `place_feedback` insert without exposing moderation fields.
 - TASK-026 added user-triggered foreground location permission through Expo Location, manual area fallback states, coarse current-location labels, and iOS permission copy without storing precise home address.
 - TASK-027 added a provider-neutral travel estimator interface, a deterministic no-network simple distance estimator, and local fixture travel estimates generated from coarse coordinates instead of a fixed minutes array.
+- TASK-028 added a `get-weather` Supabase Edge Function with request validation, timeout/error mapping, local mock output, mobile weather repositories, and fallback to deterministic fixture weather when the adapter is unavailable.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -77,6 +78,26 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-028
+Summary:
+Added the first weather adapter boundary. Supabase now has a dependency-free `get-weather` Edge Function that accepts a coarse request, validates method/body, wraps the mock provider with a timeout, and returns the internal `WeatherSnapshot` shape or bounded JSON errors. Mobile now has weather repository interfaces, fixture and Supabase implementations, response/request validation, and `loadWeatherWithFallback` so recommendations keep working with deterministic fixture weather when the adapter is unavailable. TASK-027B remains intentionally deferred until Expo Go no longer supports a required native dependency or native release testing begins.
+Commands/tests:
+`npm test -- --runInBand src/test/weather-repository.test.ts src/test/recommendation-results.test.ts` — passed, 2 suites and 7 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 19 suites and 79 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+`npx supabase functions serve get-weather --no-verify-jwt` plus HTTP POST smoke — passed; `task028_function_http=200 condition=rain source=SproutScout weather mock`.
+Manual verification:
+Started Expo web with local fixture env; `/results` returned HTTP 200 (`task028_results_http=200`). Re-ran `npm run typecheck` after Expo regenerated router types; it still passed.
+Known limitations:
+The Edge Function uses a local mock provider only. No external weather API, provider secret, deployment, production accuracy, caching, or weather UI copy change was added.
+Next task:
+TASK-029 — Add place-provider Edge Function adapter.
+```
 
 ```text
 2026-07-15 — TASK-027

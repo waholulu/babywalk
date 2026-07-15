@@ -150,7 +150,7 @@
   Add `expo-dev-client`, EAS configuration, application identifiers/placeholders, and written build steps when Expo Go no longer supports a required native dependency or before native release testing.  
   **Accept:** A development build installs and runs on at least one real device, and the selected EAS profile/build steps are documented.
 
-- [ ] **TASK-028 — Add weather Edge Function adapter**  
+- [x] **TASK-028 — Add weather Edge Function adapter**
   Validate input/output, timeout, error mapping, and local mock.  
   **Accept:** Weather outage degrades gracefully.
 

@@ -13,11 +13,16 @@ import {
   WeatherSnapshot,
 } from "@/domain";
 import {
+  defaultLocalWeather,
+  loadWeatherWithFallback,
+  PlaceRepository,
+  WeatherRepository,
+} from "@/data/repositories";
+import { mockPlaceCandidates } from "@/data/fixtures";
+import {
   CandidateTravelEstimate,
   TravelEstimateMinutes,
 } from "@/domain/travel/types";
-import { mockPlaceCandidates } from "@/data/fixtures";
-import { PlaceRepository } from "@/data/repositories";
 
 export type RecommendationCardModel = {
   candidate: PlaceCandidate;
@@ -36,6 +41,7 @@ export type LocalRecommendationBuildResult = {
   excludedCount: number;
   candidateCount: number;
   sourceLabel: string;
+  weatherSourceLabel: string;
 };
 
 export const defaultLocalRecommendationConstraints: FamilyConstraints = {
@@ -61,17 +67,8 @@ export const defaultLocalRecommendationConstraints: FamilyConstraints = {
   interests: ["story", "museum", "playground"],
 };
 
-export const defaultLocalWeather: WeatherSnapshot = {
-  observedAt: "2026-07-15T08:00:00-04:00",
-  condition: "rain",
-  temperatureF: 72,
-  precipitationChancePercent: 70,
-  outdoorFriendly: false,
-  source: {
-    label: "SproutScout local weather fixture",
-    retrievedAt: "2026-07-15T08:00:00-04:00",
-    freshness: "recent",
-  },
+export const defaultWeatherRequest = {
+  areaLabel: "Jersey City, NJ",
 };
 
 const fixtureAreaCoordinates: Record<string, Coordinates> = {
@@ -109,16 +106,34 @@ export function buildLocalRecommendations(): LocalRecommendationBuildResult {
 export async function buildRepositoryRecommendations(
   repository: PlaceRepository,
   sourceLabel: string,
+  weatherRepository?: WeatherRepository,
 ): Promise<LocalRecommendationBuildResult> {
   const candidates = await repository.listCandidates();
-  return buildRecommendations(candidates, sourceLabel);
+  const weatherResult =
+    weatherRepository === undefined
+      ? { snapshot: defaultLocalWeather }
+      : await loadWeatherWithFallback(
+          weatherRepository,
+          defaultWeatherRequest,
+          defaultLocalWeather,
+        );
+
+  return buildRecommendations(candidates, sourceLabel, {
+    weather: weatherResult.snapshot,
+  });
 }
+
+type BuildRecommendationOptions = {
+  weather?: WeatherSnapshot;
+};
 
 export function buildRecommendations(
   candidates: PlaceCandidate[],
   sourceLabel: string,
+  options: BuildRecommendationOptions = {},
 ): LocalRecommendationBuildResult {
   const travelEstimates = estimateLocalTravel(candidates);
+  const weather = options.weather ?? defaultLocalWeather;
   const filtered = applyHardFilters({
     constraints: defaultLocalRecommendationConstraints,
     candidates,
@@ -128,7 +143,7 @@ export function buildRecommendations(
     constraints: defaultLocalRecommendationConstraints,
     candidates: filtered.included,
     travelEstimates,
-    weather: defaultLocalWeather,
+    weather,
   });
   const selectedResults = selectDiverseRecommendations({
     results: scoredResults,
@@ -141,6 +156,7 @@ export function buildRecommendations(
     excluded: filtered.excluded,
     excludedCount: filtered.excluded.length,
     sourceLabel,
+    weatherSourceLabel: weather.source.label,
     cards: selectedResults.map((result) =>
       buildCardModel(result, filtered.included, travelEstimates),
     ),

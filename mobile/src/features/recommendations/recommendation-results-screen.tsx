@@ -13,7 +13,10 @@ import {
   ScreenContainer,
 } from "@/components/ui";
 import { Radii, Spacing } from "@/constants/theme";
-import { createPlaceRepository } from "@/data/repositories";
+import {
+  createPlaceRepository,
+  createWeatherRepository,
+} from "@/data/repositories";
 import { readClientEnv } from "@/lib/env";
 import {
   buildRepositoryRecommendations,
@@ -42,6 +45,7 @@ export function RecommendationResultsScreen() {
     }
 
     const repository = createPlaceRepository(clientEnv.value);
+    const weatherRepository = createWeatherRepository(clientEnv.value);
     const sourceLabel =
       clientEnv.value.placeDataSource === "supabase"
         ? "Supabase places"
@@ -50,7 +54,11 @@ export function RecommendationResultsScreen() {
     setIsLoading(true);
     setErrorMessage(null);
 
-    void buildRepositoryRecommendations(repository, sourceLabel)
+    void buildRepositoryRecommendations(
+      repository,
+      sourceLabel,
+      weatherRepository,
+    )
       .then((result) => {
         setRecommendations(result);
       })

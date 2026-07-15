@@ -19,3 +19,19 @@ export type {
   SubmitPlaceFeedbackResult,
 } from "./place-feedback-repository";
 export { createSupabasePlaceFeedbackRepository } from "./place-feedback-repository.supabase";
+export {
+  loadWeatherWithFallback,
+  validateWeatherRequest,
+  validateWeatherSnapshot,
+} from "./weather-repository";
+export type {
+  WeatherLoadResult,
+  WeatherRepository,
+  WeatherRequest,
+} from "./weather-repository";
+export {
+  createFixtureWeatherRepository,
+  defaultLocalWeather,
+} from "./weather-repository.fixture";
+export { createWeatherRepository } from "./weather-repository.factory";
+export { createSupabaseWeatherRepository } from "./weather-repository.supabase";
