@@ -158,7 +158,7 @@
   Keep secret key server-side, request only needed fields, normalize responses, and enforce cost limits.  
   **Accept:** Mobile receives internal schemas only; provider errors are bounded and logged.
 
-- [ ] **TASK-030 — Merge curated and provider candidates**  
+- [x] **TASK-030 — Merge curated and provider candidates**
   Define deduplication and source precedence.  
   **Accept:** Duplicate records are tested and provenance is preserved.
 

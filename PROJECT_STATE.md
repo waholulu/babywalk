@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-029 — Add place-provider Edge Function adapter
-**Next task:** TASK-030 — Merge curated and provider candidates
+**Last completed task:** TASK-030 — Merge curated and provider candidates
+**Next task:** TASK-031 — Implement schedule planner
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -44,6 +44,7 @@
 - TASK-027 added a provider-neutral travel estimator interface, a deterministic no-network simple distance estimator, and local fixture travel estimates generated from coarse coordinates instead of a fixed minutes array.
 - TASK-028 added a `get-weather` Supabase Edge Function with request validation, timeout/error mapping, local mock output, mobile weather repositories, and fallback to deterministic fixture weather when the adapter is unavailable.
 - TASK-029 added a `get-candidates` Supabase Edge Function with server-side mock provider normalization, cost-limit enforcement, bounded errors, and a mobile adapter that validates internal `PlaceCandidate` schemas without exposing provider raw fields.
+- TASK-030 added a pure curated/provider candidate merge step with conservative duplicate detection, curated-first source precedence, duplicate records, and provenance metadata alongside merged candidates.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -79,6 +80,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-030
+Summary:
+Added a pure candidate merge module under `mobile/src/domain/place/merge.ts`. The merge takes curated and provider `PlaceCandidate` arrays, keeps curated records first, appends unique provider records, treats same normalized name plus same area or near coordinates as duplicates, and preserves provenance separately from the core candidate model. Curated records remain authoritative when provider candidates duplicate them; provider duplicate IDs and source labels are retained in provenance and duplicate records.
+Commands/tests:
+`npm test -- --runInBand src/test/place-merge.test.ts` — passed, 1 suite and 4 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 21 suites and 88 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed the merge diff and test output. No device or Edge Function manual test was required because this task only adds pure domain logic.
+Known limitations:
+The merge is not wired into live recommendations yet, does not persist provider candidates, and does not do field-level filling from provider data into curated records. TASK-031 starts day-plan scheduling rather than provider UI integration.
+Next task:
+TASK-031 — Implement schedule planner.
+```
 
 ```text
 2026-07-15 — TASK-029

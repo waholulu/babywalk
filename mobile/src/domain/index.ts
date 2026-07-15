@@ -1,5 +1,6 @@
 export * from "./common";
 export * from "./family/types";
+export * from "./place/merge";
 export * from "./place/types";
 export * from "./recommendation/diversity";
 export * from "./recommendation/hard-filters";
