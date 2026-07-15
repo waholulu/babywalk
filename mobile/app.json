@@ -8,7 +8,10 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "SproutScout uses your current location only when you ask, to plan outings near a coarse area."
+      }
     },
     "android": {
       "adaptiveIcon": {

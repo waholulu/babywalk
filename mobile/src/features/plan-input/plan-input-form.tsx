@@ -11,6 +11,12 @@ import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { Button, Chip, ScreenContainer } from "@/components/ui";
 import { Radii, Spacing } from "@/constants/theme";
+import {
+  buildCoarseCurrentLocationLabel,
+  buildLocationStatusMessage,
+  createExpoLocationService,
+  LocationPermissionState,
+} from "@/features/location";
 import { useTheme } from "@/hooks/use-theme";
 import {
   defaultPlanInputValues,
@@ -48,10 +54,13 @@ export function PlanInputForm() {
   const [submittedSummary, setSubmittedSummary] = useState<string | undefined>(
     undefined,
   );
+  const [locationState, setLocationState] =
+    useState<LocationPermissionState>("not_requested");
   const validationSummary = useMemo(
     () => validatePlanInputValues(values),
     [values],
   );
+  const locationService = useMemo(() => createExpoLocationService(), []);
 
   function updateValue<Key extends keyof PlanInputValues>(
     key: Key,
@@ -76,6 +85,24 @@ export function PlanInputForm() {
     setValues(defaultPlanInputValues);
     setErrors({});
     setSubmittedSummary(undefined);
+    setLocationState("not_requested");
+  }
+
+  async function handleUseCurrentLocation() {
+    setSubmittedSummary(undefined);
+    setLocationState("requesting");
+
+    const result = await locationService.requestCurrentLocation();
+
+    if (result.ok) {
+      updateValue(
+        "areaLabel",
+        buildCoarseCurrentLocationLabel(result.location),
+      );
+      setLocationState("granted");
+    } else {
+      setLocationState(result.reason);
+    }
   }
 
   return (
@@ -102,13 +129,30 @@ export function PlanInputForm() {
           />
         </Field>
 
-        <Field label="Area" error={errors.areaLabel}>
+        <Field
+          label="Area"
+          error={errors.areaLabel}
+          hint={buildLocationStatusMessage(locationState)}
+        >
           <Input
             value={values.areaLabel}
             onChangeText={(value) => updateValue("areaLabel", value)}
             autoCapitalize="words"
             accessibilityLabel="Planning area"
           />
+          <Button
+            variant="secondary"
+            disabled={locationState === "requesting"}
+            onPress={() => {
+              void handleUseCurrentLocation();
+            }}
+            accessibilityLabel="Use current location"
+            accessibilityHint="Requests foreground location permission only after this button is pressed."
+          >
+            {locationState === "requesting"
+              ? "Checking location..."
+              : "Use current location"}
+          </Button>
         </Field>
 
         <View style={styles.row}>

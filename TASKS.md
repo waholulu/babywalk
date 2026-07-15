@@ -138,7 +138,7 @@
 
 ## Location and providers
 
-- [ ] **TASK-026 — Implement location permission and fallback**  
+- [x] **TASK-026 — Implement location permission and fallback**
   Request permission only when needed; support manual city/ZIP-area entry.  
   **Accept:** Denial, restricted permission, and unavailable GPS are handled.
 

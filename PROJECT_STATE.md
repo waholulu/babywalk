@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-025 — Implement incorrect-data feedback
-**Next task:** TASK-026 — Implement location permission and fallback
+**Last completed task:** TASK-026 — Implement location permission and fallback
+**Next task:** TASK-027 — Add distance/travel abstraction
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -40,6 +40,7 @@
 - TASK-024 added working Save, Mark visited, and Do not recommend actions on place detail with a local repository, optimistic UI state, error rollback, and tests.
 - TASK-024A linked the local Supabase CLI to hosted staging project `babywalk` (`pspaowtnajsdwcyzrafl`), applied existing migrations, added hosted URL/project-ref validation, added visible local/staging environment banners, and documented staging Expo configuration without committing secrets.
 - TASK-025 added a structured incorrect-data feedback form, validation, Supabase repository, and verified one authenticated staging `place_feedback` insert without exposing moderation fields.
+- TASK-026 added user-triggered foreground location permission through Expo Location, manual area fallback states, coarse current-location labels, and iOS permission copy without storing precise home address.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -75,6 +76,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-026
+Summary:
+Added the first location permission path while preserving manual area fallback. Installed `expo-location`, added a location service boundary, pure state/copy helpers, and a Home screen "Use current location" button that requests foreground location only after user action. Successful location requests write a coarse rounded area label into the existing Area field; denied, restricted, and unavailable states all keep manual city/neighborhood/ZIP-area entry available. Added iOS foreground location permission copy explaining coarse planning use.
+Commands/tests:
+`npx expo install expo-location` — passed; npm still reports 15 moderate audit findings.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 17 suites and 70 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with local fixture env; `/` returned HTTP 200 (`task026_home_http=200`). Physical-device permission grant/deny behavior still needs a quick Expo Go tap test on iOS/Android because the automated environment cannot show native permission dialogs.
+Known limitations:
+No reverse geocoding, saved area persistence, maps, routing, or travel-time provider was added. Coarse current-location labels use rounded coordinates only for this planning form and are not persisted as a precise home address.
+Next task:
+TASK-027 — Add distance/travel abstraction.
+```
 
 ```text
 2026-07-15 — TASK-025
