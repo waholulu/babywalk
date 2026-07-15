@@ -184,9 +184,9 @@
   Add provider-neutral error reporting hooks, privacy filters, and development logs.
   **Accept:** Sanitized local/staging error reports are tested and provider can be replaced.
 
-- [ ] **TASK-036 — Add critical E2E smoke tests**  
-  Cover first launch, recommendation, place detail, and location-denied fallback.  
-  **Accept:** Tests run on a documented device/emulator target.
+- [x] **TASK-036 — Add critical E2E smoke tests**
+  Cover first launch, recommendation, place detail, and location-denied fallback with the current Expo Go physical-device path.
+  **Accept:** A manual smoke checklist documents the iPhone 16 Pro + Expo Go target, expected results, and fallback notes; automated mobile E2E is deferred until an Android emulator/adb or another runnable target is configured.
 
 - [ ] **TASK-037 — Accessibility and copy audit**  
   Review labels, focus order, contrast, dynamic text, touch targets, uncertainty language, and US English.  

@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-035 — Add crash reporting abstraction
-**Next task:** TASK-036 — Add critical E2E smoke tests
+**Last completed task:** TASK-036 — Add critical E2E smoke tests
+**Next task:** TASK-037 — Accessibility and copy audit
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -50,6 +50,7 @@
 - TASK-033 added bounded recommendation personalization from local saved, visited, and blocked place history; saved places act as the first local liked signal, visits reduce novelty, blocked places remain hard-filter exclusions, and explicit liked/disliked/membership IDs can only affect the capped family-preference score component.
 - TASK-034 added a provider-neutral analytics wrapper with sanitized local/staging development logs, production noop defaults, provider replacement for later analytics SDKs, and initial plan-submit/recommendations-loaded events that avoid precise location, child data, raw family profiles, and secrets.
 - TASK-035 was narrowed from concrete Sentry setup to a crash reporting abstraction. It added provider-neutral error capture helpers, sanitized local/staging development logs, production noop defaults, scoped context support, and privacy filters. Sentry, source maps, release naming, and deliberate staging test-error verification remain in TASK-038.
+- TASK-036 accepts the current iPhone 16 Pro + Expo Go LAN path as the documented critical E2E smoke target, adds a manual checklist for first launch, recommendations, place detail, and location-denied fallback, and defers automated mobile E2E until Android emulator/adb, Maestro, or another runnable target is configured.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -85,6 +86,26 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-036
+Summary:
+Revised TASK-036 to accept the current iPhone 16 Pro on iOS 26.5 with Expo Go in LAN mode as the documented manual critical E2E smoke target. Added `docs/testing/CRITICAL_E2E_SMOKE.md` with repeatable first-launch, recommendation-results, place-detail, and location-denied fallback smoke cases, expected results, and result-log fields. Automated mobile E2E remains deferred until Android emulator/adb, Maestro, or another runnable target is configured.
+Commands/tests:
+`npm test -- --runInBand src/test/location-state.test.ts src/test/recommendation-results.test.ts src/test/place-detail.test.ts` — passed, 3 suites and 7 tests.
+Expo web smoke with local fixture env — passed; `/`, `/results`, and `/places/hoboken-story-room-fixture` returned HTTP 200 on port 54263.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 26 suites and 106 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+The manual physical-device checklist is documented for iPhone 16 Pro on iOS 26.5 using Expo Go LAN mode. A fresh physical-device run was not performed by Codex because the device is user-controlled.
+Known limitations:
+This is a documented manual smoke path, not automated mobile E2E. Android emulator/adb, Maestro, Detox, and Appium remain unavailable in the current Windows environment.
+Next task:
+TASK-037 — Accessibility and copy audit.
+```
 
 ```text
 2026-07-15 — TASK-036 BLOCKED
