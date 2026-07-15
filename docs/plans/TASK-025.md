@@ -112,5 +112,5 @@ Let a parent submit structured incorrect-data feedback for a place without expos
   - `npx expo-doctor` — passed, 18/18 checks.
   - `npx supabase db lint --linked` — passed with no schema errors.
 - Manual test result: App-side payload shaping and repository tests confirm the client submits only `user_id`, `place_id`, `feedback_type`, and `details`, without `status`. The required authenticated staging insert could not be completed because no confirmed staging session was available.
-- Remaining limitations: TASK-025 is blocked by staging Auth email confirmation. The feedback UI requires a completed Supabase auth session; auth callback/session persistence remains deferred.
-- Acceptance criteria status: Blocked. Added `BLOCKER — Provide confirmed staging auth session for TASK-025`.
+- Remaining limitations: Full magic-link callback/session persistence remains deferred. Staging currently allows the synthetic auth path used for verification; revisit stricter Auth settings when the intended staging auth UX is implemented.
+- Acceptance criteria status: Complete. A report reached hosted staging through an authenticated publishable-key session, and the client read did not expose moderation `status`.

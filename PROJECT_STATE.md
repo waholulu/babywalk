@@ -2,9 +2,9 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-024A — Create minimal hosted Supabase staging target
-**Next task:** BLOCKER — Provide confirmed staging auth session for TASK-025
-**Last updated:** 2026-07-14
+**Last completed task:** TASK-025 — Implement incorrect-data feedback
+**Next task:** TASK-026 — Implement location permission and fallback
+**Last updated:** 2026-07-15
 
 ## Current facts
 
@@ -39,7 +39,8 @@
 - TASK-023 added optional guest-preserving email magic-link auth plumbing, a Settings account panel, and protected-cache clearing on sign-out.
 - TASK-024 added working Save, Mark visited, and Do not recommend actions on place detail with a local repository, optimistic UI state, error rollback, and tests.
 - TASK-024A linked the local Supabase CLI to hosted staging project `babywalk` (`pspaowtnajsdwcyzrafl`), applied existing migrations, added hosted URL/project-ref validation, added visible local/staging environment banners, and documented staging Expo configuration without committing secrets.
-- TASK-025 implementation work added a structured incorrect-data feedback form, validation, and Supabase repository, but final staging acceptance is blocked by staging Auth email confirmation.
+- TASK-025 added a structured incorrect-data feedback form, validation, Supabase repository, and verified one authenticated staging `place_feedback` insert without exposing moderation fields.
+- Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
 
@@ -71,10 +72,29 @@
 - Family recommendations can lose trust quickly when hours or amenities are wrong.
 - Coding agents may overbuild unless tasks remain atomic.
 - App-store and privacy disclosures must match actual data behavior.
-- TASK-025 app-side implementation exists, but final completion still needs authenticated staging verification.
-- Staging Auth currently has email signups disabled, so TASK-025 cannot yet verify an authenticated `place_feedback` insert with the publishable key.
+- Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-025
+Summary:
+Completed incorrect-data feedback. The place detail screen now opens a structured report form with supported feedback types, optional detail input capped at 2000 characters, sign-in-required/error/success states, and a Supabase repository that resolves visible place IDs to database place IDs before inserting. Payload shaping sends only `user_id`, `place_id`, `feedback_type`, and `details`; moderation `status` remains internal.
+Commands/tests:
+Staging publishable-key script — passed; created an authenticated synthetic staging user and inserted one `place_feedback` row for `hoboken-story-room-fixture`. The selected client fields were `details`, `feedback_type`, `id`, and `place_id`; `status` was not selected or exposed.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 16 suites and 67 tests.
+`npx expo-doctor` — initially failed because `expo` was `54.0.35` and SDK validation expected `~54.0.36`; passed after `npx expo install expo@~54.0.36`.
+`npx supabase db lint --linked` — passed with no schema errors.
+Manual verification:
+Confirmed the staging acceptance path uses the publishable key and authenticated RLS, not a committed service-role key. The inserted report reached hosted staging without internal moderation fields in the client read.
+Known limitations:
+Full magic-link callback/session persistence remains deferred. Staging currently allows the synthetic auth path used for verification; revisit stricter Auth settings when the intended staging auth UX is implemented.
+Next task:
+TASK-026 — Implement location permission and fallback.
+```
 
 ```text
 2026-07-15 — BLOCKER — Provide confirmed staging auth session for TASK-025
