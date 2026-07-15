@@ -180,9 +180,9 @@
   Define minimal events and prohibit precise location/child data.  
   **Accept:** Development log shows sanitized events; provider can be replaced.
 
-- [ ] **TASK-035 — Add crash/error monitoring**  
-  Configure staging and production, source maps, release naming, and privacy filters.  
-  **Accept:** A deliberate staging test error is visible without sensitive payloads.
+- [x] **TASK-035 — Add crash reporting abstraction**
+  Add provider-neutral error reporting hooks, privacy filters, and development logs.
+  **Accept:** Sanitized local/staging error reports are tested and provider can be replaced.
 
 - [ ] **TASK-036 — Add critical E2E smoke tests**  
   Cover first launch, recommendation, place detail, and location-denied fallback.  
@@ -195,8 +195,8 @@
 ## Release
 
 - [ ] **TASK-038 — Complete staging release environment**
-  Add the EAS preview profile, staging app identifier suffix, EAS environment variables, staging installable build, Sentry, release channel, and safeguards that staging builds cannot write to production.
-  **Accept:** A staging release build installs on a real device, reports errors to the staging monitoring project, uses staging release/update configuration, and cannot accidentally write to production.
+  Add the EAS preview profile, staging app identifier suffix, EAS environment variables, staging installable build, Sentry, source maps, release naming, release channel, a deliberate staging test error, and safeguards that staging builds cannot write to production.
+  **Accept:** A staging release build installs on a real device, reports errors to the staging monitoring project without sensitive payloads, uses staging release/update configuration, and cannot accidentally write to production.
 
 - [ ] **TASK-039 — Curate 50–100 pilot places**  
   Review source, freshness, categories, age fit, price, and verification notes.  

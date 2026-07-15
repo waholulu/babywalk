@@ -19,6 +19,7 @@ import {
   createWeatherRepository,
 } from "@/data/repositories";
 import { readClientEnv } from "@/lib/env";
+import { captureException } from "@/lib/error-reporting";
 import {
   buildRepositoryRecommendations,
   LocalRecommendationBuildResult,
@@ -78,7 +79,14 @@ export function RecommendationResultsScreen() {
           weather_source_label: result.weatherSourceLabel,
         });
       })
-      .catch(() => {
+      .catch((error: unknown) => {
+        captureException(error, {
+          context: {
+            feature: "recommendations",
+            source_label: sourceLabel,
+          },
+          message: "Recommendation load failed.",
+        });
         setRecommendations(null);
         setErrorMessage(
           "Places could not be loaded. Check configuration and try again.",

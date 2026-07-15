@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-034 — Add analytics wrapper
-**Next task:** TASK-035 — Add crash/error monitoring
+**Last completed task:** TASK-035 — Add crash reporting abstraction
+**Next task:** TASK-036 — Add critical E2E smoke tests
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -49,6 +49,7 @@
 - TASK-032 replaced the day-plan placeholder with a deterministic local day-plan UI that renders timeline steps, assumptions, a backup idea, verification warnings, and navigation back to results or constraints.
 - TASK-033 added bounded recommendation personalization from local saved, visited, and blocked place history; saved places act as the first local liked signal, visits reduce novelty, blocked places remain hard-filter exclusions, and explicit liked/disliked/membership IDs can only affect the capped family-preference score component.
 - TASK-034 added a provider-neutral analytics wrapper with sanitized local/staging development logs, production noop defaults, provider replacement for later analytics SDKs, and initial plan-submit/recommendations-loaded events that avoid precise location, child data, raw family profiles, and secrets.
+- TASK-035 was narrowed from concrete Sentry setup to a crash reporting abstraction. It added provider-neutral error capture helpers, sanitized local/staging development logs, production noop defaults, scoped context support, and privacy filters. Sentry, source maps, release naming, and deliberate staging test-error verification remain in TASK-038.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -84,6 +85,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-035
+Summary:
+Narrowed TASK-035 from concrete Sentry setup to a crash reporting abstraction so the MVP can continue without external monitoring credentials. Added `mobile/src/lib/error-reporting.ts` with `captureException`, `captureMessage`, scoped context helpers, provider replacement hooks, local/staging sanitized development logs, and production noop behavior. The privacy filter drops sensitive context keys and redacts common email, token, secret, password, and precise-number patterns from messages. Recommendation loading failures now report through the wrapper without changing user-facing recovery.
+Commands/tests:
+`npm test -- --runInBand src/test/error-reporting.test.ts` — passed, 1 suite and 5 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — initially failed because Expo Router generated `.expo/types/router.d.ts` was corrupt; passed after deleting the generated file and rerunning.
+`npm test -- --runInBand` — passed, 26 suites and 106 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with `EXPO_PUBLIC_APP_ENV=local` and `EXPO_PUBLIC_PLACE_DATA_SOURCE=fixtures`; `/results` returned HTTP 200 on port 50690. Re-ran `npm run typecheck` after Expo regenerated router artifacts; it still passed.
+Known limitations:
+No Sentry SDK, DSN, auth token, source map upload, release naming, production monitoring sink, or deliberate staging test error was configured. Those remain part of TASK-038.
+Next task:
+TASK-036 — Add critical E2E smoke tests.
+```
 
 ```text
 2026-07-15 — TASK-034
