@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-033 — Add personalization from history
-**Next task:** TASK-034 — Add analytics wrapper
+**Last completed task:** TASK-034 — Add analytics wrapper
+**Next task:** TASK-035 — Add crash/error monitoring
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -48,6 +48,7 @@
 - TASK-031 added a pure schedule planner that produces one- or two-stop plans from ordered candidates, known travel estimates, activity buffers, available windows, nap return targets, and candidate schedule windows, with explicit no-plan results.
 - TASK-032 replaced the day-plan placeholder with a deterministic local day-plan UI that renders timeline steps, assumptions, a backup idea, verification warnings, and navigation back to results or constraints.
 - TASK-033 added bounded recommendation personalization from local saved, visited, and blocked place history; saved places act as the first local liked signal, visits reduce novelty, blocked places remain hard-filter exclusions, and explicit liked/disliked/membership IDs can only affect the capped family-preference score component.
+- TASK-034 added a provider-neutral analytics wrapper with sanitized local/staging development logs, production noop defaults, provider replacement for later analytics SDKs, and initial plan-submit/recommendations-loaded events that avoid precise location, child data, raw family profiles, and secrets.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -83,6 +84,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-034
+Summary:
+Added a provider-neutral analytics wrapper under `mobile/src/lib/analytics.ts`. The default provider writes sanitized development logs in local/staging and does nothing in production. Sanitization drops sensitive property names such as child, age, area, address, coordinates, home, profile, token, secret, and key-like fields, and only allows primitive event values. The first tracked events are valid plan form submission and recommendation results loaded.
+Commands/tests:
+`npm test -- --runInBand src/test/analytics.test.ts` — passed, 1 suite and 3 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 25 suites and 101 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with `EXPO_PUBLIC_APP_ENV=local` and `EXPO_PUBLIC_PLACE_DATA_SOURCE=fixtures`; `/` and `/results` returned HTTP 200 on port 60507. Re-ran `npm run typecheck` after Expo regenerated router artifacts; it still passed.
+Known limitations:
+No third-party analytics SDK, persisted queue, identity stitching, Supabase analytics table, or production analytics sink was added. The wrapper is ready for a provider to be swapped in later.
+Next task:
+TASK-035 — Add crash/error monitoring.
+```
 
 ```text
 2026-07-15 — TASK-033

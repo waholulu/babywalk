@@ -18,6 +18,7 @@ import {
   LocationPermissionState,
 } from "@/features/location";
 import { useTheme } from "@/hooks/use-theme";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 import {
   defaultPlanInputValues,
   type PlanInputErrors,
@@ -78,6 +79,16 @@ export function PlanInputForm() {
       setSubmittedSummary(
         `${values.areaLabel.trim()} • ${values.availableStart}-${values.availableEnd} • ${values.maxTravelMinutes.trim()} min`,
       );
+      trackAnalyticsEvent("plan_submitted", {
+        bathroom_required: values.bathroomRequired,
+        budget: values.budget,
+        energy_level: values.energyLevel,
+        has_interests: values.interests.trim().length > 0,
+        has_nap: values.napStart.trim().length > 0,
+        indoor_outdoor: values.indoorOutdoor,
+        max_travel_bucket: buildMaxTravelBucket(values.maxTravelMinutes),
+        stroller_required: values.strollerRequired,
+      });
     }
   }
 
@@ -297,6 +308,28 @@ export function PlanInputForm() {
       </ThemedView>
     </ScreenContainer>
   );
+}
+
+function buildMaxTravelBucket(value: string): string {
+  const minutes = Number(value.trim());
+
+  if (!Number.isFinite(minutes)) {
+    return "unknown";
+  }
+
+  if (minutes <= 15) {
+    return "0_15";
+  }
+
+  if (minutes <= 30) {
+    return "16_30";
+  }
+
+  if (minutes <= 60) {
+    return "31_60";
+  }
+
+  return "61_plus";
 }
 
 function Field({

@@ -176,7 +176,7 @@
   Use visits, likes, blocks, and membership preferences as bounded score inputs.  
   **Accept:** Personalization cannot override hard incompatibilities.
 
-- [ ] **TASK-034 — Add analytics wrapper**  
+- [x] **TASK-034 — Add analytics wrapper**
   Define minimal events and prohibit precise location/child data.  
   **Accept:** Development log shows sanitized events; provider can be replaced.
 

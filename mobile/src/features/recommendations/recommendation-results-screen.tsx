@@ -29,6 +29,7 @@ import {
   shouldShowScoreInspector,
 } from "./score-inspector";
 import { buildPersonalizationFromPlaceActions } from "./personalization";
+import { trackAnalyticsEvent } from "@/lib/analytics";
 
 export function RecommendationResultsScreen() {
   const clientEnv = useMemo(() => readClientEnv(), []);
@@ -69,6 +70,13 @@ export function RecommendationResultsScreen() {
       )
       .then((result) => {
         setRecommendations(result);
+        trackAnalyticsEvent("recommendations_loaded", {
+          candidate_count: result.candidateCount,
+          excluded_count: result.excludedCount,
+          result_count: result.cards.length,
+          source_label: result.sourceLabel,
+          weather_source_label: result.weatherSourceLabel,
+        });
       })
       .catch(() => {
         setRecommendations(null);
