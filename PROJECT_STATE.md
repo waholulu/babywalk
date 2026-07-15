@@ -3,7 +3,7 @@
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
 **Last completed task:** TASK-037 — Accessibility and copy audit
-**Next task:** TASK-038 — Complete staging release environment
+**Next task:** BLOCKER — Provide release accounts and monitoring credentials for TASK-038
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -52,6 +52,7 @@
 - TASK-035 was narrowed from concrete Sentry setup to a crash reporting abstraction. It added provider-neutral error capture helpers, sanitized local/staging development logs, production noop defaults, scoped context support, and privacy filters. Sentry, source maps, release naming, and deliberate staging test-error verification remain in TASK-038.
 - TASK-036 accepts the current iPhone 16 Pro + Expo Go LAN path as the documented critical E2E smoke target, adds a manual checklist for first launch, recommendations, place detail, and location-denied fallback, and defers automated mobile E2E until Android emulator/adb, Maestro, or another runnable target is configured.
 - TASK-037 improved critical-flow accessibility semantics and parent-facing uncertainty copy, documented a VoiceOver/large-text audit checklist, and confirmed the code-side checks pass. Fresh physical-device VoiceOver and large-text verification remains a manual user-run check on iPhone 16 Pro with Expo Go.
+- TASK-038 is blocked before implementation because EAS is not authenticated in the current environment and no staging monitoring project/credentials are configured.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -87,6 +88,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-038 BLOCKED
+Summary:
+Started TASK-038 and created `docs/plans/TASK-038.md`. The task cannot be completed truthfully in the current environment because it requires an installable staging build and a verified staging monitoring report. `npx eas-cli whoami` reports that no Expo/EAS user is logged in, `npx eas-cli project:info` fails because an Expo account is required, `mobile/eas.json` does not exist, and no Sentry/monitoring configuration or credentials are present.
+Commands/tests:
+`npx eas-cli --version` — passed, eas-cli/21.0.1 via npx.
+`npx eas-cli whoami` — failed, not logged in.
+`npx eas-cli project:info` — failed, Expo user account required.
+`Test-Path mobile\eas.json` — returned false.
+`rg -n "SENTRY|sentry|EAS|eas|EXPO_PUBLIC_SUPABASE|projectId|runtimeVersion|releaseChannel|channel" -S .` — found no app-level EAS project configuration or monitoring configuration.
+`Get-ChildItem Env:` filtered for EAS/EXPO/SENTRY/SUPABASE — no matching credentials were set in the current shell.
+Manual verification:
+Not run. No installable staging build can be produced or installed until EAS authentication, build credentials/distribution, and staging monitoring configuration exist.
+Known limitations:
+No EAS preview profile, staging app identifier suffix, EAS environment variables, installable staging build, Sentry integration, source map upload, release naming, release channel, or deliberate staging test error was added. Doing so without credentials would create an unverified release setup.
+Next task:
+BLOCKER — Provide release accounts and monitoring credentials for TASK-038.
+```
 
 ```text
 2026-07-15 — TASK-037

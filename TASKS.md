@@ -194,6 +194,10 @@
 
 ## Release
 
+- [ ] **BLOCKER — Provide release accounts and monitoring credentials for TASK-038**
+  Log in to Expo/EAS or provide a non-committed `EXPO_TOKEN`, confirm the staging iOS/Android installable build path, and provide a staging monitoring project configuration through secret storage.
+  **Accept:** `npx eas-cli whoami` and `npx eas-cli project:info` succeed from `mobile/`, staging build credentials/distribution are available for at least one real device, and the monitoring provider DSN/upload credentials are available without committing secrets.
+
 - [ ] **TASK-038 — Complete staging release environment**
   Add the EAS preview profile, staging app identifier suffix, EAS environment variables, staging installable build, Sentry, source maps, release naming, release channel, a deliberate staging test error, and safeguards that staging builds cannot write to production.
   **Accept:** A staging release build installs on a real device, reports errors to the staging monitoring project without sensitive payloads, uses staging release/update configuration, and cannot accidentally write to production.
