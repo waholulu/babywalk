@@ -35,7 +35,7 @@ describe("buildScoreInspectorRows", () => {
     expect(buildScoreInspectorRows(firstCard)).toEqual([
       { label: "age_activity_fit", value: 25 },
       { label: "schedule_fit", value: 20 },
-      { label: "travel_convenience", value: 15 },
+      { label: "travel_convenience", value: 11 },
       { label: "weather_fit", value: 15 },
       { label: "budget_fit", value: 10 },
       { label: "amenities_confidence", value: 4 },

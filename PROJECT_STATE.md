@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-026 — Implement location permission and fallback
-**Next task:** TASK-027 — Add distance/travel abstraction
+**Last completed task:** TASK-027 — Add distance/travel abstraction
+**Next task:** TASK-027B — Migrate from Expo Go to an EAS development build
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -41,6 +41,7 @@
 - TASK-024A linked the local Supabase CLI to hosted staging project `babywalk` (`pspaowtnajsdwcyzrafl`), applied existing migrations, added hosted URL/project-ref validation, added visible local/staging environment banners, and documented staging Expo configuration without committing secrets.
 - TASK-025 added a structured incorrect-data feedback form, validation, Supabase repository, and verified one authenticated staging `place_feedback` insert without exposing moderation fields.
 - TASK-026 added user-triggered foreground location permission through Expo Location, manual area fallback states, coarse current-location labels, and iOS permission copy without storing precise home address.
+- TASK-027 added a provider-neutral travel estimator interface, a deterministic no-network simple distance estimator, and local fixture travel estimates generated from coarse coordinates instead of a fixed minutes array.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -76,6 +77,26 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-027
+Summary:
+Added a provider-neutral travel abstraction under `mobile/src/domain/travel`, including request/result types, a `TravelEstimator` interface, a Haversine straight-line distance helper, and a deterministic simple estimator with configurable road multiplier, speed, base minutes, minimum minutes, and rounding. Replaced the local recommendation hardcoded minutes array with estimates generated from explicit coarse fixture-area coordinates. Recommendation filtering/scoring still consumes `CandidateTravelEstimate[]`, so a routing provider can be swapped in later without changing hard filters or scoring.
+Commands/tests:
+`npm test -- --runInBand src/test/travel-estimator.test.ts src/test/recommendation-results.test.ts` — passed, 2 suites and 4 tests.
+`npm test -- --runInBand src/test/recommendation-results.test.ts -u` — passed and updated the canonical recommendation snapshot for the new generated travel estimates.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 18 suites and 73 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with local fixture env; `/results` returned HTTP 200 (`task027_results_http=200`). The first smoke attempt used `Start-Process npx` and failed on Windows because `npx` is a command shim, then the same smoke passed using `npx.cmd`.
+Known limitations:
+The simple estimator is not traffic-aware, route-aware, toll/bridge-aware, or provider-backed. It uses coarse fixture-area coordinates only and remains an estimate for deterministic local development.
+Next task:
+TASK-027B — Migrate from Expo Go to an EAS development build.
+```
 
 ```text
 2026-07-15 — TASK-026

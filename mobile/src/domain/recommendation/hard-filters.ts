@@ -1,5 +1,9 @@
 import { FamilyConstraints } from "@/domain/family/types";
 import { PlaceCandidate } from "@/domain/place/types";
+import {
+  CandidateTravelEstimate,
+  TravelEstimateMinutes,
+} from "@/domain/travel/types";
 
 export const hardFilterCodes = [
   "AGE_OUT_OF_RANGE",
@@ -12,13 +16,6 @@ export const hardFilterCodes = [
 ] as const;
 
 export type HardFilterCode = (typeof hardFilterCodes)[number];
-
-export type TravelEstimateMinutes = number | "unknown";
-
-export type CandidateTravelEstimate = {
-  candidateId: string;
-  minutes: TravelEstimateMinutes;
-};
 
 export type HardFilterInput = {
   constraints: FamilyConstraints;

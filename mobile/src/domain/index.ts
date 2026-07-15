@@ -5,4 +5,14 @@ export * from "./recommendation/diversity";
 export * from "./recommendation/hard-filters";
 export * from "./recommendation/scoring";
 export * from "./recommendation/types";
+export {
+  calculateStraightLineDistanceMiles,
+  createSimpleTravelEstimator,
+} from "./travel/simple-estimator";
+export type {
+  CandidateTravelDestination,
+  CandidateTravelEstimateInput,
+  TravelEstimator,
+  TravelEstimateSource,
+} from "./travel/types";
 export * from "./weather/types";

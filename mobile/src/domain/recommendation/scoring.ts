@@ -14,7 +14,7 @@ import {
 import {
   CandidateTravelEstimate,
   TravelEstimateMinutes,
-} from "@/domain/recommendation/hard-filters";
+} from "@/domain/travel/types";
 import { WeatherSnapshot } from "@/domain/weather/types";
 
 export type RecommendationScoringInput = {

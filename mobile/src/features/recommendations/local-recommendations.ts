@@ -1,17 +1,21 @@
 import {
   applyHardFilters,
-  CandidateTravelEstimate,
+  Coordinates,
   FamilyConstraints,
   HardFilterExclusion,
   PlaceCandidate,
   RecommendationResult,
   RecommendationWarning,
   ReasonCode,
+  createSimpleTravelEstimator,
   scoreRecommendations,
   selectDiverseRecommendations,
-  TravelEstimateMinutes,
   WeatherSnapshot,
 } from "@/domain";
+import {
+  CandidateTravelEstimate,
+  TravelEstimateMinutes,
+} from "@/domain/travel/types";
 import { mockPlaceCandidates } from "@/data/fixtures";
 import { PlaceRepository } from "@/data/repositories";
 
@@ -70,26 +74,33 @@ export const defaultLocalWeather: WeatherSnapshot = {
   },
 };
 
-export const defaultTravelEstimates: CandidateTravelEstimate[] = [
-  { candidateId: "hoboken-story-room-fixture", minutes: 12 },
-  { candidateId: "jersey-city-riverside-playground-fixture", minutes: 10 },
-  { candidateId: "montclair-art-play-space-fixture", minutes: 24 },
-  { candidateId: "bronx-animal-loop-fixture", minutes: 55 },
-  { candidateId: "bergen-farm-yard-fixture", minutes: 34 },
-  { candidateId: "meadow-park-short-loop-fixture", minutes: 18 },
-  { candidateId: "brooklyn-waterfront-stroll-fixture", minutes: 48 },
-  { candidateId: "queens-indoor-play-lab-fixture", minutes: 46 },
-  { candidateId: "newark-community-gym-fixture", minutes: 22 },
-  { candidateId: "fort-lee-nature-room-fixture", minutes: 20 },
-  { candidateId: "upper-west-toddler-museum-fixture", minutes: 52 },
-  { candidateId: "maplewood-puppet-morning-fixture", minutes: 31 },
-  { candidateId: "edgewater-ferry-watch-fixture", minutes: 18 },
-  { candidateId: "union-city-splash-pad-fixture", minutes: 12 },
-  { candidateId: "paramus-weatherproof-walk-fixture", minutes: 25 },
-  { candidateId: "prospect-toddler-loop-fixture", minutes: 50 },
-  { candidateId: "morristown-train-room-fixture", minutes: 44 },
-  { candidateId: "soho-family-gallery-fixture", minutes: 42 },
-];
+const fixtureAreaCoordinates: Record<string, Coordinates> = {
+  "Jersey City, NJ": { latitude: 40.7178, longitude: -74.0431 },
+  "Hoboken, NJ": { latitude: 40.744, longitude: -74.0324 },
+  "Montclair, NJ": { latitude: 40.8259, longitude: -74.209 },
+  "Bronx, NY": { latitude: 40.8448, longitude: -73.8648 },
+  "Bergen County, NJ": { latitude: 40.9263, longitude: -74.077 },
+  "North Jersey, NJ": { latitude: 40.793, longitude: -74.065 },
+  "Brooklyn, NY": { latitude: 40.6782, longitude: -73.9442 },
+  "Queens, NY": { latitude: 40.7282, longitude: -73.7949 },
+  "Newark, NJ": { latitude: 40.7357, longitude: -74.1724 },
+  "Fort Lee, NJ": { latitude: 40.8509, longitude: -73.9701 },
+  "Upper West Side, NY": { latitude: 40.787, longitude: -73.9754 },
+  "Maplewood, NJ": { latitude: 40.7312, longitude: -74.2735 },
+  "Edgewater, NJ": { latitude: 40.827, longitude: -73.9757 },
+  "Union City, NJ": { latitude: 40.7795, longitude: -74.0238 },
+  "Paramus, NJ": { latitude: 40.9445, longitude: -74.0754 },
+  "Morristown, NJ": { latitude: 40.797, longitude: -74.4815 },
+  "Manhattan, NY": { latitude: 40.724, longitude: -74 },
+};
+
+const simpleTravelEstimator = createSimpleTravelEstimator({
+  averageSpeedMph: 30,
+  roadDistanceMultiplier: 2,
+});
+
+export const defaultTravelEstimates: CandidateTravelEstimate[] =
+  estimateLocalTravel(mockPlaceCandidates);
 
 export function buildLocalRecommendations(): LocalRecommendationBuildResult {
   return buildRecommendations(mockPlaceCandidates, "local fixtures");
@@ -107,15 +118,16 @@ export function buildRecommendations(
   candidates: PlaceCandidate[],
   sourceLabel: string,
 ): LocalRecommendationBuildResult {
+  const travelEstimates = estimateLocalTravel(candidates);
   const filtered = applyHardFilters({
     constraints: defaultLocalRecommendationConstraints,
     candidates,
-    travelEstimates: defaultTravelEstimates,
+    travelEstimates,
   });
   const scoredResults = scoreRecommendations({
     constraints: defaultLocalRecommendationConstraints,
     candidates: filtered.included,
-    travelEstimates: defaultTravelEstimates,
+    travelEstimates,
     weather: defaultLocalWeather,
   });
   const selectedResults = selectDiverseRecommendations({
@@ -130,7 +142,7 @@ export function buildRecommendations(
     excludedCount: filtered.excluded.length,
     sourceLabel,
     cards: selectedResults.map((result) =>
-      buildCardModel(result, filtered.included),
+      buildCardModel(result, filtered.included, travelEstimates),
     ),
   };
 }
@@ -138,9 +150,10 @@ export function buildRecommendations(
 function buildCardModel(
   result: RecommendationResult,
   candidates: PlaceCandidate[],
+  travelEstimates: CandidateTravelEstimate[],
 ): RecommendationCardModel {
   const candidate = findCandidate(result.candidateId, candidates);
-  const travelMinutes = findTravelEstimate(candidate.id);
+  const travelMinutes = findTravelEstimate(candidate.id, travelEstimates);
 
   return {
     candidate,
@@ -170,12 +183,37 @@ function findCandidate(
   return candidate;
 }
 
-function findTravelEstimate(candidateId: string): TravelEstimateMinutes {
+function findTravelEstimate(
+  candidateId: string,
+  travelEstimates: CandidateTravelEstimate[],
+): TravelEstimateMinutes {
   return (
-    defaultTravelEstimates.find(
-      (estimate) => estimate.candidateId === candidateId,
-    )?.minutes ?? "unknown"
+    travelEstimates.find((estimate) => estimate.candidateId === candidateId)
+      ?.minutes ?? "unknown"
   );
+}
+
+function estimateLocalTravel(
+  candidates: PlaceCandidate[],
+): CandidateTravelEstimate[] {
+  return simpleTravelEstimator.estimateCandidates({
+    origin: getFixtureAreaCoordinates(
+      defaultLocalRecommendationConstraints.location.kind === "manual_area" ||
+        defaultLocalRecommendationConstraints.location.kind === "saved_area"
+        ? defaultLocalRecommendationConstraints.location.area.label
+        : undefined,
+    ),
+    destinations: candidates.map((candidate) => ({
+      candidateId: candidate.id,
+      coordinates:
+        candidate.coordinates ??
+        getFixtureAreaCoordinates(candidate.area.label),
+    })),
+  });
+}
+
+function getFixtureAreaCoordinates(label: string | undefined) {
+  return label === undefined ? undefined : fixtureAreaCoordinates[label];
 }
 
 function formatAgeFit(candidate: PlaceCandidate): string {

@@ -142,7 +142,7 @@
   Request permission only when needed; support manual city/ZIP-area entry.  
   **Accept:** Denial, restricted permission, and unavailable GPS are handled.
 
-- [ ] **TASK-027 — Add distance/travel abstraction**  
+- [x] **TASK-027 — Add distance/travel abstraction**
   Start with a simple estimate and interface that can accept a routing provider later.  
   **Accept:** Domain tests do not require maps or network.
 
