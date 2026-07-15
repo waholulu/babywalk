@@ -172,7 +172,7 @@
   Render timeline, assumptions, backup, and verification warnings.  
   **Accept:** User can return to results and modify constraints.
 
-- [ ] **TASK-033 — Add personalization from history**  
+- [x] **TASK-033 — Add personalization from history**
   Use visits, likes, blocks, and membership preferences as bounded score inputs.  
   **Accept:** Personalization cannot override hard incompatibilities.
 

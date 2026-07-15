@@ -14,6 +14,7 @@ import {
 } from "@/components/ui";
 import { Radii, Spacing } from "@/constants/theme";
 import {
+  createLocalPlaceActionsRepository,
   createPlaceRepository,
   createWeatherRepository,
 } from "@/data/repositories";
@@ -27,6 +28,7 @@ import {
   buildScoreInspectorRows,
   shouldShowScoreInspector,
 } from "./score-inspector";
+import { buildPersonalizationFromPlaceActions } from "./personalization";
 
 export function RecommendationResultsScreen() {
   const clientEnv = useMemo(() => readClientEnv(), []);
@@ -46,6 +48,7 @@ export function RecommendationResultsScreen() {
 
     const repository = createPlaceRepository(clientEnv.value);
     const weatherRepository = createWeatherRepository(clientEnv.value);
+    const actionsRepository = createLocalPlaceActionsRepository();
     const sourceLabel =
       clientEnv.value.placeDataSource === "supabase"
         ? "Supabase places"
@@ -54,11 +57,16 @@ export function RecommendationResultsScreen() {
     setIsLoading(true);
     setErrorMessage(null);
 
-    void buildRepositoryRecommendations(
-      repository,
-      sourceLabel,
-      weatherRepository,
-    )
+    void actionsRepository
+      .getState()
+      .then((actionState) =>
+        buildRepositoryRecommendations(
+          repository,
+          sourceLabel,
+          weatherRepository,
+          buildPersonalizationFromPlaceActions(actionState),
+        ),
+      )
       .then((result) => {
         setRecommendations(result);
       })

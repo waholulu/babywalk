@@ -23,6 +23,11 @@ import {
   CandidateTravelEstimate,
   TravelEstimateMinutes,
 } from "@/domain/travel/types";
+import {
+  applyPersonalizationToConstraints,
+  createEmptyRecommendationPersonalization,
+  RecommendationPersonalization,
+} from "./personalization";
 
 export type RecommendationCardModel = {
   candidate: PlaceCandidate;
@@ -107,6 +112,7 @@ export async function buildRepositoryRecommendations(
   repository: PlaceRepository,
   sourceLabel: string,
   weatherRepository?: WeatherRepository,
+  personalization?: RecommendationPersonalization,
 ): Promise<LocalRecommendationBuildResult> {
   const candidates = await repository.listCandidates();
   const weatherResult =
@@ -119,11 +125,13 @@ export async function buildRepositoryRecommendations(
         );
 
   return buildRecommendations(candidates, sourceLabel, {
+    personalization,
     weather: weatherResult.snapshot,
   });
 }
 
 type BuildRecommendationOptions = {
+  personalization?: RecommendationPersonalization;
   weather?: WeatherSnapshot;
 };
 
@@ -134,16 +142,26 @@ export function buildRecommendations(
 ): LocalRecommendationBuildResult {
   const travelEstimates = estimateLocalTravel(candidates);
   const weather = options.weather ?? defaultLocalWeather;
+  const personalization =
+    options.personalization ?? createEmptyRecommendationPersonalization();
+  const constraints = applyPersonalizationToConstraints(
+    defaultLocalRecommendationConstraints,
+    personalization,
+  );
   const filtered = applyHardFilters({
-    constraints: defaultLocalRecommendationConstraints,
+    constraints,
     candidates,
     travelEstimates,
   });
   const scoredResults = scoreRecommendations({
-    constraints: defaultLocalRecommendationConstraints,
+    constraints,
     candidates: filtered.included,
     travelEstimates,
     weather,
+    visitedPlaceIds: personalization.visitedPlaceIds,
+    likedPlaceIds: personalization.likedPlaceIds,
+    dislikedPlaceIds: personalization.dislikedPlaceIds,
+    membershipPlaceIds: personalization.membershipPlaceIds,
   });
   const selectedResults = selectDiverseRecommendations({
     results: scoredResults,

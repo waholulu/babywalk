@@ -23,6 +23,8 @@ export type RecommendationScoringInput = {
   travelEstimates?: CandidateTravelEstimate[];
   weather?: WeatherSnapshot;
   visitedPlaceIds?: string[];
+  likedPlaceIds?: string[];
+  dislikedPlaceIds?: string[];
   membershipPlaceIds?: string[];
 };
 
@@ -43,6 +45,8 @@ type CandidateScoreContext = {
   travelMinutes: TravelEstimateMinutes;
   weather?: WeatherSnapshot;
   visitedPlaceIds: Set<string>;
+  likedPlaceIds: Set<string>;
+  dislikedPlaceIds: Set<string>;
   membershipPlaceIds: Set<string>;
 };
 
@@ -78,6 +82,8 @@ export function scoreRecommendations(
     ]),
   );
   const visitedPlaceIds = new Set(input.visitedPlaceIds ?? []);
+  const likedPlaceIds = new Set(input.likedPlaceIds ?? []);
+  const dislikedPlaceIds = new Set(input.dislikedPlaceIds ?? []);
   const membershipPlaceIds = new Set(input.membershipPlaceIds ?? []);
 
   return input.candidates
@@ -88,6 +94,8 @@ export function scoreRecommendations(
         travelMinutes: travelByCandidateId.get(candidate.id) ?? "unknown",
         weather: input.weather,
         visitedPlaceIds,
+        likedPlaceIds,
+        dislikedPlaceIds,
         membershipPlaceIds,
       }),
     )
@@ -372,8 +380,16 @@ function scoreNovelty(context: CandidateScoreContext): ComponentScore {
 }
 
 function scoreFamilyPreference(context: CandidateScoreContext): ComponentScore {
+  if (context.dislikedPlaceIds.has(context.candidate.id)) {
+    return { value: 0 };
+  }
+
   if (context.membershipPlaceIds.has(context.candidate.id)) {
     return { value: 5, reasonCodes: ["MEMBERSHIP_VALUE"] };
+  }
+
+  if (context.likedPlaceIds.has(context.candidate.id)) {
+    return { value: 5 };
   }
 
   const interests = context.constraints.interests ?? [];

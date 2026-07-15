@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-032 — Build day-plan UI
-**Next task:** TASK-033 — Add personalization from history
+**Last completed task:** TASK-033 — Add personalization from history
+**Next task:** TASK-034 — Add analytics wrapper
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -47,6 +47,7 @@
 - TASK-030 added a pure curated/provider candidate merge step with conservative duplicate detection, curated-first source precedence, duplicate records, and provenance metadata alongside merged candidates.
 - TASK-031 added a pure schedule planner that produces one- or two-stop plans from ordered candidates, known travel estimates, activity buffers, available windows, nap return targets, and candidate schedule windows, with explicit no-plan results.
 - TASK-032 replaced the day-plan placeholder with a deterministic local day-plan UI that renders timeline steps, assumptions, a backup idea, verification warnings, and navigation back to results or constraints.
+- TASK-033 added bounded recommendation personalization from local saved, visited, and blocked place history; saved places act as the first local liked signal, visits reduce novelty, blocked places remain hard-filter exclusions, and explicit liked/disliked/membership IDs can only affect the capped family-preference score component.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -82,6 +83,25 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-033
+Summary:
+Added bounded personalization to the recommendation pipeline. Local saved places now map to the first liked-place signal, local visited places reduce novelty, and local blocked places are merged into hard-filter constraints before scoring. Scoring now accepts liked, disliked, and membership place IDs, but those signals only affect the capped 5-point family-preference component. Blocked places remain hard exclusions, so personalization cannot rescue an incompatible or blocked candidate.
+Commands/tests:
+`npm test -- --runInBand src/test/recommendation-personalization.test.ts src/test/scoring.test.ts src/test/recommendation-results.test.ts` — passed, 3 suites and 7 tests.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 24 suites and 98 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Started Expo web with `EXPO_PUBLIC_APP_ENV=local` and `EXPO_PUBLIC_PLACE_DATA_SOURCE=fixtures`; `/results` returned HTTP 200 on port 57216. Re-ran `npm run typecheck` after Expo regenerated router artifacts; it still passed.
+Known limitations:
+There is no separate like/dislike UI yet. Saved places provide the local liked signal for now, disliked and membership place IDs are supported as explicit scoring inputs, and Supabase-backed history remains future work.
+Next task:
+TASK-034 — Add analytics wrapper.
+```
 
 ```text
 2026-07-15 — TASK-032
