@@ -128,7 +128,11 @@ function TimelineItem({
 }) {
   return (
     <View style={styles.timelineRow}>
-      <View style={styles.markerColumn}>
+      <View
+        accessible={false}
+        importantForAccessibility="no-hide-descendants"
+        style={styles.markerColumn}
+      >
         <ThemedView type="primary" style={styles.marker} />
         {isLast ? null : <ThemedView type="border" style={styles.markerLine} />}
       </View>

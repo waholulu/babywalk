@@ -278,6 +278,9 @@ export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
                   variant={
                     option.type === feedbackType ? "primary" : "secondary"
                   }
+                  accessibilityState={{
+                    selected: option.type === feedbackType,
+                  }}
                   disabled={isFeedbackBusy}
                   onPress={() => {
                     setFeedbackType(option.type);
@@ -311,6 +314,7 @@ export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
             </ThemedText>
             <Button
               disabled={isFeedbackBusy}
+              accessibilityLabel="Send incorrect data report"
               onPress={() => {
                 void submitFeedback();
               }}
@@ -341,10 +345,14 @@ export function PlaceDetailScreen({ id }: PlaceDetailScreenProps) {
 
       <View style={styles.navigation}>
         <Link href="/results" asChild>
-          <Button variant="secondary">Back to results</Button>
+          <Button variant="secondary" accessibilityLabel="Back to results">
+            Back to results
+          </Button>
         </Link>
         <Link href="/" asChild>
-          <Button variant="ghost">Back to home</Button>
+          <Button variant="ghost" accessibilityLabel="Back to home">
+            Back to home
+          </Button>
         </Link>
       </View>
     </ScreenContainer>

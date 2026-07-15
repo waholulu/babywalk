@@ -188,7 +188,7 @@
   Cover first launch, recommendation, place detail, and location-denied fallback with the current Expo Go physical-device path.
   **Accept:** A manual smoke checklist documents the iPhone 16 Pro + Expo Go target, expected results, and fallback notes; automated mobile E2E is deferred until an Android emulator/adb or another runnable target is configured.
 
-- [ ] **TASK-037 — Accessibility and copy audit**  
+- [x] **TASK-037 — Accessibility and copy audit**
   Review labels, focus order, contrast, dynamic text, touch targets, uncertainty language, and US English.  
   **Accept:** Critical flows are usable with a screen reader and large text.
 

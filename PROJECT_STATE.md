@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-036 — Add critical E2E smoke tests
-**Next task:** TASK-037 — Accessibility and copy audit
+**Last completed task:** TASK-037 — Accessibility and copy audit
+**Next task:** TASK-038 — Complete staging release environment
 **Last updated:** 2026-07-15
 
 ## Current facts
@@ -51,6 +51,7 @@
 - TASK-034 added a provider-neutral analytics wrapper with sanitized local/staging development logs, production noop defaults, provider replacement for later analytics SDKs, and initial plan-submit/recommendations-loaded events that avoid precise location, child data, raw family profiles, and secrets.
 - TASK-035 was narrowed from concrete Sentry setup to a crash reporting abstraction. It added provider-neutral error capture helpers, sanitized local/staging development logs, production noop defaults, scoped context support, and privacy filters. Sentry, source maps, release naming, and deliberate staging test-error verification remain in TASK-038.
 - TASK-036 accepts the current iPhone 16 Pro + Expo Go LAN path as the documented critical E2E smoke target, adds a manual checklist for first launch, recommendations, place detail, and location-denied fallback, and defers automated mobile E2E until Android emulator/adb, Maestro, or another runnable target is configured.
+- TASK-037 improved critical-flow accessibility semantics and parent-facing uncertainty copy, documented a VoiceOver/large-text audit checklist, and confirmed the code-side checks pass. Fresh physical-device VoiceOver and large-text verification remains a manual user-run check on iPhone 16 Pro with Expo Go.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -86,6 +87,26 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-15 — TASK-037
+Summary:
+Completed a focused accessibility and copy audit for the current critical flows. Static chips now render as non-interactive text instead of fake buttons, interactive chips keep 44 px minimum targets, recommendation warnings no longer expose internal codes, details/report actions have clearer labels and selected state, and decorative day-plan timeline markers are hidden from the accessibility tree. Added `docs/testing/ACCESSIBILITY_COPY_AUDIT.md` with the code-side findings and manual VoiceOver/large-text checks.
+Commands/tests:
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — initially hit a corrupt generated `.expo/types/router.d.ts`; passed after deleting the generated file and rerunning.
+`npm test -- --runInBand` — passed, 26 suites and 106 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Expo web smoke through `expo start --web` on port 54264 did not become ready in the current shell.
+`npx expo export --platform web` — passed and generated 9 static routes.
+Manual verification:
+The physical-device VoiceOver and large-text checklist is documented for iPhone 16 Pro on iOS 26.5 using Expo Go LAN mode. A fresh physical-device run was not performed by Codex because the device is user-controlled.
+Known limitations:
+No automated screen-reader, focus-order, or contrast tooling was added. Manual device confirmation is still needed before treating accessibility as fully verified by a human on hardware.
+Next task:
+TASK-038 — Complete staging release environment.
+```
 
 ```text
 2026-07-15 — TASK-036

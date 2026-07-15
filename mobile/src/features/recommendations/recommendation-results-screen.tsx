@@ -191,7 +191,7 @@ function RecommendationCard({
         <ThemedView type="background" style={styles.scoreBadge}>
           <ThemedText type="smallBold">{result.totalScore}</ThemedText>
           <ThemedText type="small" themeColor="textSecondary">
-            score
+            fit score
           </ThemedText>
         </ThemedView>
       </View>
@@ -216,7 +216,12 @@ function RecommendationCard({
         href={{ pathname: "/places/[id]", params: { id: candidate.id } }}
         asChild
       >
-        <Button variant="secondary">Open place</Button>
+        <Button
+          variant="secondary"
+          accessibilityLabel={`Open details for ${candidate.name}`}
+        >
+          Open details
+        </Button>
       </Link>
     </Card>
   );
@@ -283,7 +288,7 @@ function WarningList({
       </ThemedText>
       {warnings.map((warning) => (
         <ThemedText key={warning.code} type="small" themeColor="warning">
-          {warning.code}: {warning.message}
+          {warning.message}
         </ThemedText>
       ))}
     </View>
