@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-038A — Reorder post-Expo-Go backlog
-**Next task:** TASK-039 — Curate 50–100 pilot places
+**Last completed task:** TASK-039 — Curate 50–100 pilot places
+**Next task:** TASK-040 — Import curated places into local and staging Supabase
 **Last updated:** 2026-07-16
 
 ## Current facts
@@ -54,6 +54,7 @@
 - TASK-037 improved critical-flow accessibility semantics and parent-facing uncertainty copy, documented a VoiceOver/large-text audit checklist, and confirmed the code-side checks pass. Fresh physical-device VoiceOver and large-text verification remains a manual user-run check on iPhone 16 Pro with Expo Go.
 - TASK-038 is blocked before implementation because EAS is not authenticated in the current environment and no staging monitoring project/credentials are configured.
 - TASK-038A intentionally skips native release setup for now. The next work stays on the Expo Go + hosted Supabase path: curate pilot data, import it into local/staging, run Expo Go staging QA, and prepare private-pilot support/privacy docs before returning to EAS/native release tasks.
+- TASK-039 added a pre-import pilot curation package with 69 North Jersey + NYC place candidates across 8 categories and both NJ/NY regions. The package includes source URLs, source owners, manual review dates, age-fit bands, price bands, indoor/outdoor modes, verification notes, a data-quality checklist, a correction process, and a no-dependency validator. No place rows were imported into local or staging Supabase yet.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -89,6 +90,21 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-16 — TASK-039
+Summary:
+Created the pre-import pilot place curation package for North Jersey + NYC. Added `docs/data/pilot_places.csv` with 69 candidate places, source URLs, source owners, manual review dates, rough age-fit bands, conservative price/mode fields, and verification notes. Added `docs/data/PILOT_PLACE_CURATION.md` with the data-quality checklist, field guidance, correction process, and TASK-040 import-readiness notes. Added `scripts/validate-pilot-places.mjs` to check row count, required fields, allowed enum values, unique slugs, date/URL shape, region/category coverage, and obvious secret-like values.
+Commands/tests:
+`node scripts/validate-pilot-places.mjs` — passed; 69 places, 8 categories, 2 regions.
+`git diff --check` — passed.
+Manual verification:
+Reviewed the curation package for scope. It is marked as pre-import curated input, uses public source URLs and review dates, and keeps day-of facts such as hours, ticket status, weather, stroller route, and restroom details in verification notes instead of claiming live status.
+Known limitations:
+The validator checks URL shape and field quality but does not fetch every source URL or prove current venue details. TASK-040 must map/import the CSV into local and staging Supabase and re-check any source fields that will become live app records. No database rows or staging data changed in this task.
+Next task:
+TASK-040 — Import curated places into local and staging Supabase.
+```
 
 ```text
 2026-07-16 — TASK-038A

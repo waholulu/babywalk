@@ -198,7 +198,7 @@
   Move native release, EAS, monitoring, and store-account work behind the tasks that can be verified with Expo Go plus hosted Supabase.
   **Accept:** TASK-039 is the next actionable task, EAS/monitoring tasks remain explicit but deferred, and `PROJECT_STATE.md` records the revised sequence.
 
-- [ ] **TASK-039 — Curate 50–100 pilot places**
+- [x] **TASK-039 — Curate 50–100 pilot places**
   Review source, freshness, categories, age fit, price, and verification notes.  
   **Accept:** Data-quality checklist passes and correction process is documented.
 
