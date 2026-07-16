@@ -17,8 +17,9 @@ A mobile release and a backend release are separate changes. Verify compatibilit
 
 - separate Supabase project;
 - separate provider keys and quotas;
-- separate application identifier/suffix when practical;
-- internal EAS distribution or store test track;
+- Expo Go + staging Supabase for the current low-friction QA path;
+- separate application identifier/suffix when native release testing begins;
+- internal EAS distribution or store test track when native release testing begins;
 - test accounts and non-production data.
 
 ### Production
@@ -41,7 +42,22 @@ Suggested profiles:
 
 Do not place secrets directly in `eas.json`, source files, screenshots, issue descriptions, or agent prompts.
 
-## 4. Normal staging release
+## 4. Current Expo Go staging QA path
+
+Use this path while the app remains compatible with Expo Go and before native-release work is required.
+
+1. Confirm clean Git status and intended commit.
+2. Confirm `PROJECT_STATE.md` and the active Expo Go + Supabase task.
+3. Run format, lint, typecheck, unit, database, and documented manual smoke checks.
+4. Apply migrations and curated seed/import data to hosted staging.
+5. Configure the local Expo app with staging publishable values in ignored local env or shell state.
+6. Start the app with `npx expo start` and open it on a real device with Expo Go.
+7. Confirm the app visibly identifies staging and reads/writes only the staging Supabase project.
+8. Record the device, OS, LAN/Tunnel mode, commit, checks, known issues, and manual QA result.
+
+Expo Go is not a substitute for an installable staging or production build. It does not verify native app identifiers, signing, release channels, source-map upload, store disclosure behavior, or native build distribution.
+
+## 5. Native staging release
 
 1. Confirm clean Git status and intended commit.
 2. Confirm `PROJECT_STATE.md` and release task.
@@ -54,7 +70,7 @@ Do not place secrets directly in `eas.json`, source files, screenshots, issue de
 9. Record build version, backend migration, commit, test result, and known limitations.
 10. Distribute to internal testers.
 
-## 5. Production release order
+## 6. Production release order
 
 Choose order based on compatibility:
 
@@ -70,7 +86,7 @@ Recommended sequence:
 4. wait for adoption and monitor;
 5. remove deprecated fields/endpoints in a later release.
 
-## 6. Database safety
+## 7. Database safety
 
 Before production migration:
 
@@ -83,19 +99,19 @@ Before production migration:
 
 If a migration has reached staging or production, do not edit its historical file. Add a new migration.
 
-## 7. Mobile build and store path
+## 8. Mobile build and store path
 
 Expo Application Services supports creating store-ready iOS/Android binaries and submitting them to app stores. Use development builds for normal production-grade development, then preview/internal distribution before production.
 
 Required business accounts and platform agreements remain the owner’s responsibility. Store review, privacy questionnaires, age ratings, export/compliance questions, screenshots, and support URLs must be completed truthfully.
 
-## 8. Over-the-air updates
+## 9. Over-the-air updates
 
 Use over-the-air JavaScript updates only when the change is compatible with the installed native runtime. Native dependency/config changes require a new binary. Keep runtime/version policy explicit and test updates in staging first.
 
 Never use an over-the-air update to bypass app-store review for behavior that platform rules require to be reviewed.
 
-## 9. Rollback
+## 10. Rollback
 
 ### Mobile binary issue
 
@@ -114,7 +130,7 @@ Never use an over-the-air update to bypass app-store review for behavior that pl
 
 Prefer a forward fix. Use rollback only when explicitly tested and safe. Never restore production blindly without understanding writes after the backup point.
 
-## 10. Release record template
+## 11. Release record template
 
 ```text
 Release:
@@ -132,7 +148,7 @@ Rollback action:
 Owner:
 ```
 
-## 11. Pre-submission checklist
+## 12. Pre-submission checklist
 
 - [ ] Correct production name, icons, splash, identifiers, and version
 - [ ] No development menu or score inspector in production

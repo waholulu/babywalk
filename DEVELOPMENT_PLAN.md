@@ -145,39 +145,41 @@ A parent can generate a realistic one- or two-stop morning plan and understand e
 - analytics contain no prohibited personal data;
 - core screens meet basic screen-reader and touch-target expectations.
 
-## Phase 6 — Staging and private pilot
+## Phase 6 — Expo Go staging and private pilot readiness
 
 ### Outcome
 
-A stable internal build is used by 20–50 families in the pilot area.
+A staging-backed Expo Go workflow is strong enough for owner-operated QA and a very small private pilot with testers who can use Expo Go.
 
 ### Work
 
 - separate staging Supabase project;
-- staging EAS profile and internal distribution;
 - import/review 50–100 pilot places;
 - support contact and in-app feedback;
-- privacy policy and terms review;
-- store metadata draft;
-- pilot onboarding guide;
+- privacy/support docs appropriate for a private non-store pilot;
+- Expo Go staging QA on physical devices;
+- pilot onboarding guide for Expo Go testers;
 - weekly data-quality triage.
 
 ### Gate
 
 - no unresolved critical security issue;
-- crash-free sessions meet an internally chosen threshold;
 - incorrect-data reports can be resolved;
 - recommendation usefulness is measured;
-- at least a meaningful subset of pilot users returns in a second week.
+- Expo Go limitations are explicit;
+- at least a meaningful subset of invited testers can complete the core flow.
 
-## Phase 7 — Public MVP release
+## Phase 7 — Native staging beta and public MVP release
 
 ### Outcome
 
-A narrowly scoped, supportable app-store release.
+A narrowly scoped, supportable native beta progresses into app-store release only after the Expo Go + Supabase path proves the core product.
 
 ### Work
 
+- EAS preview/staging profile and internal distribution;
+- staging monitoring, source maps, release naming, and release channels;
+- native staging builds for iOS and Android;
 - production Supabase project and secrets;
 - production build profile;
 - final privacy disclosures;

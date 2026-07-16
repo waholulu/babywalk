@@ -2,9 +2,9 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-037 — Accessibility and copy audit
-**Next task:** BLOCKER — Provide release accounts and monitoring credentials for TASK-038
-**Last updated:** 2026-07-15
+**Last completed task:** TASK-038A — Reorder post-Expo-Go backlog
+**Next task:** TASK-039 — Curate 50–100 pilot places
+**Last updated:** 2026-07-16
 
 ## Current facts
 
@@ -53,6 +53,7 @@
 - TASK-036 accepts the current iPhone 16 Pro + Expo Go LAN path as the documented critical E2E smoke target, adds a manual checklist for first launch, recommendations, place detail, and location-denied fallback, and defers automated mobile E2E until Android emulator/adb, Maestro, or another runnable target is configured.
 - TASK-037 improved critical-flow accessibility semantics and parent-facing uncertainty copy, documented a VoiceOver/large-text audit checklist, and confirmed the code-side checks pass. Fresh physical-device VoiceOver and large-text verification remains a manual user-run check on iPhone 16 Pro with Expo Go.
 - TASK-038 is blocked before implementation because EAS is not authenticated in the current environment and no staging monitoring project/credentials are configured.
+- TASK-038A intentionally skips native release setup for now. The next work stays on the Expo Go + hosted Supabase path: curate pilot data, import it into local/staging, run Expo Go staging QA, and prepare private-pilot support/privacy docs before returning to EAS/native release tasks.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -88,6 +89,21 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-16 — TASK-038A
+Summary:
+Reordered the remaining backlog around the current low-friction Expo Go + hosted Supabase path. TASK-039 is now the next actionable task. EAS builds, native app identifiers, Sentry/source maps, release channels, installable staging builds, and store submission are deferred into a later native-release section instead of blocking curated-data and staging QA work.
+Commands/tests:
+`git diff --check` — passed.
+`npm run format:check` — passed.
+Manual verification:
+Reviewed TASKS.md, DEVELOPMENT_PLAN.md, and docs/DEPLOYMENT.md to confirm the sequence now separates Expo Go staging QA from native release work.
+Known limitations:
+No application feature, EAS configuration, monitoring SDK, or database change was implemented. TASK-044 and later still require release accounts, native build credentials, and staging monitoring credentials.
+Next task:
+TASK-039 — Curate 50–100 pilot places.
+```
 
 ```text
 2026-07-15 — TASK-038 BLOCKED

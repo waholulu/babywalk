@@ -192,40 +192,62 @@
   Review labels, focus order, contrast, dynamic text, touch targets, uncertainty language, and US English.  
   **Accept:** Critical flows are usable with a screen reader and large text.
 
-## Release
+## Expo Go + Supabase pilot readiness
 
-- [ ] **BLOCKER — Provide release accounts and monitoring credentials for TASK-038**
-  Log in to Expo/EAS or provide a non-committed `EXPO_TOKEN`, confirm the staging iOS/Android installable build path, and provide a staging monitoring project configuration through secret storage.
-  **Accept:** `npx eas-cli whoami` and `npx eas-cli project:info` succeed from `mobile/`, staging build credentials/distribution are available for at least one real device, and the monitoring provider DSN/upload credentials are available without committing secrets.
+- [x] **TASK-038A — Reorder post-Expo-Go backlog**
+  Move native release, EAS, monitoring, and store-account work behind the tasks that can be verified with Expo Go plus hosted Supabase.
+  **Accept:** TASK-039 is the next actionable task, EAS/monitoring tasks remain explicit but deferred, and `PROJECT_STATE.md` records the revised sequence.
 
-- [ ] **TASK-038 — Complete staging release environment**
-  Add the EAS preview profile, staging app identifier suffix, EAS environment variables, staging installable build, Sentry, source maps, release naming, release channel, a deliberate staging test error, and safeguards that staging builds cannot write to production.
-  **Accept:** A staging release build installs on a real device, reports errors to the staging monitoring project without sensitive payloads, uses staging release/update configuration, and cannot accidentally write to production.
-
-- [ ] **TASK-039 — Curate 50–100 pilot places**  
+- [ ] **TASK-039 — Curate 50–100 pilot places**
   Review source, freshness, categories, age fit, price, and verification notes.  
   **Accept:** Data-quality checklist passes and correction process is documented.
 
-- [ ] **TASK-040 — Internal beta build**  
-  Build and distribute to testers; document install and support flow.  
-  **Accept:** At least one iOS and one Android tester completes the core flow.
+- [ ] **TASK-040 — Import curated places into local and staging Supabase**
+  Load the reviewed pilot places through versioned seed/import scripts and apply them to hosted staging.
+  **Accept:** Local reset and staging both contain the curated pilot set with source/freshness metadata, no secrets are committed, and the app can read the staging set through the publishable key.
 
-- [ ] **TASK-041 — Privacy, terms, and store disclosures**  
-  Finalize legal/business review and platform disclosures.  
-  **Accept:** In-app links work and disclosures match actual data collection.
+- [ ] **TASK-041 — Run Expo Go staging QA pass**
+  Verify the core flows on iPhone 16 Pro with Expo Go connected to hosted Supabase staging.
+  **Accept:** First launch, staging banner, recommendations from staging data, place detail, save/visit/block, incorrect-data feedback, location-denied fallback, and day plan are manually checked and recorded.
 
-- [ ] **TASK-042 — Production readiness review**  
-  Security, backup, rollback, monitoring, support, data freshness, and release checklist.  
-  **Accept:** No critical open item; owner signs the checklist.
+- [ ] **TASK-042 — Add support and privacy documents for private Expo Go pilot**
+  Add in-app links or documented placeholders for support contact, privacy policy, terms status, and data deletion/account support expectations for a private non-store pilot.
+  **Accept:** Disclosures match actual data collection, support contact is reachable, and no store-disclosure claims are made before native release work.
 
-- [ ] **TASK-043 — Submit public MVP**  
-  Produce store builds and submit with phased rollout/testing tracks where available.  
+- [ ] **TASK-043 — Expo Go private pilot readiness review**
+  Review security, RLS, staging data quality, support process, manual QA evidence, and known limitations before inviting any private testers who can use Expo Go.
+  **Accept:** No critical open security or privacy issue remains, all known Expo Go limitations are documented, and the next native-release prerequisite is explicit.
+
+## Native release and store readiness
+
+- [ ] **BLOCKER — Provide release accounts and monitoring credentials for native release tasks**
+  Log in to Expo/EAS or provide a non-committed `EXPO_TOKEN`, confirm the iOS/Android installable build path, and provide a staging monitoring project configuration through secret storage.
+  **Accept:** `npx eas-cli whoami` and `npx eas-cli project:info` succeed from `mobile/`, build credentials/distribution are available for at least one real device, and the monitoring provider DSN/upload credentials are available without committing secrets.
+
+- [ ] **TASK-044 — Complete staging native release environment**
+  Add the EAS preview profile, staging app identifier suffix, EAS environment variables, staging installable build, Sentry or chosen monitoring provider, source maps, release naming, release channel, a deliberate staging test error, and safeguards that staging builds cannot write to production.
+  **Accept:** A staging release build installs on a real device, reports errors to the staging monitoring project without sensitive payloads, uses staging release/update configuration, and cannot accidentally write to production.
+
+- [ ] **TASK-045 — Internal native beta build**
+  Build and distribute native staging builds to testers; document install and support flow.
+  **Accept:** At least one iOS and one Android tester completes the core flow from installable builds.
+
+- [ ] **TASK-046 — Store privacy, terms, and disclosure finalization**
+  Finalize legal/business review, store disclosures, account deletion/support requirements, and public privacy/terms links.
+  **Accept:** In-app links work and disclosures match actual data collection and SDK behavior.
+
+- [ ] **TASK-047 — Production readiness review**
+  Security, backup, rollback, monitoring, support, data freshness, and release checklist.
+  **Accept:** No critical open item remains; owner signs the checklist.
+
+- [ ] **TASK-048 — Submit public MVP**
+  Produce store builds and submit with phased rollout/testing tracks where available.
   **Accept:** Store review status is tracked and production monitoring is active.
 
 ## Post-MVP experiments
 
-- [ ] **TASK-044 — Affiliate-link experiment**
-- [ ] **TASK-045 — Paid-plan willingness test**
-- [ ] **TASK-046 — Optional LLM copy adapter**
-- [ ] **TASK-047 — Event ingestion pilot**
-- [ ] **TASK-048 — Merchant sponsorship experiment with strict labeling**
+- [ ] **TASK-049 — Affiliate-link experiment**
+- [ ] **TASK-050 — Paid-plan willingness test**
+- [ ] **TASK-051 — Optional LLM copy adapter**
+- [ ] **TASK-052 — Event ingestion pilot**
+- [ ] **TASK-053 — Merchant sponsorship experiment with strict labeling**
