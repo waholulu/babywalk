@@ -2,8 +2,8 @@
 
 **Working name:** SproutScout  
 **Current phase:** Phase 2 — Backend foundation
-**Last completed task:** TASK-039 — Curate 50–100 pilot places
-**Next task:** TASK-040 — Import curated places into local and staging Supabase
+**Last completed task:** TASK-040 — Import curated places into local and staging Supabase
+**Next task:** TASK-041 — Run Expo Go staging QA pass
 **Last updated:** 2026-07-16
 
 ## Current facts
@@ -55,6 +55,7 @@
 - TASK-038 is blocked before implementation because EAS is not authenticated in the current environment and no staging monitoring project/credentials are configured.
 - TASK-038A intentionally skips native release setup for now. The next work stays on the Expo Go + hosted Supabase path: curate pilot data, import it into local/staging, run Expo Go staging QA, and prepare private-pilot support/privacy docs before returning to EAS/native release tasks.
 - TASK-039 added a pre-import pilot curation package with 69 North Jersey + NYC place candidates across 8 categories and both NJ/NY regions. The package includes source URLs, source owners, manual review dates, age-fit bands, price bands, indoor/outdoor modes, verification notes, a data-quality checklist, a correction process, and a no-dependency validator. No place rows were imported into local or staging Supabase yet.
+- TASK-040 imported the 69 pilot places through a versioned generated seed into local Supabase and hosted staging. Local reset loads fixtures plus `sproutscout_pilot_20260716`, SQL checks prove source/freshness metadata and anon reads, and a staging REST read with the publishable key returned 69 active pilot rows. No staging password, access token, secret key, service-role key, or user data was committed.
 - Expo package is aligned to `~54.0.36` after `expo-doctor` flagged `54.0.35` as one patch behind the installed SDK expectation.
 
 ## Environment inventory
@@ -90,6 +91,36 @@
 - Staging Auth was temporarily adjusted so a synthetic test user can authenticate for TASK-025 verification. Re-enable stricter email confirmation when the staging auth flow is intentionally designed.
 
 ## Task completion log
+
+```text
+2026-07-16 — TASK-040
+Summary:
+Imported the curated pilot place set into local and hosted staging Supabase. Added `scripts/build-pilot-place-seed.mjs` to generate a deterministic `supabase/seeds/pilot_places_20260716.sql` from `docs/data/pilot_places.csv`, updated `supabase/config.toml` so local reset loads the versioned pilot seed after the fixture seed, and added `supabase/tests/pilot_place_checks.sql` for count, metadata, category, sensitive-data, and anon-read assertions.
+Commands/tests:
+`node scripts/validate-pilot-places.mjs` — passed; 69 places, 8 categories, 2 regions.
+`node scripts/build-pilot-place-seed.mjs --check` — passed.
+`node --check scripts/build-pilot-place-seed.mjs` — passed.
+`npx supabase db reset` — passed and seeded `supabase/seed.sql` plus `supabase/seeds/pilot_places_20260716.sql`.
+Local `supabase/tests/seed_checks.sql` — passed.
+Local `supabase/tests/pilot_place_checks.sql` — passed.
+Local `supabase/tests/rls_policy_checks.sql` — passed.
+`npx supabase db query --linked --file supabase/seeds/pilot_places_20260716.sql` — passed and applied the pilot import to staging.
+Linked staging `supabase/tests/pilot_place_checks.sql` — passed.
+Staging REST read through a publishable key — passed; returned 69 active pilot rows.
+`npx supabase db lint` — passed.
+`git diff --check` — passed with only Windows LF/CRLF warnings.
+`npm run format:check` — passed.
+`npm run lint` — passed.
+`npm run typecheck` — passed.
+`npm test -- --runInBand` — passed, 26 suites and 106 tests.
+`npx expo-doctor` — passed, 18/18 checks.
+Manual verification:
+Reviewed generated SQL for public place data only. No database password, access token, secret key, service-role key, user profile, child data, medical data, or precise home address was committed.
+Known limitations:
+Venue details and source URLs still need operational freshness review before inviting real testers. TASK-041 must run the Expo Go staging QA pass on iPhone 16 Pro connected to hosted staging.
+Next task:
+TASK-041 — Run Expo Go staging QA pass.
+```
 
 ```text
 2026-07-16 — TASK-039

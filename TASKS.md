@@ -202,7 +202,7 @@
   Review source, freshness, categories, age fit, price, and verification notes.  
   **Accept:** Data-quality checklist passes and correction process is documented.
 
-- [ ] **TASK-040 — Import curated places into local and staging Supabase**
+- [x] **TASK-040 — Import curated places into local and staging Supabase**
   Load the reviewed pilot places through versioned seed/import scripts and apply them to hosted staging.
   **Accept:** Local reset and staging both contain the curated pilot set with source/freshness metadata, no secrets are committed, and the app can read the staging set through the publishable key.
 
