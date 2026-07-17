@@ -1,5 +1,6 @@
 import {
   defaultPlanInputValues,
+  getPlanSubmitDestination,
   validatePlanInputValues,
 } from "@/features/plan-input/plan-input-validation";
 
@@ -55,5 +56,14 @@ describe("validatePlanInputValues", () => {
     ).toEqual({
       interests: "Keep interests under 120 characters.",
     });
+  });
+
+  it("navigates to results only after valid input", () => {
+    expect(getPlanSubmitDestination({})).toBe("/results");
+    expect(
+      getPlanSubmitDestination({
+        areaLabel: "Enter a city, neighborhood, or ZIP area.",
+      }),
+    ).toBeUndefined();
   });
 });

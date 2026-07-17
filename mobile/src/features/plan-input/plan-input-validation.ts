@@ -21,6 +21,8 @@ export type PlanInputValues = {
 
 export type PlanInputErrors = Partial<Record<keyof PlanInputValues, string>>;
 
+export type PlanSubmitDestination = "/results";
+
 export const defaultPlanInputValues: PlanInputValues = {
   childAgeMonths: "24",
   areaLabel: "Jersey City, NJ",
@@ -102,6 +104,12 @@ export function validatePlanInputValues(
   }
 
   return errors;
+}
+
+export function getPlanSubmitDestination(
+  errors: PlanInputErrors,
+): PlanSubmitDestination | undefined {
+  return Object.keys(errors).length === 0 ? "/results" : undefined;
 }
 
 function parseWholeNumber(value: string): number | undefined {

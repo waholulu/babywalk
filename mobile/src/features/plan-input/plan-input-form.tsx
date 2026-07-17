@@ -6,6 +6,7 @@ import {
   View,
   type KeyboardTypeOptions,
 } from "react-native";
+import { useRouter } from "expo-router";
 
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
@@ -21,6 +22,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import {
   defaultPlanInputValues,
+  getPlanSubmitDestination,
   type PlanInputErrors,
   type PlanInputValues,
   validatePlanInputValues,
@@ -50,6 +52,7 @@ const energyOptions: ChoiceOption<PlanInputValues["energyLevel"]>[] = [
 ];
 
 export function PlanInputForm() {
+  const router = useRouter();
   const [values, setValues] = useState<PlanInputValues>(defaultPlanInputValues);
   const [errors, setErrors] = useState<PlanInputErrors>({});
   const [submittedSummary, setSubmittedSummary] = useState<string | undefined>(
@@ -76,6 +79,7 @@ export function PlanInputForm() {
     setErrors(nextErrors);
 
     if (Object.keys(nextErrors).length === 0) {
+      const destination = getPlanSubmitDestination(nextErrors);
       setSubmittedSummary(
         `${values.areaLabel.trim()} • ${values.availableStart}-${values.availableEnd} • ${values.maxTravelMinutes.trim()} min`,
       );
@@ -89,6 +93,9 @@ export function PlanInputForm() {
         max_travel_bucket: buildMaxTravelBucket(values.maxTravelMinutes),
         stroller_required: values.strollerRequired,
       });
+      if (destination !== undefined) {
+        router.push(destination);
+      }
     }
   }
 
