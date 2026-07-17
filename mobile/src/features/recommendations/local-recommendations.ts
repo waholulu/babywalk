@@ -37,6 +37,7 @@ export type RecommendationCardModel = {
   ageFitLabel: string;
   priceLabel: string;
   reasonCodes: ReasonCode[];
+  reasonLabels: string[];
   warnings: RecommendationWarning[];
 };
 
@@ -200,6 +201,7 @@ function buildCardModel(
     ageFitLabel: formatAgeFit(candidate),
     priceLabel: formatPrice(candidate),
     reasonCodes: result.reasonCodes.slice(0, 2),
+    reasonLabels: result.reasonCodes.slice(0, 2).map(formatReasonCode),
     warnings: result.warnings.slice(0, 2),
   };
 }
@@ -290,4 +292,23 @@ function formatPrice(candidate: PlaceCandidate): string {
   }
 
   return "Price unknown";
+}
+
+function formatReasonCode(reasonCode: ReasonCode): string {
+  switch (reasonCode) {
+    case "AGE_MATCH":
+      return "Good age fit";
+    case "HOME_BEFORE_NAP":
+      return "Works before nap";
+    case "UNDER_BUDGET":
+      return "Fits your budget";
+    case "WEATHER_MATCH":
+      return "Works with today's weather";
+    case "SHORT_DRIVE":
+      return "Short trip";
+    case "MEMBERSHIP_VALUE":
+      return "Good membership value";
+    case "NEW_TO_FAMILY":
+      return "Something new";
+  }
 }

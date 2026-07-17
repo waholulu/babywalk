@@ -138,15 +138,15 @@ export function RecommendationResultsScreen() {
             ))}
           </View>
 
-          <ThemedView type="backgroundElement" style={styles.pipelineNote}>
-            <ThemedText type="smallBold">
-              Deterministic recommendation pipeline
-            </ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              {recommendations.excludedCount} candidates excluded by hard
-              filters.
-            </ThemedText>
-            {showInspector ? (
+          {showInspector ? (
+            <ThemedView type="backgroundElement" style={styles.pipelineNote}>
+              <ThemedText type="smallBold">
+                Deterministic recommendation pipeline
+              </ThemedText>
+              <ThemedText type="small" themeColor="textSecondary">
+                {recommendations.excludedCount} candidates excluded by hard
+                filters.
+              </ThemedText>
               <View style={styles.exclusionList}>
                 {recommendations.excluded.map((exclusion) => (
                   <ThemedText
@@ -158,8 +158,8 @@ export function RecommendationResultsScreen() {
                   </ThemedText>
                 ))}
               </View>
-            ) : null}
-          </ThemedView>
+            </ThemedView>
+          ) : null}
         </>
       ) : null}
 
@@ -177,7 +177,7 @@ function RecommendationCard({
   card: RecommendationCardModel;
   showInspector: boolean;
 }) {
-  const { candidate, result } = card;
+  const { candidate } = card;
 
   return (
     <Card>
@@ -188,12 +188,6 @@ function RecommendationCard({
             {candidate.category.replaceAll("_", " ")} • {candidate.area.label}
           </ThemedText>
         </View>
-        <ThemedView type="background" style={styles.scoreBadge}>
-          <ThemedText type="smallBold">{result.totalScore}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            fit score
-          </ThemedText>
-        </ThemedView>
       </View>
 
       <View style={styles.factGrid}>
@@ -203,7 +197,7 @@ function RecommendationCard({
         <Fact label="Age" value={card.ageFitLabel} />
       </View>
 
-      <CodeRow label="Reasons" values={card.reasonCodes} />
+      <ReasonList reasons={card.reasonLabels} />
       <WarningList warnings={card.warnings} />
 
       <ThemedText type="small" themeColor="textSecondary">
@@ -257,14 +251,14 @@ function Fact({ label, value }: { label: string; value: string }) {
   );
 }
 
-function CodeRow({ label, values }: { label: string; values: string[] }) {
+function ReasonList({ reasons }: { reasons: string[] }) {
   return (
     <View style={styles.codeSection}>
-      <ThemedText type="smallBold">{label}</ThemedText>
+      <ThemedText type="smallBold">Why this could work</ThemedText>
       <View style={styles.chipRow}>
-        {values.map((value) => (
-          <Chip key={value} selected>
-            {value}
+        {reasons.map((reason) => (
+          <Chip key={reason} selected>
+            {reason}
           </Chip>
         ))}
       </View>
@@ -312,14 +306,6 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 220,
     gap: Spacing.one,
-  },
-  scoreBadge: {
-    minWidth: 72,
-    borderRadius: Radii.medium,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
   },
   factGrid: {
     flexDirection: "row",

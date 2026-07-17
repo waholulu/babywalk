@@ -12,9 +12,9 @@ function envResult(
 }
 
 describe("shouldShowScoreInspector", () => {
-  it("shows the inspector in local and staging", () => {
+  it("shows the inspector only in local development", () => {
     expect(shouldShowScoreInspector(envResult("local"))).toBe(true);
-    expect(shouldShowScoreInspector(envResult("staging"))).toBe(true);
+    expect(shouldShowScoreInspector(envResult("staging"))).toBe(false);
   });
 
   it("hides the inspector in production or invalid env states", () => {

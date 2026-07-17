@@ -50,3 +50,8 @@ TASK-041 passes only when every required flow is marked `Pass`, or a deliberate 
 - Expo Go does not test native app identifiers, signing, release channels, or store behavior.
 - The pilot place set has source/freshness metadata but still needs day-of checks before a real family leaves.
 - The current QA pass is iOS-only unless an Android Expo Go device is separately tested.
+
+## QA Findings
+
+- 2026-07-17: The initial staging results screen exposed numeric fit scores and local/staging score debug surfaces that are not parent-facing. The immediate fix removes score display from staging cards, keeps score inspection local-only, and shows short parent-readable recommendation reasons instead.
+- 2026-07-17: Parent-facing results still need verified map context and source-approved place/activity imagery before a private pilot. Do not use fake map pins, scraped images, or unlicensed venue photos. Track this as a follow-up task before broader tester invites.

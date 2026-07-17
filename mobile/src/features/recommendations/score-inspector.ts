@@ -7,7 +7,7 @@ export type ScoreInspectorRow = {
 };
 
 export function shouldShowScoreInspector(env: ClientEnvResult): boolean {
-  return env.ok && env.value.appEnv !== "production";
+  return env.ok && env.value.appEnv === "local";
 }
 
 export function buildScoreInspectorRows(

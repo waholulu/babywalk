@@ -210,6 +210,10 @@
   Verify the core flows on iPhone 16 Pro with Expo Go connected to hosted Supabase staging.
   **Accept:** First launch, staging banner, recommendations from staging data, place detail, save/visit/block, incorrect-data feedback, location-denied fallback, and day plan are manually checked and recorded.
 
+- [ ] **TASK-041A — Add parent-facing map and media previews**
+  Add verified map context and source-approved place/activity imagery to results and place detail without inventing location facts or using unlicensed photos.
+  **Accept:** Results hide numeric scores from parents, show readable reasons, display a verified map affordance when coordinates exist, display approved imagery or a clearly neutral non-factual visual fallback, and document media/source rules.
+
 - [ ] **TASK-042 — Add support and privacy documents for private Expo Go pilot**
   Add in-app links or documented placeholders for support contact, privacy policy, terms status, and data deletion/account support expectations for a private non-store pilot.
   **Accept:** Disclosures match actual data collection, support contact is reachable, and no store-disclosure claims are made before native release work.
